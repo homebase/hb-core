@@ -1,0 +1,2 @@
+wget https://phpdoc.org/phpDocumentor.phar
+chmod +x phpDocumentor.phar

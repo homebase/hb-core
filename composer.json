@@ -1,0 +1,31 @@
+{
+    "name": "parf/hb-core",
+    "description": "Core Libraries for Homebase 2 Framework",
+    "keywords": ["homebase", "framework", "standalone"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergey Parf",
+            "email": "sergey.porfiriev@gmail.com"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": ">=8.0"
+    },
+    "require-dev": {
+    },    
+    "autoload": {
+        "psr-4": {
+            "hb\\": "src/hb/",
+            "hbc\\": "src/hbc/"
+        }
+    },
+  "scripts": {
+    "phpstan": "tools/vendor/bin/phpstan.phar analyse -c phpstan.neon",
+    "doc": "tools/phpDocumentor.phar -d src -t doc/hb",
+    "psalm": "tools/psalm.phar",
+    "cs-dry": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff -v --dry-run src",
+    "cs-fix": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff -v src"
+  }    
+}
