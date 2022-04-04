@@ -1,0 +1,20 @@
+IDEA -
+  move ALL tools to /usr/local/bin
+  install tools to /usr/local/src/homebase-php-tools
+  tools - are installed/updated vi "bin/setup-tools" script
+
+[+] spartan-test >> composer
+  ... by default support 
+   bootstrap/autoload.php
+   vendor/autoload
+   init.php - current or any parent directory
+
+
+publish new composer template with bells and whistles (...)
+
+
+install tools script
+rector install
+[+] psysh install
+[+] spartan test install -- create composer test ; publish spartan-test as composer package
+pre-commit githook - do php lint

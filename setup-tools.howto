@@ -1,0 +1,3 @@
+checkout https://github.com/homebase/php-tools somewhere
+run ./install all there
+create symlink ln -s $PATH/php-tools/bin tools

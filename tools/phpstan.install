@@ -1,1 +1,0 @@
-composer require --working-dir=tools --dev phpstan/phpstan

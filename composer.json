@@ -22,10 +22,14 @@
         }
     },
   "scripts": {
-    "phpstan": "tools/vendor/bin/phpstan.phar analyse -c phpstan.neon",
-    "doc": "tools/phpDocumentor.phar -d src -t doc/hb",
+    "phpstan": "tools/phpstan analyse -c phpstan.neon src",
+    "doc": "tools/phpDocumentor.phar -d src -t doc",
     "psalm": "tools/psalm.phar",
-    "cs-dry": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff -v --dry-run src",
-    "cs-fix": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff -v src"
+    "cs-dry": "tools/php-cs-fixer fix --diff -v --dry-run src",
+    "cs-fix": "tools/php-cs-fixer fix --diff -v src",
+    "rector-dry": "tools/rector process src --dry-run",
+    "rector": "tools/rector process src",
+    "test": "tools/stest-all tests",
+    "test-quite": "tools/stest-all -q tests"
   }    
 }

@@ -1,6 +1,7 @@
 .idea
 .env
 vendor
+tools
 doc
 .phpdoc
 .php-cs-fixer.cache
