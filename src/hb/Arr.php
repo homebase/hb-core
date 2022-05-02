@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+
 namespace hb;
 
 /**
@@ -24,8 +28,7 @@ namespace hb;
  *       Arr::map($arr, where: ... );
  *       Arr::compare($a, $b, strict:1);
  */
-class Arr extends Arr0
-{
+class Arr extends Arr0 {
     /**
      * @see \hb\qw("val1 val2 key3:val3")   >> [0=>val1, 1=>val2, key3=>val3]
      * @see \hb\qk("key1 key2 key3:val3")   >> [key1=>true, key2=>true, key3=>val3]
@@ -136,6 +139,8 @@ class Arr extends Arr0
     /**
      * Split array into two parts: [items_before_condition, items_after]
      *
+     * Important - YOU CAN PASS ONLY ONE CONDITION at a time
+     *
      * splitAt(cb: callback)     => [items_before_callback_success, remaining_items]
      *        callback: fn($value) | fn($key, $value)
      * splitAt(first: $nn_items)   => [nn_items, remaining_items]
@@ -145,17 +150,29 @@ class Arr extends Arr0
      *
      * @see partition, groupBy
      *
+     * @param null|mixed $cb
+     * @param null|mixed $first
+     * @param null|mixed $last
+     * @param null|mixed $value
+     * @param null|mixed $key
      */
     static function splitAt(array $arr, $cb = null, $first = null, $last = null, $value = null, $key = null) {
-        #error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
-        $cb = match(1) {
-            $cb    !== null => $cb,
-            $first !== null => function($v) use ($first) { static $cnt = 0; $cnt++; return $cnt === $first; },
-            $value !== null => fn($v) => $v === $value,
-            $key   !== null => fn($k, $v) => $k === $key,
+        // error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
+        $cb = match (1) {
+            $cb !== null => $cb,
+            $value !== null => fn ($v) => $v === $value,
+            $key !== null => fn ($k, $v) => $k === $key,
         };
+        if ($first) { // php-cs fixer cant format function in match well
+            $cb = function ($v) use ($first) {
+                static $cnt = 0;
+                $cnt++;
+
+                return $cnt === $first;
+            };
+        }
         if ($last) {
-            return array_reverse(Arr::splitAt(array_reverse($arr), first: $last));
+            return array_reverse(self::splitAt(array_reverse($arr), first: $last));
         }
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         $a = [];  // part 1
@@ -164,20 +181,20 @@ class Arr extends Arr0
         foreach ($arr as $k => $v) {
             if ($p) {
                 $b[$k] = $v;
+
                 continue;
             }
-            if ( ($np == 1 && $cb($v)) || ($np > 1 && $cb($k, $v)) ) {
+            if (($np == 1 && $cb($v)) || ($np > 1 && $cb($k, $v))) {
                 $b[$k] = $v;
                 $p = 1;
+
                 continue;
             }
             $a[$k] = $v;
         }
+
         return [$a, $b];
     }
-
-
-
 
     /**
      * Split array into two or several pieces
@@ -196,10 +213,10 @@ class Arr extends Arr0
      *
      * @param mixed $cb
      */
-    static function partition(array $arr, /* \Closure */ $cb): array { # [false|0, true|1, ...]
-        if (is_array($cb)) { # [keys-not-in-list, keys-in-list]
-            $isIn = Arr::flipTo($cb); // value => 1
-            $cb = fn($k, $v) => $isIn[$k] ?? 0;
+    static function partition(array $arr, /* \Closure */ $cb): array { // [false|0, true|1, ...]
+        if (\is_array($cb)) { // [keys-not-in-list, keys-in-list]
+            $isIn = self::flipTo($cb); // value => 1
+            $cb = fn ($k, $v) => $isIn[$k] ?? 0;
         }
         $r = self::groupBy($arr, $cb);
         ksort($r);
@@ -226,7 +243,7 @@ class Arr extends Arr0
             }
             if (\is_bool($value)) {
                 $r[] = "$key-$value";
-            } elseif (is_scalar($value)) {
+            } elseif (\is_scalar($value)) {
                 $r[] = "$key:$value";
             } elseif (\is_array($value)) {
                 $r[] = "$key:[".self::MD5($value, $orderless).']';
@@ -244,7 +261,7 @@ class Arr extends Arr0
     }
 
     // return "-1" when not found
-    static function keyOffset(array $arr, string | int $key): int {
+    static function keyOffset(array $arr, string|int $key): int {
         $i = 0;
         foreach ($arr as $k => $_) {
             if ($k === $key) {
@@ -259,7 +276,7 @@ class Arr extends Arr0
     // insert items after specific key
     // no key - insert at the end
     // Values for keys that are already in array *may* be updated - avoid duplicate keys
-    static function insertAfter(array $arr, string | int $key, array $items): array {
+    static function insertAfter(array $arr, string|int $key, array $items): array {
         if (!self::keyExists($arr, $key)) {
             return [...$arr, ...$items];
         }
@@ -271,7 +288,7 @@ class Arr extends Arr0
     // insert item(s) before specific key
     // no key - insert at the start
     // Values for keys that are already in array *may* be updated - avoid duplicate keys
-    static function insertBefore(array $arr, string | int $key, array $items): array {
+    static function insertBefore(array $arr, string|int $key, array $items): array {
         if (!self::keyExists($arr, $key)) {
             return [...$items, ...$arr];
         }
@@ -286,7 +303,7 @@ class Arr extends Arr0
     }
 
     // correct args order
-    static function keyExists(array $arr, string | int $key): bool {
+    static function keyExists(array $arr, string|int $key): bool {
         return \array_key_exists($key, $arr);
     }
 
@@ -357,7 +374,7 @@ class Arr extends Arr0
         $min = min($arr);
 
         return array_search($min, $arr, true);
-        //return key(self::minX($arr, 1));
+        // return key(self::minX($arr, 1));
     }
 
     // key of maximal value
@@ -366,7 +383,7 @@ class Arr extends Arr0
         $max = max($arr);
 
         return array_search($max, $arr, true);
-        //return key(self::maxX($arr, 1));
+        // return key(self::maxX($arr, 1));
     }
 
     // top X minimal values from array, null values ignored
@@ -378,8 +395,9 @@ class Arr extends Arr0
         $r = [];
         ($where || $map) && $arr = self::map($arr, $map, where: $where);
         foreach ($arr as $k => $v) {
-            if ($v === null)
+            if ($v === null) {
                 continue;
+            }
             if ($cnt < $count) { // filling up buffer
                 $r[$k] = $v;
                 ++$cnt === $count && $max_r = max($r);
@@ -410,8 +428,9 @@ class Arr extends Arr0
         $r = [];
         ($where || $map) && $arr = self::map($arr, $map, where: $where);
         foreach ($arr as $k => $v) {
-            if ($v === null)
+            if ($v === null) {
                 continue;
+            }
             if ($cnt < $count) { // filling up buffer
                 $r[$k] = $v;
                 ++$cnt === $count && $min_r = min($r);
@@ -444,33 +463,37 @@ class Arr extends Arr0
     // first value from array | null
     static function firstKey(iterable $arr, $where = null, $default = null, $map = null): mixed {
         $r = self::map($arr, $map, where: $where, while: 1);
+
         return $r ? key($r) : $default;
     }
 
     // second value from array | null
-    static function second(iterable $arr, $where = null, $default=null): mixed {
+    static function second(iterable $arr, $where = null, $default = null): mixed {
         $items = array_values(self::firstX($arr, 2, $where));
+
         return $items[1] ?? $default;
     }
 
     // third value from array | null
-    static function third(iterable $arr, $where = null, $default=null): mixed {
+    static function third(iterable $arr, $where = null, $default = null): mixed {
         $items = array_values(self::firstX($arr, 3, $where));
+
         return $items[2] ?? $default;
     }
 
     // last value from array
     static function last(iterable $arr, $where = null, $default = null, $map = null): mixed {
         $r = self::map($arr, $map, where: $where, while: 1, reverse: 1);
+
         return $r ? reset($r) : $default;
     }
 
     // last key from array | null
     static function lastKey(iterable $arr, $where = null, $default = null): mixed {
         $kv = self::lastX($arr, 1, $where);
+
         return $kv ? key($kv) : $default;
     }
-
 
     // first X values (keys preserved)
     static function firstX(iterable $arr, $count = 1, $where = null): array {
@@ -492,7 +515,7 @@ class Arr extends Arr0
     }
 
     // $map "old_key:new_key" space delimited or array [old => new]
-    static function renameKeys(array $arr, string | array $map): array {
+    static function renameKeys(array $arr, string|array $map): array {
         foreach (\hb\qw($map) as $from => $to) {
             if (!isset($arr[$from])) {
                 continue;
@@ -544,9 +567,10 @@ class Arr extends Arr0
     }
 
     // use DH::except for dot notation support
-    static function except($arr, string | int | array | \Closure $keys): array {
+    static function except($arr, string|int|array|\Closure $keys): array {
         \is_array($arr) || $arr = self::value($arr);
         static::forget($arr, $keys);
+
         return $arr;
     }
 
@@ -625,7 +649,7 @@ class Arr extends Arr0
     // \data_set
     // data_set($data, 'products.*.price', 200);
     static function data_set(&$array, $key, $value): array {
-        //data_set($data, 'products.desk.price', 200);
+        // data_set($data, 'products.desk.price', 200);
     }
 
     static function get($array, $key): array {
