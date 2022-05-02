@@ -148,19 +148,19 @@ class Arr extends Arr0
      */
     static function splitAt(array $arr, $cb = null, $first = null, $last = null, $value = null, $key = null) {
         #error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
-        $a = [];  // part 1
-        $b = [];  // part 2
-        $p = 0;
-        $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         $cb = match(1) {
             $cb    !== null => $cb,
-            $first !== null => function($v) { static $cnt = 0; return $cnt++ >= $c ? 1 : 0; },
+            $first !== null => function($v) use ($first) { static $cnt = 0; $cnt++; return $cnt === $first; },
             $value !== null => fn($v) => $v === $value,
             $key   !== null => fn($k, $v) => $k === $key,
         };
         if ($last) {
             return array_reverse(Arr::splitAt(array_reverse($arr), first: $last));
         }
+        $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
+        $a = [];  // part 1
+        $b = [];  // part 2
+        $p = 0;
         foreach ($arr as $k => $v) {
             if ($p) {
                 $b[$k] = $v;
@@ -171,6 +171,7 @@ class Arr extends Arr0
                 $p = 1;
                 continue;
             }
+            $a[$k] = $v;
         }
         return [$a, $b];
     }
