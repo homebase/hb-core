@@ -140,21 +140,21 @@ class Arr extends Arr0
      *        callback: fn($value) | fn($key, $value)
      * splitAt(first: $nn_items)   => [nn_items, remaining_items]
      * splitAt(last: $nn_items)   => [remaining_items, nn_items]
-     * splitAt(value:)   => [items(value-not-equal), [value-equal ... remaining_items] ]
-     * splitAt(key:)   => [items(key-not-equal), [key-equal ... remaining_items] ]
+     * splitAt(value:$val)   => [items(value-not-equal), [value-equal ... remaining_items] ]
+     * splitAt(key:$key)   => [items(key-not-equal), [key-equal ... remaining_items] ]
      *
      * @see partition, groupBy
      *
      */
     static function splitAt(array $arr, $cb = null, $first = null, $last = null, $value = null, $key = null) {
-        error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
+        #error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
         $a = [];  // part 1
         $b = [];  // part 2
         $p = 0;
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         $cb = match(1) {
             $cb    !== null => $cb,
-            $first !== null => function($v) use ($cb) { static $cnt = 0; return $cnt++ >= $c ? 1 : 0; },
+            $first !== null => function($v) { static $cnt = 0; return $cnt++ >= $c ? 1 : 0; },
             $value !== null => fn($v) => $v === $value,
             $key   !== null => fn($k, $v) => $k === $key,
         };
