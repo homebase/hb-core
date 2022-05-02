@@ -1,5 +1,5 @@
 {
-    "name": "parf/hb-core",
+    "name": "homebase2/hb-core",
     "description": "Core Libraries for Homebase 2 Framework",
     "keywords": ["homebase", "framework", "standalone"],
     "license": "MIT",
