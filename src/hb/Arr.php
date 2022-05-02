@@ -106,9 +106,9 @@ class Arr extends Arr0
      *
      * Example: Arr::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => 2, "a" => 1.0, 'f' => null])  == true
      *
-     * @param mixed $strict
+     * @param mixed $strict = true : comparison-strictness:  true => strict (===) ; false => non-strict (==)
      */
-    static function compare(array $a, array $b, $strict = false): bool {
+    static function compare(array $a, array $b, $strict = true): bool {
         foreach ($a as $k => $av) {
             $bv = $b[$k] ?? null;
             if (\is_array($av) && \is_array($bv)) {
