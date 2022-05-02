@@ -30,6 +30,7 @@
     "rector-dry": "tools/rector process src --dry-run",
     "rector": "tools/rector process src",
     "test": "tools/stest-all tests",
-    "test-quite": "tools/stest-all -q tests"
+    "test-quite": "tools/stest-all -q tests",
+    "lint": "find src -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v \"No syntax errors detected\" )"
   }    
 }

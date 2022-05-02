@@ -6,14 +6,8 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of Homebase 2 PHP Framework
- * (C) Sergey Parf <sergey.porfiriev@gmail.com>
- */
-
 $header = <<<'EOF'
-    This file is part of Homebase 2 PHP Framework
-    (C) Sergey Parf <sergey.porfiriev@gmail.com>
+    This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
     EOF;
 
 $finder = PhpCsFixer\Finder::create()
@@ -54,7 +48,9 @@ $config
         'braces' => [
             'position_after_functions_and_oop_constructs' => 'same',   // "function () { " same line
             'allow_single_line_closure' => true,
-        ],
+	],
+	'strict_comparison' => false, // can break old code
+	'yoda_style' => false, // ugly sometimes
     ]))->setFinder($finder)
 
 ;
