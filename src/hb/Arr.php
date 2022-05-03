@@ -16,8 +16,8 @@ namespace hb;
  * - DH   -  Deep Hash / key => key => ... => value ~= deep json structure
  * - ADH  -  Array of Deep Hash: PrimaryKey => DH ~= mongodb collection
  *
- * All(almost) Arr `array` methods receive source array as first argument and returns new array as result
- * - No data modification - few (laravel compatibility) exceptions: forget, pull, set
+ * All(almost) methods receive source array as first argument and returns new array as result
+ * - No data modification - few (laravel compatibility) exceptions: forget, pull, set, pop, shift
  * - key value order is always: $key, $value
  * - All callbacks can be callback($value) or callback($key, $value)
  * - preserveKeys - keep original keys intact (unless explicitly specified: mapList())
