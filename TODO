@@ -11,3 +11,5 @@
 ☐ move \hb\once implementation to \hbc\core\CacheX
 
 ☐ php 8.1 decorator based off annotations
+
+ ☐ keep hb-functions at absolute minimum. move long helps to separate *.md files
