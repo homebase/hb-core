@@ -1,0 +1,71 @@
+#!/bin/env stest
+<?php
+
+// ParseLine - split string into lexemes
+// support for:
+//   escaping: \x
+//   quotes: "", '', ``
+//   brackets: [], (), {}
+
+// heavily used in View system
+
+; $p = function (...$a) { return \hb\Str::parseLine(...$a);};
+
+$p("aa bb cc dd");
+    ['aa', 'bb', 'cc', 'dd'];
+$p("aa \"bb cc\" dd");
+    ['aa', '"bb cc"', 'dd'];
+$p("`a a` \"bb cc\" 'd d'");
+    ['`a a`', '"bb cc"', '\'d d\''];
+$p("aa {bb cc} dd");
+    ['aa', '{bb cc}', 'dd'];
+$p("aa \{bb \\'cc dd");
+    ['aa', '\\{bb', '\\\'cc', 'dd'];
+
+$p("aa  \"({[<\" \[x\] [1 2 3] (a (b1 b2 b3) c) {a b c} \"a }>)\" b c 'a b c' `a b c`");
+    ['aa', '"({[<"', '\\[x\\]', '[1 2 3]', '(a (b1 b2 b3) c)', '{a b c}', '"a }>)"', 'b', 'c', '\'a b c\'', '`a b c`'];
+$p("aa (d 'df) (' d)  bb ");
+    ['aa', '(d \'df) (\' d)', 'bb'];
+
+$p("a 0");
+    ['a', '0'];
+$p("a ''");
+    ['a', '\'\''];
+
+// escape character from lexeme removal
+$r = "  a  \\\"b ' c ' ";
+    '  a  \\"b \' c \' ';
+$p($r);
+    ['a', '\\"b', '\' c \''];
+$p($r, " ", 0); // remove escape character from lexeme;
+    ['a', '"b', '\' c \''];
+
+// Non Comma Delimiter
+// We use slighly different rules
+
+; $c = function($s) use ($p) { return $p($s, ","); };
+
+$c("aa,bb");
+    ['aa', 'bb'];
+$p("aa  bb");           // double+ spaces treated as one;
+    ['aa', 'bb'];
+$c("aa,,bb");      // non-double treated as delimiters - giving empty items;
+    ['aa', '', 'bb'];
+
+$c("aa,,bb");      // non-double treated as delimiters - giving empty items;
+    ['aa', '', 'bb'];
+
+$c(" aa , bb , [3,4,5]");  // trailing spaces trimmed;
+    ['aa', 'bb', '[3,4,5]'];
+
+$c(",a,,b,");
+    ['', 'a', '', 'b', ''];
+
+
+$c('"a", "b"');
+    ['"a"', '"b"'];
+
+// quotes inside string - OK
+$c('xx" a b "xx, "b", sas[a, c]');
+    ['xx" a b "xx', '"b"', 'sas[a, c]'];
+

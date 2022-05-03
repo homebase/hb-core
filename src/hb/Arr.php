@@ -274,11 +274,11 @@ class Arr extends Arr0 {
     }
 
     // insert items after specific key
-    // no key - insert at the end
+    // no key found -  no-insert OR insert at the end (@see $insertWhenNotFound)
     // Values for keys that are already in array *may* be updated - avoid duplicate keys
-    static function insertAfter(array $arr, string|int $key, array $items): array {
+    static function insertAfter(array $arr, string|int $key, array $items, bool $insertWhenNotFound = false): array {
         if (!self::keyExists($arr, $key)) {
-            return [...$arr, ...$items];
+            return $insertWhenNotFound ? array_merge($arr, $items) : $arr;
         }
         $pos = self::keyOffset($arr, $key) + 1;
 
@@ -286,11 +286,11 @@ class Arr extends Arr0 {
     }
 
     // insert item(s) before specific key
-    // no key - insert at the start
+    // no key found -  no-insert OR insert at the beginning (@see $insertWhenNotFound)//
     // Values for keys that are already in array *may* be updated - avoid duplicate keys
-    static function insertBefore(array $arr, string|int $key, array $items): array {
-        if (!self::keyExists($arr, $key)) {
-            return [...$items, ...$arr];
+    static function insertBefore(array $arr, string|int $key, array $items, bool $insertWhenNotFound = false): array {
+        if (!\array_key_exists($key, $arr)) {
+            return $insertWhenNotFound ? array_merge($items, $arr) : $arr;
         }
         $pos = self::keyOffset($arr, $key);
 
@@ -365,7 +365,7 @@ class Arr extends Arr0 {
     static function dropValues(array $arr, ...$values): array {
         $drop = self::flipTo($values);
 
-        return self::map($arr, fn ($k, $v) => $drop[$v] ? [] : [$k => $v]);
+        return self::map($arr, fn ($k, $v) => ($drop[$v]??0) ? [] : [$k => $v]);
     }
 
     // key of minimal value

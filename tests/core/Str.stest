@@ -1,0 +1,87 @@
+#!/bin/env stest
+<?php
+#
+# $S::$methods
+#
+# Allow to catch \Error exceptions
+; $ARG['allowError'] = 1;
+
+
+$a = join('', range("a", "z"));
+    'abcdefghijklmnopqrstuvwxyz';
+; $S = '\hb\Str';
+
+$S::startsWith($a, "ab");
+    true;
+$S::startsWith($a, "b");
+    false;
+$S::endsWith($a, "xyz");
+    true;
+$S::endsWith($a, "aaa");
+    false;
+
+$S::before($a, "def");
+    'abc';
+$S::before($a, "df");
+    '';
+
+$S::after($a, "tuv");
+    'wxyz';
+$S::after($a, "df");
+    '';
+
+; $x = "aaa.bbb.ccc";
+$S::after($x, ".");
+    'bbb.ccc';
+$S::afterLast($x, ".");
+    'ccc';
+$S::before($x, ".");
+    'aaa';
+$S::beforeLast($x, ".");
+    'aaa.bbb';
+
+$S::between($a, "k", "p");
+    'lmno';
+
+$S::between("xxx (a,b) xxx (c,d) xxx", "(", ")");
+    'a,b';
+
+$S::lower($a);
+    'abcdefghijklmnopqrstuvwxyz';
+$S::upper($a);
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+$S::limit($a, 5);
+    'ab...';
+$S::limit("1234567", 3, "abcdef");
+    ['Error:hb\\Error', 'useless Str::limit(\'\', limit, end) combination'];
+$S::limit("12345", 3, "abcdef");
+    ['Error:hb\\Error', 'useless Str::limit(\'\', limit, end) combination'];
+$S::limit("12345", 3, "abc");
+    ['Error:hb\\Error', 'useless Str::limit(\'\', limit, end) combination'];
+$S::cut($a, 5, ".");
+    'abcd.';
+$S::title($a);
+    'Abcdefghijklmnopqrstuvwxyz';
+$S::len($a);
+    26;
+
+// first match
+$S::fm($a, "!de(f.{4})!");
+    'fghij';
+$S::fm($a, "!zzz!");
+    '';
+$S::fm($a, "!(.{4})$!");
+    'wxyz';
+
+// Conditional Sprintf
+$S::cs("", "(%s)");
+    '';
+$S::cs("", "(%s)", "-empty-");
+    '-empty-';
+$S::cs("xxx", "(%s)");
+    '(xxx)';
+$S::cs(0.1472323, "v=%0.2f");
+    'v=0.15';
+$S::cs([1,2,3], "v=%s");
+    'v=[1, 2, 3]';

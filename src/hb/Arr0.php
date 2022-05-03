@@ -120,7 +120,7 @@ class Arr0 {
      * Map Array to new Array
      *
      * Suggested usage (use php8 named arguments):
-     *   Arr::map($arr, where: fn($a) => $a % 2, skip: 10, while: fn($a) => $a > 19,  reverse: 1)
+     *   Arr::map($arr, where: fn($a) => $a % 2, skip: 10, while: fn($a) => $a > 19, reverse: 1)
      *
      * Order of callbacks:
      *
@@ -128,14 +128,19 @@ class Arr0 {
      *  1. where     - fn($v) | fn($k, $v) | "fieldname" | ["field", "f" => v, f => null, ...]
      *  2. skip      - fn($v) | fn($k, $v) | items-to-skip | "fieldname" | ["field", "f" => v, f => null, ...]
      *  3. while     - fn($v) | fn($k, $v) | items-to-get | "fieldname" | ["field", "f" => v, f => null, ...]
-     *  4. map       - fn($v) => $v | fn($k, $v) => [$k, $k2, $old_k => $new_k, ...] | "field" | ["field1", ...]
+     *  4. map       - fn($v) => $v | fn($k, $v) => [$k, $k2, $old_k => $new_k, ...] | "field" | ["f1", "f2", $old_k => $new_k, ...]
+     *
+     * Important - map is executed LAST
      *
      * when $map is (string|int) $field:
      *   we return column $field when it is not null. ($arr is array of arrays)
      *   App:map($table, "field") >> [rowkey => $fieldvalue, ...]  == AH::column($ah, "field")
      *
      * when $map is array (fieldlist) - ($arr is array of arrays) - @see only()
-     *   we return columns from fieldlist when at least one field is not null
+     *   we return NON-NULL columns from fieldlist when at least one field is not null
+     *
+     * when $map is array (old_field_name=>new_field+name) - ($arr is array of arrays) - @see only()
+     *   we return NON-NULL columns from fieldlist when at least one field is not null PLUS we rename field
      *
      * @param null|mixed $map
      * @param null|mixed $where
@@ -184,7 +189,8 @@ class Arr0 {
             case 2: // callback($key, $value) => [$k=>v, ...]
                 foreach ($arr as $k => $v) {
                     foreach ($map($k, $v) as $new_k => $new_v) {
-                        $r[$new_k] = $new_v;
+                        if ($new_k !== null)
+                            $r[$new_k] = $new_v;
                         // v([$k, $v, $new_k, $new_v]);
                     }
                 }
@@ -366,7 +372,6 @@ class Arr0 {
      *  2. skip
      *  3. while
      *
-     * @param ?callable $cb
      * @param ?callable $where
      * @param ?callable $skip
      * @param ?callable $while
@@ -594,8 +599,8 @@ class Arr0 {
             if (\is_int($k)) {
                 $k = $v;
             }
-            $vl = $a[$k];
-            if (isset($vl)) {
+            $vl = $a[$k] ?? null;
+            if ($vl !== null) {
                 $r[$v] = $vl;
             }
         }
@@ -753,7 +758,7 @@ class Arr0 {
      */
     static function groupBy(iterable $arr, string|int|\Closure $cb): array {
         if (!$cb instanceof \Closure) {
-            $cb = fn ($a) => $a[$cb];
+            $cb = fn ($a) => $a[$cb] ?? null;
         }
         $r = [];
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();

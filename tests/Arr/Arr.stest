@@ -1,0 +1,209 @@
+#!/usr/bin/env stest
+<?php
+; $ARG['allowError'] = 1; # allow \Error exceptions;
+; $ARG['sort'] = 0; # disable result sorting;
+; class A extends \hb\Arr {};
+
+// get rid of NULL and ""
+A::cleanup([1, 0, null, "", "a", true, false]);
+    [1, 0, "4"=>'a', "5"=>true, "6"=>false];
+
+A::range(1,10);
+    'Instance(Generator)';
+iterator_to_array(A::range(5,9));
+    [5, 6, 7, 8, 9];
+
+A::isAssoc([1,2,3]);
+    false;
+
+; $a = ['a' => 1, 'b' => 2, 'c' => 3];
+A::isAssoc($a);
+    true;
+
+A::keyOffset($a, "b");
+    1;
+
+A::forget($a, "a b:bb");
+    ["a"=>1, "bb"=>2];
+
+$a;
+    ["c"=>3];
+
+$a = A::insertAfter($a, "c", ['d' => 4, 'e' => 5]);
+    ["c"=>3, "d"=>4, "e"=>5];
+
+$a = A::insertAfter($a, "d", ['d2' => 4.3, 'd3' => 4.7]);
+    ["c"=>3, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$a = A::insertBefore($a, "d", ['d-1' => 3.8, 'd-2' => 3.9]);
+    ["c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$a = A::insertBefore($a, "c", ['c-1' => 2]);
+    ["c-1"=>2, "c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+// no action if element is not found
+$a = A::insertBefore($a, "X", ['c-2' => 1]);
+    ["c-1"=>2, "c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$a = A::insertBefore($a, "X", ['c-2' => 1], false);
+    ["c-1"=>2, "c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$z = A::zip([1,2,3], [4,5,6]);
+    [[1, 4], [2, 5], [3, 6]];
+
+A::unzip($z);
+    [[1, 2, 3], [4, 5, 6]];
+
+$z = A::zip([1,2,3], [4,5,6], ['a', 'b', 'c']);
+    [[1, 4, 'a'], [2, 5, 'b'], [3, 6, 'c']];
+
+A::unzip($z);
+    [[1, 2, 3], [4, 5, 6], ['a', 'b', 'c']];
+
+A::flatten([0.5, [1,2,3], [[4,5,6]]], preserveKeys:false);
+    [0.5, 1, 2, 3, [4, 5, 6]];
+
+
+A::flattenRecursive([0.5, [1,2,3], [[4,5,6]]]);
+    [0.5, "1.0"=>1, "1.1"=>2, "1.2"=>3, "2.0.0"=>4, "2.0.1"=>5, "2.0.2"=>6];
+
+
+A::flattenList(['age' => 50, 'name' => ['first' => 'Ser', 'last' => 'Parf']]);
+    [50, 'Ser', 'Parf'];
+
+A::flattenListRecursive([0.5, [1,2,3], [[4,[5],6], "a"], "b"]);
+    [0.5, 1, 2, 3, 4, 5, 6, 'a', 'b'];
+
+// preserve keys
+A::flatten(['age' => 50, 'name' => ['first' => 'Ser', 'last' => 'Parf']]);
+    ["age"=>50, "first"=>'Ser', "last"=>'Parf'];
+
+; $a = ['a' => 1, 'b' => 2, 'c' => 3];
+A::dropValues($a, 2, 4);
+    ["a"=>1, "c"=>3];
+
+A::dropValues($a, 1, 3);
+    ["b"=>2];
+
+A::minX([3,4,4,2,3,4,1,10], 3);
+    ["6"=>1, "3"=>2, "4"=>3];
+
+; $a = range(2,40);
+; shuffle($a);
+
+array_values(A::minX($a, 3));
+    [2, 3, 4];
+
+array_values(A::minX($a, 5, where: fn($v) => $v & 1 && $v & 8));
+    [9, 11, 13, 15, 25];
+
+
+array_values(A::maxX($a, 3));
+    [38, 39, 40];
+array_values(A::maxX($a, 5, where: fn($v) => $v & 1 && $v & 8));
+    [15, 25, 27, 29, 31];
+
+array_values(A::maxX($a, 5, fn($v) => $v*3 +1,  where: fn($v) => $v & 1 && $v & 8));
+    [46, 76, 82, 88, 94];
+
+A::minValueKey([3,4,4,2,3,4,1,10]);
+    6;
+
+A::maxValueKey([3,4,4,2,3,4,1,10]);
+    7;
+
+
+A::first([3,4,4,2,3,4,1,10], fn($v) => $v>5);
+    10;
+
+// same but with key
+A::firstX([3,4,4,2,3,4,1,10], 1, fn($v) => $v>5);
+    ["7"=>10];
+
+A::last([3,4,4,2,3,4,1,10], fn($v) => $v>=3 && $v < 10);
+    4;
+
+A::firstX([3,4,4,2,3,4,1,10], 4, fn($v) => $v>3);
+    ["1"=>4, "2"=>4, "5"=>4, "7"=>10];
+
+
+; $rows = [
+  10 => ['a' => 1, 'b' => 10],
+  12 => ['b' => 10, 'c' => 100],
+  14 => ['a' => 2, 'b' => 20],
+  15 => ['a' => 3, 'c' => 200],
+  5 => ['c' => 300]
+  ];
+
+A::maxX($rows, 2, "a");
+    ["14"=>2, "15"=>3];
+A::minX($rows, 2, "c");
+    ["12"=>100, "15"=>200];
+
+// column "a"
+A::first($rows, map:"a");
+    1;
+
+// column "c"
+A::first($rows, map:"c");
+    NULL;
+
+// column "c" where "c" is not null
+A::first($rows, map:"c", where:"c");
+    100;
+
+A::last($rows, "a");
+    ["a"=>3, "c"=>200];
+
+// most likely you need `where a` condition here, be careful
+// map is applied AFTER !! last operation
+A::last($rows, map:"a");
+    NULL;
+
+A::last($rows, map:"a", where:"a");
+    3;
+
+A::first($rows, map:"a", where:["c", "a"]);
+    3;
+
+A::first($rows, where:["c", "a"]);
+    ["a"=>3, "c"=>200];
+
+A::firstX([3,4,4,2,3,4,1,10], 3);
+    [3, 4, 4];
+
+A::lastX([3,4,4,2,3,4,1,10], 3);
+    ["5"=>4, "6"=>1, "7"=>10];
+
+A::firstX(A::range(6,10), 3);
+    [6, 7, 8];
+
+A::lastX(A::range(6,10), 3);
+    ["2"=>8, "3"=>9, "4"=>10];
+
+A::renameKeys(["age"=>50, "first"=>'Ser', "last"=>'Parf'], \hb\qw("age:years_old first:fname x:y"));
+    ["last"=>'Parf', "years_old"=>50, "fname"=>'Ser'];
+
+A::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => 2, "a" => 1.0, 'f' => null], strict:0);
+    true;
+
+A::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => 2, "a" => 1.0, 'f' => null], strict:1);
+    false;
+
+A::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => "2", "a" => 1, 'f' => null], strict:1);
+    true;
+
+A::crossJoin([1,2,3], ['a', 'b', 'c']);
+    [[1, 'a'], [1, 'b'], [1, 'c'], [2, 'a'], [2, 'b'], [2, 'c'], [3, 'a'], [3, 'b'], [3, 'c']];
+
+A::lastX(A::crossJoin([1,2], ['a', 'b'], ['+', '-']), 5);
+    ["3"=>[1, 'b', '-'], "4"=>[2, 'a', '+'], "5"=>[2, 'a', '-'], "6"=>[2, 'b', '+'], "7"=>[2, 'b', '-']];
+
+// partition using true/false
+A::partition(range(1,10), fn ($v) => $v > 5);
+    [[1, 2, 3, 4, 5], ["5"=>6, "6"=>7, "7"=>8, "8"=>9, "9"=>10]];
+
+// partition into several parts
+A::partition(range(1,10), fn ($v) => $v % 3);
+    [["2"=>3, "5"=>6, "8"=>9], [1, "3"=>4, "6"=>7, "9"=>10], ["1"=>2, "4"=>5, "7"=>8]];
+

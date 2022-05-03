@@ -1,0 +1,173 @@
+#!/usr/bin/env stest
+<?php
+; $ARG['allowError'] = 1; # allow \Error exceptions;
+; $ARG['sort'] = 0; # disable result sorting;
+; class A extends \hb\Arr {};
+
+// array range
+; $AR = range(0, 10);
+
+A::map($AR, fn($v) => $v*2);
+    [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+
+// generator range
+; $GA = A::iter($AR, where: fn($v) => $v%3, skip:1, while: fn($v) => $v < 9);
+
+A::map($GA, fn($v) => $v);
+    ["2"=>2, "4"=>4, "5"=>5, "7"=>7, "8"=>8];
+
+// @see more A::map in dedicated Arr-map.stest
+
+A::flipTo(\hb\qw("a b c"), 2);
+    ["a"=>2, "b"=>2, "c"=>2];
+
+A::all(range(100, 200), fn($a) => $a > 10);
+    101;
+
+A::all(range(100, 200), fn($a) => $a > 150);
+    0;
+
+A::any(range(100, 200), fn($a) => $a > 150);
+    ["51"=>true];
+
+A::any(range(100, 200), fn($a) => $a < 10);
+    [];
+
+
+// duplicate even numbers in list, thow away odd ones
+A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
+    [2, 2, 4, 4];
+
+// cb($k, $v)
+A::mapList([1, 2, 3, 4], fn($k, $v) => $k & 1 ? [] : [$k, "$k-$v"]);
+    [0, '0-1', 2, '2-3'];
+
+// execute all, return number of non-empty responses
+A::each($AR, fn($v) => $v & 1);
+    5;
+
+// execute all, return number of non-empty responses ($key, $value)
+A::each($AR, fn($k, $v) => $k & 1);
+    5;
+
+A::fold($AR, fn($c, $v) => $c+$v);
+    55;
+
+A::fold($AR, fn($c, $v) => $c+$v, skip: 1, where: fn($v) => $v&1, while: fn($v) => $v < 9);
+    15;
+
+A::fold(range(2,10), fn($c, $v) => $c*$v, 1);
+    3628800;
+
+A::fold($AR, fn($c, $v) => $c*$v, 1, skip: 1, where: fn($v) => $v&1, while: fn($v) => $v < 9);
+    105;
+
+A::fold(range(2,10), fn($c, $k, $v) => \hb\then($c[$k] = $v, $c), []);
+    [2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+A::fold(range(2,10), fn($c, $k, $v) => \hb\then($c[$k*2] = $v+$k, $c), []);
+    [2, "2"=>4, "4"=>6, "6"=>8, "8"=>10, "10"=>12, "12"=>14, "14"=>16, "16"=>18];
+
+
+; $a = ['a' => 1, 'b' => ['c' => 3, 'd' => 4]];
+iterator_to_array(A::iterRecursiveDot($a));
+    ["a"=>1, "b.c"=>3, "b.d"=>4];
+A::dumpIter(A::iterRecursiveDot($a));
+    [['a', 1], ['b.c', 3], ['b.d', 4]];
+A::dot($a);
+    ["a"=>1, "b.c"=>3, "b.d"=>4];
+
+A::dumpIter(A::iterRecursive($a));
+    [[['a'], 1], [['b', 'c'], 3], [['b', 'd'], 4]];
+
+
+; $a = [0,[1,2],3,[4,[5,6]]];
+A::dumpIter(A::iterRecursive($a));
+    [[[0], 0], [[1, 0], 1], [[1, 1], 2], [[2], 3], [[3, 0], 4], [[3, 1, 0], 5], [[3, 1, 1], 6]];
+
+iterator_to_array(A::iterRecursiveDot($a));
+    [0, "1.0"=>1, "1.1"=>2, "2"=>3, "3.0"=>4, "3.1.0"=>5, "3.1.1"=>6];
+
+A::dot($a);
+    [0, "1.0"=>1, "1.1"=>2, "2"=>3, "3.0"=>4, "3.1.0"=>5, "3.1.1"=>6];
+
+A::sum(range(1,10));
+    55;
+
+A::count(range(1,10));
+    10;
+
+$rows = [
+  10 => ['a' => 1, 'b' => 10],
+  12 => ['b' => 10, 'c' => 100],
+  14 => ['a' => 2, 'b' => 20],
+  15 => ['a' => 3, 'c' => 200],
+  5 => ['c' => 300]
+  ];
+    ["10"=>["a"=>1, "b"=>10], "12"=>["b"=>10, "c"=>100], "14"=>["a"=>2, "b"=>20], "15"=>["a"=>3, "c"=>200], "5"=>["c"=>300]];
+
+A::map($rows, "a");
+    ["10"=>1, "14"=>2, "15"=>3];
+
+A::map($rows, ["a", "c"]);
+    ["10"=>["a"=>1], "12"=>["c"=>100], "14"=>["a"=>2], "15"=>["a"=>3, "c"=>200], "5"=>["c"=>300]];
+
+A::map($rows, where:["a", "c"]);
+    ["15"=>["a"=>3, "c"=>200]];
+
+A::map($rows, where: "b");
+    ["10"=>["a"=>1, "b"=>10], "12"=>["b"=>10, "c"=>100], "14"=>["a"=>2, "b"=>20]];
+
+A::map($rows, where: ["b", "c"]);
+    ["12"=>["b"=>10, "c"=>100]];
+
+A::sum($rows, "a", where: fn($a) => ($a['a']??0)&1); // sum odd;
+    4;
+A::sum($rows, "a");
+    6;
+
+A::sum($rows, "c");
+    600;
+
+A::sum($rows, ["a", "c"]);
+    ["a"=>6, "c"=>600];
+
+A::count($rows);
+    5;
+
+A::count($rows, "a");
+    3;
+
+A::count($rows, fn ($a) => ($a['a']??0) > 1);
+    2;
+
+A::count($rows, ["a", "b", "c", "d"]);
+    ["a"=>3, "b"=>3, "c"=>3, "d"=>0];
+
+A::count($rows, fn($r) => ($r['a'] ?? 0) > 1);
+    2;
+
+A::groupBy($rows, "a");
+    ["1"=>["10"=>["a"=>1, "b"=>10]], "2"=>["14"=>["a"=>2, "b"=>20]], "3"=>["15"=>["a"=>3, "c"=>200]]];
+
+A::groupBy($rows, "b");
+    ["10"=>["10"=>["a"=>1, "b"=>10], "12"=>["b"=>10, "c"=>100]], "20"=>["14"=>["a"=>2, "b"=>20]]];
+
+; $a = ['a' => 1, 'b' => ['c' => 3, 'd' => 4], 'e' => 5];
+
+A::only($a, "a e");
+    ["a"=>1, "e"=>5];
+
+A::only($a, "a:assign e:effort");
+    ["assign"=>1, "effort"=>5];
+
+A::only($a, "b:data");
+    ["data"=>["c"=>3, "d"=>4]];
+
+A::only($a, "x y");
+    [];
+
+A::only($a, "x:y");
+    [];
+
+

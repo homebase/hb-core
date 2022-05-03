@@ -1,0 +1,213 @@
+#!/usr/bin/env stest
+<?php
+; $ARG['allowError'] = 1; # allow \Error exceptions;
+; $ARG['sort'] = 0; # disable result sorting;
+; class A extends \hb\Arr0 {};
+$range5 = range(0, 5);
+    [0, 1, 2, 3, 4, 5];
+
+$g = A::iter($range5);
+    'Instance(Generator)';
+
+iterator_to_array($g);
+    [0, 1, 2, 3, 4, 5];
+
+// useless call
+A::map($range5);
+    ['Error:hb\\Error', 'you need at least one callback for map method'];
+
+// you can convert generator to array however
+A::map(A::iter($range5));
+    [0, 1, 2, 3, 4, 5];
+
+// apply function
+A::map($range5, fn($a) => $a+1);
+    [1, 2, 3, 4, 5, 6];
+
+// fn($key, $value) => [$key => $value]
+A::map($range5, fn($k, $v) => [$k => $v*2, $k+10 => $v*3], while:3);
+    [0, "10"=>0, "1"=>2, "11"=>3, "2"=>4, "12"=>6];
+
+// with where condition
+A::map($range5, fn($a) => $a+1, where: fn($a) => $a >= 3);
+    ["3"=>4, "4"=>5, "5"=>6];
+
+// or just where condition
+A::map($range5, where: fn($a) => $a >= 3);
+    ["3"=>3, "4"=>4, "5"=>5];
+
+// where($k, $v)
+A::map($range5, where: fn($k, $v) => $k >= 3);
+    ["3"=>3, "4"=>4, "5"=>5];
+
+// you can skip some items
+A::map($range5, skip: fn($a) => $a < 4);
+    ["4"=>4, "5"=>5];
+
+// skip($k, $v)
+A::map($range5, skip: fn($k, $v) => $k < 4);
+    ["4"=>4, "5"=>5];
+
+// combine whre and skip
+// remember - order is: where => skip => while - always place them in this order
+A::map(range(1, 10), fn($a) => $a+1, where: fn($a) => $a & 1, skip: fn($a) => $a < 4);
+    ["4"=>6, "6"=>8, "8"=>10];
+
+A::map($range5, while: fn($a) => $a <= 3);
+    [0, 1, 2, 3];
+
+// while($k, $v)
+A::map($range5, while: fn($k, $v) => $k <= 3);
+    [0, 1, 2, 3];
+
+A::map($range5, fn($a) => $a+1, while: fn($a) => $a <= 3);
+    [1, 2, 3, 4];
+
+// can use numbers instead of methods for skip and while
+// NN elements to use, skip 1, return next 2
+A::map($range5, skip:1, while:3);
+    ["1"=>1, "2"=>2, "3"=>3];
+
+// reverse array (or start iteration from the end of an array)
+A::map($range5, skip:1, while:3, reverse:true);
+    ["4"=>4, "3"=>3, 2];
+
+// double reverse:
+A::map($range5, skip:1, while:3, reverse:2);
+    ["2"=>2, "3"=>3, "4"=>4];
+
+// difference between while and where:
+// while is do until condition, it stops when condition is
+A::map([3,2,1,0,1,2,3], while: fn($a) => $a >0);
+    [3, 2, 1];
+// where is a filter
+A::map([3,2,1,0,1,2,3], where: fn($a) => $a >0);
+    [3, 2, 1, "4"=>1, "5"=>2, "6"=>3];
+
+// combine all together
+// remember - order is: where => skip => while - always place them in this order
+A::map(
+ range(0, 20),
+ fn($a) => ["a=$a", $a*2],
+ where: fn($a) => $a & 1,
+ skip: fn($a) => $a < 4,
+ while: fn($a) => $a < 12
+ );
+    ["5"=>['a=5', 10], "7"=>['a=7', 14], "9"=>['a=9', 18], "11"=>['a=11', 22]];
+
+// reverse - iterate array from other side
+A::map(["a" => "b"] + $range5, reverse: true);
+    ["5"=>5, "4"=>4, "3"=>3, "2"=>2, "1"=>1, "0"=>0, "a"=>'b'];
+
+// combine all together
+// remember - order is: where => skip => while - always place them in this order
+// reverse always comes first
+A::map(
+  range(0, 20),
+  fn($a) => ["a=$a", $a*2],
+  where: fn($a) => $a & 1,
+  skip: fn($a) => $a > 18,
+  while: fn($a) => $a > 12,
+  reverse: true
+ );
+    ["17"=>['a=17', 34], "15"=>['a=15', 30], "13"=>['a=13', 26]];
+
+// you can use number instead of closures for skip && while
+// skip two first items
+A::map($range5, skip: 2);
+    ["2"=>2, "3"=>3, "4"=>4, "5"=>5];
+
+A::map(range(16,20), fn($k, $v) => [$k*2+10 => $v**2]);
+    ["10"=>256, "12"=>289, "14"=>324, "16"=>361, "18"=>400];
+
+// skip 1 item, then take 3 items
+A::map($range5, while: 3, skip: 1);
+    ["1"=>1, "2"=>2, "3"=>3];
+
+// reverse can be bool or int
+A::map($range5, reverse: 1);
+    ["5"=>5, "4"=>4, "3"=>3, "2"=>2, "1"=>1, "0"=>0];
+A::map($range5, skip: 2, reverse: 1);
+    ["3"=>3, "2"=>2, "1"=>1, "0"=>0];
+
+//
+// Working with Array of Hashes
+//
+
+; $data = [
+    'row1' => ['name' => 'parf', 'age' => 40],
+    'row2' => ['name' => 'dit', 'age' => 15],
+    'row3' => ['name' => 'kava', 'age' => 10],
+    'row4' => ['name' => 'fido', 'age' => 2, 'kind' => 'dog'],
+  ];
+
+// all items where field present and not null
+A::map($data, where:"kind");
+    ["row4"=>["name"=>'fido', "age"=>2, "kind"=>'dog']];
+
+// all items where field is not present or null
+// specific field only (using closure)
+A::map($data, fn ($a) => $a['name'], where:["kind" => null]);
+    ["row1"=>'parf', "row2"=>'dit', "row3"=>'kava'];
+
+// all items where field is not present or null
+// you can use "fieldname" instead of callback
+A::map($data, "name", where:["kind" => null]);
+    ["row1"=>'parf', "row2"=>'dit', "row3"=>'kava'];
+
+// you only get rows where field exists and not null
+A::map($data, "kind");
+    ["row4"=>'dog'];
+
+// same as above plus skip and reverse
+A::map($data, "name", skip: 2, reverse:1);
+    ["row2"=>'dit', "row1"=>'parf'];
+
+// where can be used same way as in mysql
+A::map($data, where:["age" => 10]);
+    ["row3"=>["name"=>'kava', "age"=>10]];
+
+// any number of fields
+A::map($data, where:["name" => "parf", "age" => 30]);
+    [];
+// any number of fields
+A::map($data, where:["name" => "parf", "age" => 40]);
+    ["row1"=>["name"=>'parf', "age"=>40]];
+
+// use list of fields instead of callback to get ONLY fields you want
+// records where no such fields exists (not even one) are skipped
+A::map($data, ["name", "age"], where: fn($r) => $r['age'] > 10);
+    ["row1"=>["name"=>'parf', "age"=>40], "row2"=>["name"=>'dit', "age"=>15]];
+
+// you can rename fields
+A::map($data, ["name", "kind" => 'type'], where: fn($r) => $r['age'] < 20);
+    ["row2"=>["name"=>'dit'], "row3"=>["name"=>'kava'], "row4"=>["name"=>'fido', "type"=>'dog']];
+
+// use a qw() helper so you can type less
+A::map($data, \hb\qw("name age:years_old"), where: fn($r) => $r['age'] > 10);
+    ["row1"=>["name"=>'parf', "years_old"=>40], "row2"=>["name"=>'dit', "years_old"=>15]];
+
+
+; $rows = [
+  10 => ['a' => 1, 'b' => 10],
+  12 => ['b' => 10, 'c' => 100],
+  14 => ['a' => 2, 'b' => 20],
+  15 => ['a' => 3, 'c' => 200],
+  5 => ['c' => 300]
+  ];
+
+A::map($rows, map:["a", "c"]);
+    ["10"=>["a"=>1], "12"=>["c"=>100], "14"=>["a"=>2], "15"=>["a"=>3, "c"=>200], "5"=>["c"=>300]];
+
+A::map($rows, map:"a");
+    ["10"=>1, "14"=>2, "15"=>3];
+A::map($rows, map:"a", while: 1);
+    ["10"=>1];
+A::map($rows, map:"a", reverse: 1);
+    ["15"=>3, "14"=>2, "10"=>1];
+A::map($rows, while: 1, reverse: 1);
+    ["5"=>["c"=>300]];
+A::map($rows, map:"a", while: 1, reverse: 1);
+    [];
+A::map($rows, map:"a", while: 1, where: "a", reverse: 1);
+    ["15"=>3];

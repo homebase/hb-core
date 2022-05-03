@@ -19,7 +19,8 @@
         "psr-4": {
             "hb\\": "src/hb/",
             "hbc\\": "src/hbc/"
-        }
+        },
+        "files": ["src/hb/hb-functions.inc.php"]
     },
   "scripts": {
     "phpstan": "tools/phpstan analyse -c phpstan.neon src",
