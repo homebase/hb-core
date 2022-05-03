@@ -24,13 +24,14 @@
     },
   "scripts": {
     "phpstan": "tools/phpstan analyse -c phpstan.neon src",
-    "doc": "tools/phpDocumentor.phar -d src -t doc",
+    "doc": "tools/phpDocumentor.phar -d 'src/hb,src/hbc' -t doc",
     "psalm": "tools/psalm.phar",
     "cs-dry": "tools/php-cs-fixer fix --diff -v --dry-run src",
     "cs-fix": "tools/php-cs-fixer fix --diff -v src",
     "rector-dry": "tools/rector process src --dry-run",
     "rector": "tools/rector process src",
     "test": "tools/stest-all tests",
+    "tests": "tools/stest-all -q tests",
     "test-quite": "tools/stest-all -q tests",
     "lint": "find src -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v \"No syntax errors detected\" )"
   }    

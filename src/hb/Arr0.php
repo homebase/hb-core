@@ -587,9 +587,10 @@ abstract class Arr0 {
      *
      * @param array|string $keys - list of keys or space delimited list of keys (@see \hb\qw)
      *                           or mapping: source_array_key => dest_array_key
-     *                           Example:
-     *                           Arr::only($_POST,"age name address:location");
-     *                           Arr::only($_POST, ["age", "name", "address" => location"]);  // same as above
+     *
+     * Example:
+     *  - Arr::only($_POST,"age name address:location");
+     *  - Arr::only($_POST, ["age", "name", "address" => location"]);  // same as above
      */
     static function only(array $a, string|array|\Closure $keys): array {
         if ($keys instanceof \Closure) {
@@ -656,15 +657,18 @@ abstract class Arr0 {
      *
      * @see partition
      * items where callback returned null are not returned - remove items from resulting arrays
+     * same as partition (with null-result - remove)
      *
      * @return [false_condition, true_condition]
+     *
      * Example:
      *     extract items less than value, or more than value, remove items equal valkue:
      *     [$less_than_2, $more_than_2] = Arr::filter2($arr, fn($v) => $v == 2 ? null : $v > 2);
      */
     static function filter2(iterable $arr, \Closure $cb): array {
         $f = $t = []; // false, true
-        foreach (self::iterCB($arr, $cb) as $k => list($v, $c)) {
+        // iterCB($r, $cb) => $k => [$v, $cb]
+        foreach (self::iterCB($arr, $cb) as $k => [$v, $c]) {
             if ($c === null) {
                 continue;
             }
@@ -678,9 +682,8 @@ abstract class Arr0 {
         return [$f, $t];
     }
 
-    // filter2 - same as partition (with null-result - remove)
+    //
     // partition - null support
-    // iterCB($r, $cb) => $k => [$v, $cb]
 
     /**
      * count items / not-empty callbacks

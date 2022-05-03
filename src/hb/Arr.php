@@ -8,15 +8,16 @@ namespace hb;
 
 /**
  * Array Helper Methods
- *    provides own methods and almost all Laravel's Arr class methods
  *
- * Arr  -  generic Array methods
- * AH   -  Array of Hashes: PrimaryKey => [Key => Value, ...]  ~= mysql table
- * DH   -  Deep Hash / key => key => ... => value ~= deep json structure
- * ADH  -  Array of Deep Hash: PrimaryKey => DH ~= mongodb collection
+ * provides own methods and almost all Laravel's Arr class methods
  *
- * All(almost) Arr `array` methods receive array as first argument and returns new array as result
- * - No data modification - really few exceptions (except for laravel compatibility) - forget, pull, set
+ * - Arr  -  generic Array methods
+ * - AH   -  Array of Hashes: PrimaryKey => [Key => Value, ...]  ~= mysql table
+ * - DH   -  Deep Hash / key => key => ... => value ~= deep json structure
+ * - ADH  -  Array of Deep Hash: PrimaryKey => DH ~= mongodb collection
+ *
+ * All(almost) Arr `array` methods receive source array as first argument and returns new array as result
+ * - No data modification - few (laravel compatibility) exceptions: forget, pull, set
  * - key value order is always: $key, $value
  * - All callbacks can be callback($value) or callback($key, $value)
  * - preserveKeys - keep original keys intact (unless explicitly specified: mapList())
@@ -197,23 +198,24 @@ class Arr extends Arr0 {
     }
 
     /**
-     * Split array into two or several pieces
+     * Split array into two or more arrays
      *
      * $cb = false      => part 0
      * $cb = true       => part 1
      * $cb = int|string => part $cb
      * $cb = null       => Data is filtered out
      *
-     * if $cb string it treated as fieldName == group by fieldName
+     * if $cb is a string it treated as fieldName == group by fieldName
      *
      * if $cb is array - it treated as a list of keys: return [ 0 => keys-not-in-list, 1 => keys-in-list]
      *
-     * ex: [$false, $true] = A::partition(range(1,10), fn ($v) => $v > 5);  // split into two groups
+     * ex: [$arr_false, $arr_true] = A::partition(range(1,10), fn ($v) => $v > 5);  // split into two groups
+     *
      * ex: $groups = A::partition(range(1,10), fn ($v) => $v % 3);  // split into three groups: 0,1,2
      *
      * @param mixed $cb
      */
-    static function partition(array $arr, /* \Closure */ $cb): array { // [false|0, true|1, ...]
+    static function partition(array $arr, \Closure|string $cb): array { // [false|0, true|1, ...]
         if (\is_array($cb)) { // [keys-not-in-list, keys-in-list]
             $isIn = self::flipTo($cb); // value => 1
             $cb = fn ($k, $v) => $isIn[$k] ?? 0;
@@ -254,7 +256,7 @@ class Arr extends Arr0 {
             }
         }
         if ($orderless) {
-            sort($r);
+            ksort($r);
         }
 
         return md5(implode("\n", $r));
