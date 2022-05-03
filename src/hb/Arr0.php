@@ -750,7 +750,7 @@ abstract class Arr0 {
      */
     static function countBy(iterable $arr, $cb = null, $where = null, $skip = null, $while = null): array {
         if (!$cb) {
-            $cb = fn ($r, $v) => \hb\then($R[$v] = ($r[$v] ?? 0) + 1, $r);
+            $cb = fn ($r, $v) => \hb\then($r[$v] = ($r[$v] ?? 0) + 1, $r);
         } else {
             $cb = function ($r, $v) use ($cb) {
                 $v = $cb($v);
@@ -798,9 +798,7 @@ abstract class Arr0 {
     }
 
     /**
-     * @return array[]
-     *
-     * @psalm-return list<array>
+     * @return array<mixed>
      */
     static function chunk(array $arr, int $size): array {
         return array_chunk($arr, $size, true);

@@ -581,6 +581,7 @@ function value($value) {
  *
  * @param mixed $a
  * @param mixed $b
+ * @return mixed
  */
 function then($a, $b) {
     return $b;
