@@ -612,11 +612,11 @@ abstract class Arr0 {
     /**
      * remove Keys from array INPLACE, return removed items
      *
-     * @see except non inplace method
+     * @see Arr::except non-destructive  method
      *
      * keys = space delimited keys | array of keys | callback
      *
-     * @param $keys - space delimited list of keys or array of keys
+     * @param $keys - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
      * @param mixed $return
      */
     static function forget(array &$arr, string|int|array|\Closure $keys): array { // removed items
@@ -625,7 +625,7 @@ abstract class Arr0 {
             $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
             foreach ($arr as $k => $v) {
                 if (($np == 1 && $cb($v)) || ($np > 1 && $cb($k, $v))) {
-                    $r[$nk] = $arr[$k];
+                    $r[$k] = $arr[$k];
                     unset($arr[$k]);
                 }
             }

@@ -613,7 +613,7 @@ class Arr extends Arr0 {
     static function pull(&$array, $key, $default = null): mixed {
         $kv = static::forget($array, $key);
 
-        return reset($kv);
+        return reset($kv) ?? $default;
     }
 
     // random item from array
