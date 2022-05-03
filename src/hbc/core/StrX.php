@@ -207,7 +207,7 @@ class StrX {
         foreach ($x as $k => $v) {
             $q = ($i === $k) ? '' : "\"{$k}\"=>";
             ++$i;
-            $t[] = $q.x2s($v, $deep + 1);
+            $t[] = $q.self::x2s($v, $deep + 1);
         }
         $s = self::_x2s_cut(implode(', ', $t), $cut, 50);
 

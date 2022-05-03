@@ -22,12 +22,12 @@ namespace hb;
  */
 
 /**
- * base class for Arr, should be used  as a part of Arr class ONLY
+ * base class for Arr
  *
  * contains all base methods.
  * no aliases, no compatibility methods
  */
-class Arr0 {
+abstract class Arr0 {
     /**
      * create hash [value => $set, ..] from list of values
      *
