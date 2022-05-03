@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
+// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+
 namespace hb;
 
-class Exception extends \Exception
-{
+class Exception extends \Exception {
     /* array */ public $payload;      // optional hash payload
 
     function __construct(string $msg, int $code = 0, array $payload = []) {
@@ -14,8 +17,7 @@ class Exception extends \Exception
 
 // Non recoverable Error
 // thrown by error_if, error_unless
-class Error extends \Error
-{
+class Error extends \Error {
     /* array */ public $payload;      // optional hash payload
 
     function __construct(string $msg, int $code = 0, array $payload = []) {
@@ -266,88 +268,28 @@ function gitCache($o, array $opts = []) {
  * First Match
  *
  * @TODO - deprecate - use Str::fm()
+ *
+ * @param mixed $x
  */
-function fm(string $regexp, string $str) { // First Match
-    preg_match($regexp, $str, $m);
-
-    return @$m[1];
-}
+// function fm(string $regexp, string $str) { // First Match
+//    preg_match($regexp, $str, $m);
+//
+//    return @$m[1];
+// }
 
 // anything to ~ PHP string with unprintable characters replaced
 // ATTENTION: may/will intentionally lose data !!
 // will try to fit result in ~200 characters
-function x2s(/* mixed */ $x, int $deep = 0): string {
-    if ($deep > 10) {
-        return "'nesting too deep!!'";
-    }
-    if (\is_string($x)) {
-        $x = _x2s_cut($x, 200, 50);
-        // all unprintable characters presented as \$ASCII_CODE_2DIGIT-HEX
-        // \r and \n presented as \r and \n
-        $f = function ($a) {
-            $o = \ord($a[0]);
-            if (0xd === $o) {
-                return '\r';
-            }
-            if (0xa === $o) {
-                return '\n';
-            }
-
-            return sprintf('\\%02x', $o);
-        };
-
-        return var_export(preg_replace_callback('/[^[:print:]]/', $f, $x), true);
-    }
-    if (null === $x) {
-        return 'NULL';
-    }
-    if (\is_bool($x)) {
-        return $x ? 'true' : 'false';
-    }
-    if (\is_object($x)) {
-        return '"Class:'.\get_class($x).'"';
-    }
-    if (\is_int($x)) {
-        return $x;
-    }
-    if (\is_float($x)) {
-        return sprintf('%G', $x); // short presentation of float
-    }
-    if (!\is_array($x)) {
-        return x2s($x, $deep + 1);
-    }
-    if (($cnt = \count($x)) > 20) { // slice long arrays
-        $x = array_merge(\array_slice($x, 0, 10), ['...['.(\count($x) - 19).']...'], \array_slice($x, -9));
-        // return "\"... $cnt items\"";
-    }
-    $t = [];
-    $i = 0;
-    foreach ($x as $k => $v) {
-        $q = ($i === $k) ? '' : "\"{$k}\"=>";
-        ++$i;
-        $t[] = $q.x2s($v, $deep + 1);
-    }
-    $s = _x2s_cut(implode(', ', $t), 200, 50);
-
-    return "[{$s}]";
+function x2s(/* mixed */ $x, int $deep = 0, int $cut = 200): string {
+    return \hbc\core\StrX::x2s($x, $deep, $cut);
 }
 
-// x2s helper
-function _x2s_cut($s, $len, $at) {
-    if (\strlen($s) <= $len) {
-        return $s;
-    }
-    $skip = \strlen($s) - $len;
-
-    return '"'.substr($s, 0, $len - $at)."...({$skip})...".substr($s, -($at - 12));
-}
-
-// conditional sprintf
+// conditional sprintf   >>> USE Str::cs instead
 // Ex: cs(", %s", $word) << WRONG ORDER
-function cs(string $fmt_true, /* mixed */ $val, string $fmt_false = '') {
-    // @TODO - DEPRECATE !!! >> or move to CS($str, $format_true, $format_false)
-    return $val ? sprintf($fmt_true, $val) : ($fmt_false ? sprintf($fmt_false, $val) : '');
-}
+// function cs(string $fmt_true, /* mixed */ $val, string $fmt_false = '') {
+//    // @TODO - DEPRECATE !!! >> or move to CS($str, $format_true, $format_false)
+//    return $val ? sprintf($fmt_true, $val) : ($fmt_false ? sprintf($fmt_false, $val) : '');
+// }
 
 // caller file & line as string
 function caller(int $level = 1) {
@@ -484,26 +426,27 @@ function is_admin(string $name = ''): string {
         return $name === is_admin() ? $name : '';
     }
 
-    return 1; /** @todo FIX-ME */
+    return 1;
+
+    /** @todo FIX-ME */
     $a = &HB::$CONFIG['.is_admin'];
     if (null !== $a) {
         return $a; // 99%
     }
-    //if (! @HB::$CONFIG['is_admin'])
+    // if (! @HB::$CONFIG['is_admin'])
     //    return; // still initializing
     if (\PHP_SAPI === 'cli') { // already set in HB::initCli
         return $a = 'cli';
     }
-    //$m = (string) C("is_admin.method", ""); // "Class::method"
+    // $m = (string) C("is_admin.method", ""); // "Class::method"
     $m = (string) @HB::$CONFIG['is_admin']['method']; // "Class::method"  - is_admin can be called before CONFIG init
 
     return $a = $m ? $m() : '';
 }
 
-class TODO_Exception extends \hb\Error
-{
+class TODO_Exception extends \hb\Error {
 }
-function todo(string $str = '') {
+function todo(string $str = ''): void {
     throw new TODO_Exception($str);
 }
 
@@ -512,7 +455,7 @@ function todo(string $str = '') {
 // Ex:
 //  \hb\e("{red}{bold}Sample {bg_green}{white}$text{/}")      << as is, no sprintf
 //  \hb\e("{red}{bold}Sample {bg_green}{white}%s{/}", $text)  << use sprintf
-function e($format, ...$args) {
+function e($format, ...$args): void {
     // @todo("implement stylish array presenation");
     if (\is_array($format)) {
         $format = x2s($format);
@@ -541,7 +484,7 @@ function e($format, ...$args) {
  *
  * @param mixed $format
  */
-function err($format, ...$args) {
+function err($format, ...$args): void {
     // STDERR
     // @todo("implement stylish array presenation");
     if (\is_array($format)) {
@@ -586,7 +529,7 @@ function h($text) {
  *
  * @param mixed $data
  */
-function debug(/* mixed */ $data, int $level = 1) {
+function debug(/* mixed */ $data, int $level = 1): void {
     if (!is_admin()) {
         return;
     }
@@ -613,7 +556,7 @@ function json($data) {
 }
 
 /**
- * @param  "ClassName" | Instance
+ * @param  "ClassName"|Instance
  * @param mixed $class_or_instance
  */
 function instance($class_or_instance, ...$args): object {
@@ -648,8 +591,7 @@ function then($a, $b) {
  *
  * @see  config: dbe.$name
  */
-function DB(string $name = '') // : \hb\db\DB
-{
+function DB(string $name = ''): db\DB {
     return i('DB', $name);
 }
 
@@ -659,6 +601,8 @@ function DS(string $name): contracts\DS {
 
 /**
  * remove key from hash.
+ *
+ * @legacy
  *
  * @return removed-value
  */
@@ -678,13 +622,13 @@ function hash_unset(array &$hash, string $key) {
  *
  * @return string
  */
-//function fm($regexp, $str)  << wrong order
-//{
+// function fm($regexp, $str)  << wrong order
+// {
 //    // First Match
 //    preg_match($regexp, $str, $m);
 //
 //    return @$m[1];
-//}
+// }
 
 /**
  * Time-to-Live calculation by different cache implementations
@@ -697,7 +641,7 @@ function ttl($ttl = [3600, 33]): int {
     if (\is_array($ttl)) {
         error_unless(\is_int($ttl[0]), 'ttl-part must be int');
 
-        return $ttl[0] + rand(0, $ttl[0] * $ttl[1] / 100);
+        return $ttl[0] + random_int(0, $ttl[0] * $ttl[1] / 100);
     }
     error_unless(\is_int($ttl), 'ttl must be int');
 
@@ -707,10 +651,10 @@ function ttl($ttl = [3600, 33]): int {
 /**
  * Build "<a href>" tag + escaping.
  *
- * @param  $url
- * @param  $args_or_text
- * @param  $text
- * @param  $html         extra html
+ * @param $url
+ * @param $args_or_text
+ * @param $text
+ * @param $html         extra html
  *
  * @return HTML
  *              Ex: a("url", ['param' => 'value'], "text")
@@ -733,7 +677,7 @@ function url(string $url, array $args) {
     return $args ? $url.'?'.http_build_query($args) : $url;
 }
 
-// DEPRACATED:
+// DEPERACATED:
 //   use $a ?: "default" instead
 // oracle NVL - first non empty value | null
 // returns first-empty value or last-argument
@@ -799,7 +743,7 @@ function isSuppressed() {
  *
  * @param mixed $boolean
  */
-function error_if($boolean, string $message) {
+function error_if($boolean, string $message): void {
     if ($boolean) {
         throw new \hb\Error($message);  // \Error descendant
     }
@@ -811,12 +755,12 @@ function error_if($boolean, string $message) {
  *
  * @param mixed $boolean
  */
-function error_unless($boolean, string $message) {
+function error_unless($boolean, string $message): void {
     if (!$boolean) {
         throw new \hb\Error($message);  // \Error descendant
     }
 }
 
-function error(string $message) {
+function error(string $message): void {
     throw new \hb\Error($message);  // \Error descendant
 }

@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+
 namespace hbc\deephash;
 
 use hb\DH;
@@ -21,8 +25,7 @@ use hb\DH;
  *
  * NEVER instantiate directly
  */
-class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable
-{
+class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable {
     use \hb\traits\DH;
 
     function __construct(&$dh) {

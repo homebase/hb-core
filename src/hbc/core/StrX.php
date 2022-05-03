@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+
 namespace hbc\core;
 
 /**
  * Big Methods Body from \hb\Str
  */
-class StrX
-{
+class StrX {
     /**
      * @see \hb\Str::parseLine
      * @test: core/ParseLine
@@ -33,18 +36,18 @@ class StrX
             '(' => 2,
             '[' => 2,
             '{' => 2,
-            //"<" => 2,
+            // "<" => 2,
             ')' => 3,
             ']' => 3,
             '}' => 3,
-            //">" => 3,
+            // ">" => 3,
         ];
 
         static $MATCHING_BRACKET = [
             '[' => ']',
             '(' => ')',
             '{' => '}',
-            //"<" => ">",
+            // "<" => ">",
         ];
 
         // Add Item to result set
@@ -127,7 +130,7 @@ class StrX
             // delimiter
             if (4 === $m) {
                 $item = substr($item, 0, -1); // remove delimiter
-                //v($item, $c);
+                // v($item, $c);
                 if ('' !== $item || ' ' !== $delimiter) { // multiple space delimiters treated as one delimiter
                     $item = $add($item);
                 }
@@ -150,6 +153,75 @@ class StrX
         }
 
         return $R;
+    }
+
+    // anything to ~ PHP string with unprintable characters replaced
+    // ATTENTION: may/will intentionally lose data !!
+    // will try to fit result in ~200 characters
+    static function x2s(/* mixed */ $x, int $deep = 0, int $cut = 200): string {
+        if ($deep > 10) {
+            return "'nesting too deep!!'";
+        }
+        if (\is_string($x)) {
+            $x = self::_x2s_cut($x, $cut, 50);
+            // all unprintable characters presented as \$ASCII_CODE_2DIGIT-HEX
+            // \r and \n presented as \r and \n
+            $f = function ($a) {
+                $o = \ord($a[0]);
+                if (0xD === $o) {
+                    return '\r';
+                }
+                if (0xA === $o) {
+                    return '\n';
+                }
+
+                return sprintf('\\%02x', $o);
+            };
+
+            return var_export(preg_replace_callback('/[^[:print:]]/', $f, $x), true);
+        }
+        if (null === $x) {
+            return 'NULL';
+        }
+        if (\is_bool($x)) {
+            return $x ? 'true' : 'false';
+        }
+        if (\is_object($x)) {
+            return '"Class:'.$x::class.'"';
+        }
+        if (\is_int($x)) {
+            return "$x";
+        }
+        if (\is_float($x)) {
+            return sprintf('%G', $x); // short presentation of float
+        }
+        if (!\is_array($x)) {
+            return self::x2s($x, $deep + 1);
+        }
+        if (($cnt = \count($x)) > 20) { // slice long arrays
+            $x = array_merge(\array_slice($x, 0, 10), ['...['.(\count($x) - 19).']...'], \array_slice($x, -9));
+            // return "\"... $cnt items\"";
+        }
+        $t = [];
+        $i = 0;
+        foreach ($x as $k => $v) {
+            $q = ($i === $k) ? '' : "\"{$k}\"=>";
+            ++$i;
+            $t[] = $q.x2s($v, $deep + 1);
+        }
+        $s = self::_x2s_cut(implode(', ', $t), $cut, 50);
+
+        return "[{$s}]";
+    }
+
+    // x2s helper
+    static function _x2s_cut($s, $len, $at) {
+        if (\strlen($s) <= $len) {
+            return $s;
+        }
+        $skip = \strlen($s) - $len;
+
+        return '"'.substr($s, 0, $len - $at)."...({$skip})...".substr($s, -($at - 12));
     }
 
     /**

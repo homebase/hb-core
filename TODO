@@ -1,1 +1,13 @@
-pre-commit githook - do php lint
+☐ pre-commit githook - do php lint
+
+☐ composer git-hook
+
+☐ class Naming & coding standard
+
+☐ new deep hash
+
+☐ automate tool
+
+☐ move \hb\once implementation to \hbc\core\CacheX
+
+☐ php 8.1 decorator based off annotations

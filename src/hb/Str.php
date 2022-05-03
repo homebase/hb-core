@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+
 namespace hb;
 
 /**
@@ -16,8 +20,7 @@ namespace hb;
  * IMPORTANT !!!
  * $s - HAYSTACK  << ALL Str methods receive (string)haystack as first parameter
  */
-class Str
-{
+class Str {
     // @todo: (methods to add)
     //  plural, singular
     //
@@ -233,8 +236,7 @@ class Str
     /**
      * Determine if a given string contains a given substring. (at least one of them)
      *
-     * @param string       $haystack
-     * @param array|string $needles
+     * @param string $haystack
      */
     static function contains(string $s, array|string $needles): bool {
         foreach ((array) $needles as $needle) {
@@ -261,7 +263,7 @@ class Str
      * NOTE: "*" converted to ".*"
      */
     // ~ laravel compatible, args order corrected
-    static function is(string $s, string | array $patterns): bool {
+    static function is(string $s, string|array $patterns): bool {
         if (!$patterns) {
             return false;
         }
@@ -382,7 +384,7 @@ class Str
         // First Match !!! ORDER IS DIFFERENT than HB1
         preg_match($regexp, $s, $m);
 
-        return (string) ($m[1] ?? "");
+        return (string) ($m[1] ?? '');
     }
 
     /**
@@ -394,10 +396,10 @@ class Str
     static function cs(/* mixed */ $s, string $fmt_true, string $fmt_false = ''): string {
         // !!! ORDER IS DIFFERENT than HB1
         if ($s) {
-            return sprintf($fmt_true, is_scalar($s) ? $s : \hb\x2s($s));
+            return sprintf($fmt_true, \is_scalar($s) ? $s : \hb\x2s($s));
         }
 
-        return $fmt_false ? sprintf($fmt_false, is_scalar($s) ? $s : \hb\x2s($s)) : '';
+        return $fmt_false ? sprintf($fmt_false, \is_scalar($s) ? $s : \hb\x2s($s)) : '';
     }
 
     /**
@@ -425,9 +427,9 @@ class Str
      * $cut part is limited to $cut_len
      * [pre_cut, cut, post_cut]  << [0..$at][$at...][remaning]
      *
-     * @param  $at        start-cut-offset
-     * @param  $len       cut-string-min-size, lines shorter than $len kept as is
-     * @param  $cut_len   middle-part max-length
+     * @param $at      start-cut-offset
+     * @param $len     cut-string-min-size, lines shorter than $len kept as is
+     * @param $cut_len middle-part max-length
      *
      * @return "original-string" | [pre_cut, cut, post_cut]
      *
@@ -453,7 +455,7 @@ class Str
                 $hcl = $cut_len >> 1; // half-cut-len
                 $cut = substr($cut, 0, $hcl).'...'.substr($cut, -$hcl);
             }
-            //$cut = Str::cut($cut, $cut_len); // cut cutted part even more if it is long
+            // $cut = Str::cut($cut, $cut_len); // cut cutted part even more if it is long
             $cut = mb_strimwidth($cut, 0, $cut_len, '...');
         }
 

@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+
 namespace hb;
 
 /**
  * Helper Functions for Arr/AH/DH/ Classes
  */
-class ArrX
-{
+class ArrX {
     /**
      * convert [field => regexp, ...] to callback closure
      */

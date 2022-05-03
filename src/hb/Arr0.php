@@ -189,8 +189,9 @@ class Arr0 {
             case 2: // callback($key, $value) => [$k=>v, ...]
                 foreach ($arr as $k => $v) {
                     foreach ($map($k, $v) as $new_k => $new_v) {
-                        if ($new_k !== null)
+                        if ($new_k !== null) {
                             $r[$new_k] = $new_v;
+                        }
                         // v([$k, $v, $new_k, $new_v]);
                     }
                 }

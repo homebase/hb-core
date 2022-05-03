@@ -365,7 +365,7 @@ class Arr extends Arr0 {
     static function dropValues(array $arr, ...$values): array {
         $drop = self::flipTo($values);
 
-        return self::map($arr, fn ($k, $v) => ($drop[$v]??0) ? [] : [$k => $v]);
+        return self::map($arr, fn ($k, $v) => ($drop[$v] ?? 0) ? [] : [$k => $v]);
     }
 
     // key of minimal value
