@@ -58,7 +58,9 @@ class Arr extends Arr0 {
     /**
      * removes NULLS and "" from array RECURSIVELY
      * we'll keep false and (int)0 and "0" !!!
-     * @param  array<mixed> $arr
+     *
+     * @param array<mixed> $arr
+     *
      * @return array<mixed>
      */
     static function cleanUp(array $arr): array {
@@ -76,8 +78,10 @@ class Arr extends Arr0 {
 
     /**
      * array_combine
-     * @param  array<string|int> $keys
-     * @param  array<mixed> $values
+     *
+     * @param array<int|string> $keys
+     * @param array<mixed>      $values
+     *
      * @return array<mixed>
      */
     static function combine(array $keys, array $values): array {
@@ -243,7 +247,7 @@ class Arr extends Arr0 {
      *
      * @param mixed $orderless
      */
-    static function MD5(iterable $dh, $orderless = true):string {
+    static function MD5(iterable $dh, $orderless = true): string {
         // unique MD5 hash
         $r = [];
         foreach ($dh as $key => $value) {
@@ -618,6 +622,7 @@ class Arr extends Arr0 {
      * @param mixed      $array
      * @param mixed      $key
      * @param null|mixed $default
+     * @param mixed      $arr
      */
     static function pull(&$arr, $key, $default = null): mixed {
         $kv = static::forget($arr, $key);
@@ -691,8 +696,7 @@ class Arr extends Arr0 {
      * ksort($a, fn($row) => $by)
      *
      * @param mixed      $arr
-     * @param null|mixed $cb   - callback
-     * @param bool      $descending
+     * @param null|mixed $cb  - callback
      */
     static function ksort($arr, $cb = null, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
@@ -714,6 +718,7 @@ class Arr extends Arr0 {
             return $descending ? array_reverse($arr, true) : $arr;
         }
         error('unsupported callback, 1 | 2 arguments expected');
+
         return [];  // just for phpstan/psalm
     }
 
@@ -727,7 +732,7 @@ class Arr extends Arr0 {
      *
      * @param mixed      $arr
      * @param null|mixed $callback
-     * @param bool      $descending
+     *
      * @return array<mixed>
      */
     static function sort($arr, $callback = null, bool $descending = false): array {

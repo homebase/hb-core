@@ -32,7 +32,8 @@ abstract class Arr0 {
      * create hash [value => $set, ..] from list of values
      *
      * @param array<mixed> $arr
-     * @param mixed $set
+     * @param mixed        $set
+     *
      * @return array<mixed> $arr
      */
     static function flipTo(array $arr, $set = 1): array {
@@ -171,7 +172,7 @@ abstract class Arr0 {
             $map = fn ($k, array $v): array => isset($v[$map]) ? [$k => $v[$map]] : [];
         }
         if (\is_array($map)) {
-            $map = /**
+            $map = /*
              * @return array[]
              *
              * @psalm-return array<array>
@@ -234,7 +235,6 @@ abstract class Arr0 {
      * @param null|mixed $where
      * @param null|mixed $skip
      * @param null|mixed $while
-     * @param bool|int      $reverse
      */
     static function mapList(
         iterable $arr,
@@ -285,7 +285,6 @@ abstract class Arr0 {
      * @param null|mixed $where
      * @param null|mixed $skip
      * @param null|mixed $while
-     * @param bool      $reverse
      *
      * @return int - number of iterations where result is not empty
      */
@@ -484,9 +483,11 @@ abstract class Arr0 {
 
     // not all iterators can be converted to arrays
     /**
-     * @return array[]
-     *
      * @psalm-return list<array{0: mixed, 1: mixed}>
+     *
+     * @param mixed $iter
+     *
+     * @return array[]
      */
     static function dumpIter($iter): array {
         $r = [];
@@ -629,8 +630,8 @@ abstract class Arr0 {
      *
      * keys = space delimited keys | array of keys | [key => new_key] | callback
      *
-     * @param string|int|array<mixed>|\Closure $keys - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
-     * @param mixed $return
+     * @param array<mixed>|\Closure|int|string $keys   - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
+     * @param mixed                            $return
      */
     static function forget(array &$arr, string|int|array|\Closure $keys): array { // removed items
         $r = [];
@@ -681,7 +682,7 @@ abstract class Arr0 {
     static function filter2(iterable $arr, \Closure $cb): array {
         $f = $t = []; // false, true
         // iterCB($r, $cb) => $k => [$v, $cb]
-        foreach (self::iterCB($arr, $cb) as $k => [$v, $c]) {
+        foreach (self::iterCB($arr, $cb) as $k => list($v, $c)) {
             if ($c === null) {
                 continue;
             }
