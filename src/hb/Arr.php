@@ -55,8 +55,12 @@ class Arr extends Arr0 {
      * - while
      */
 
-    // removes NULLS and "" from array RECURSIVELY
-    // we'll keep false and (int)0 and "0" !!!
+    /**
+     * removes NULLS and "" from array RECURSIVELY
+     * we'll keep false and (int)0 and "0" !!!
+     * @param  array<mixed> $arr
+     * @return array<mixed>
+     */
     static function cleanUp(array $arr): array {
         foreach ($arr as $k => &$d) {
             if (\is_array($d)) {
@@ -72,6 +76,9 @@ class Arr extends Arr0 {
 
     /**
      * array_combine
+     * @param  array<string|int> $keys
+     * @param  array<mixed> $values
+     * @return array<mixed>
      */
     static function combine(array $keys, array $values): array {
         return array_combine($keys, $values);
@@ -236,7 +243,7 @@ class Arr extends Arr0 {
      *
      * @param mixed $orderless
      */
-    static function MD5(iterable $dh, $orderless = true) {
+    static function MD5(iterable $dh, $orderless = true):string {
         // unique MD5 hash
         $r = [];
         foreach ($dh as $key => $value) {
@@ -577,11 +584,11 @@ class Arr extends Arr0 {
     }
 
     static function exceptFirst($arr, int $first): array {
-        return self::mapList($app, skip: $first);
+        return self::mapList($arr, skip: $first);
     }
 
     static function exceptLast($arr, int $last): array {
-        return self::mapList($app, skip: $last, reverse: 2);
+        return self::mapList($arr, skip: $last, reverse: 2);
     }
 
     /** @compat */
@@ -590,8 +597,8 @@ class Arr extends Arr0 {
     }
 
     /** @compat */
-    static function reduce($a, $cb, $inital = null): mixed {
-        return self::fold($a, $cb, $inital);
+    static function reduce($arr, $cb, $inital = null): mixed {
+        return self::fold($arr, $cb, $inital);
     }
 
     // get => DH.get => \hb\DHGET -- get($array, $key, $default = null)
@@ -612,14 +619,14 @@ class Arr extends Arr0 {
      * @param mixed      $key
      * @param null|mixed $default
      */
-    static function pull(&$array, $key, $default = null): mixed {
-        $kv = static::forget($array, $key);
+    static function pull(&$arr, $key, $default = null): mixed {
+        $kv = static::forget($arr, $key);
 
         return reset($kv) ?? $default;
     }
 
     // random item from array
-    static function random($array): mixed {
+    static function random($arr): mixed {
         return array_rand($arr);
     }
 
@@ -684,17 +691,17 @@ class Arr extends Arr0 {
      * ksort($a, fn($row) => $by)
      *
      * @param mixed      $arr
-     * @param null|mixed $callback
-     * @param mixed      $descending
+     * @param null|mixed $cb   - callback
+     * @param bool      $descending
      */
-    static function ksort($arr, $callback = null, $descending = false): array {
+    static function ksort($arr, $cb = null, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
-        if (!$callback) {
+        if (!$cb) {
             $descending ? krsort($arr) : ksort($arr);
 
             return $arr;
         }
-        $np = (new \ReflectionFunction($callback))->getNumberOfParameters();
+        $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         if (1 === $np) {
             $cb = $descending ? fn ($a, $b) => $cb($a) <=> $cb($b) : fn ($a, $b) => $cb($b) <=> $cb($a);
             uksort($arr, $cb);
@@ -702,11 +709,12 @@ class Arr extends Arr0 {
             return $arr;
         }
         if (2 === $np) {
-            uksort($arr, $callback);
+            uksort($arr, $cb);
 
             return $descending ? array_reverse($arr, true) : $arr;
         }
         error('unsupported callback, 1 | 2 arguments expected');
+        return [];  // just for phpstan/psalm
     }
 
     /**
@@ -719,9 +727,10 @@ class Arr extends Arr0 {
      *
      * @param mixed      $arr
      * @param null|mixed $callback
-     * @param mixed      $descending
+     * @param bool      $descending
+     * @return array<mixed>
      */
-    static function sort($arr, $callback = null, $descending = false): array {
+    static function sort($arr, $callback = null, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
         if (!$callback) {
             $descending ? arsort($arr) : asort($arr);
@@ -755,16 +764,16 @@ class Arr extends Arr0 {
 
     // Recursively sort an array by keys and values.
     static function sortRecursive(array $arr, $descending = false) {
-        foreach ($array as &$value) {
+        foreach ($arr as &$value) {
             \is_array($value) && $value = static::sortRecursive($value, $descending);
         }
-        if (static::isAssoc($array)) {
-            $descending ? krsort($array) : ksort($array);
+        if (static::isAssoc($arr)) {
+            $descending ? krsort($arr) : ksort($arr);
         } else {
-            $descending ? rsort($array) : sort($array);
+            $descending ? rsort($arr) : sort($arr);
         }
 
-        return $array;
+        return $arr;
     }
 
     static function query($arr) {

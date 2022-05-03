@@ -31,7 +31,9 @@ abstract class Arr0 {
     /**
      * create hash [value => $set, ..] from list of values
      *
+     * @param array<mixed> $arr
      * @param mixed $set
+     * @return array<mixed> $arr
      */
     static function flipTo(array $arr, $set = 1): array {
         return Arr::map($arr, fn ($k, $v) => [$v => $set]);
@@ -166,10 +168,15 @@ abstract class Arr0 {
             return 2 === $reverse ? array_reverse($r, true) : $r;
         }
         if (\is_string($map)) {
-            $map = fn ($k, array $v) => isset($v[$map]) ? [$k => $v[$map]] : [];
+            $map = fn ($k, array $v): array => isset($v[$map]) ? [$k => $v[$map]] : [];
         }
         if (\is_array($map)) {
-            $map = fn ($k, array $v) => ($r = self::only($v, $map)) ? [$k => $r] : [];
+            $map = /**
+             * @return array[]
+             *
+             * @psalm-return array<array>
+             */
+            fn ($k, array $v): array => ($r = self::only($v, $map)) ? [$k => $r] : [];
         }
 
         $r = [];
@@ -227,7 +234,7 @@ abstract class Arr0 {
      * @param null|mixed $where
      * @param null|mixed $skip
      * @param null|mixed $while
-     * @param mixed      $reverse
+     * @param bool|int      $reverse
      */
     static function mapList(
         iterable $arr,
@@ -235,7 +242,7 @@ abstract class Arr0 {
         $where = null,
         $skip = null,
         $while = null,
-        $reverse = false
+        bool|int $reverse = false
     ): array {
         if ($where || $skip || $while || $reverse) {
             $arr = self::iter($arr, $where, $skip, $while, $reverse);
@@ -278,9 +285,9 @@ abstract class Arr0 {
      * @param null|mixed $where
      * @param null|mixed $skip
      * @param null|mixed $while
-     * @param mixed      $reverse
+     * @param bool      $reverse
      *
-     * @return number of iterations where result is not empty
+     * @return int - number of iterations where result is not empty
      */
     static function each(
         iterable $arr,
@@ -288,7 +295,7 @@ abstract class Arr0 {
         $where = null,
         $skip = null,
         $while = null,
-        $reverse = false,
+        bool $reverse = false,
     ): int {
         if ($where || $skip || $while || $reverse) {
             $arr = self::iter($arr, $where, $skip, $while, $reverse);
@@ -476,7 +483,12 @@ abstract class Arr0 {
     }
 
     // not all iterators can be converted to arrays
-    static function dumpIter($iter) {
+    /**
+     * @return array[]
+     *
+     * @psalm-return list<array{0: mixed, 1: mixed}>
+     */
+    static function dumpIter($iter): array {
         $r = [];
         foreach ($iter as $key => $value) {
             $r[] = [$key, $value];
@@ -615,14 +627,15 @@ abstract class Arr0 {
      *
      * @see Arr::except non-destructive  method
      *
-     * keys = space delimited keys | array of keys | callback
+     * keys = space delimited keys | array of keys | [key => new_key] | callback
      *
-     * @param $keys - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
+     * @param string|int|array<mixed>|\Closure $keys - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
      * @param mixed $return
      */
     static function forget(array &$arr, string|int|array|\Closure $keys): array { // removed items
         $r = [];
         if ($keys instanceof \Closure) {
+            $cb = $keys;
             $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
             foreach ($arr as $k => $v) {
                 if (($np == 1 && $cb($v)) || ($np > 1 && $cb($k, $v))) {
@@ -710,16 +723,16 @@ abstract class Arr0 {
         if (\is_array($cb)) { // count multiple keys
             $count = self::flipTo($cb, 0); // [field => 0]
             $C = function ($k, $v) use (&$count): void { if ($v) { ++$count[$k]; } };
-            $cb = fn (array $r) => self::each($count, fn ($k, $v) => $C($k, (int) isset($r[$k])));
+            $cb = fn (array $r): int => self::each($count, fn ($k, $v) => $C($k, (int) isset($r[$k])));
             Arr::each($arr, $cb, $where, $skip, $while, $reverse);
 
             return $count;
         }
         if (\is_string($cb)) {
-            $cb = fn ($r) => (int) isset($r[$cb]);
+            $cb = fn ($r): int => (int) isset($r[$cb]);
         }
         if (!$cb) {
-            $cb = fn ($v) => 1;
+            $cb = fn ($v): int => 1;
         }
 
         return Arr::each($arr, $cb, $where, $skip, $while, $reverse);
@@ -783,7 +796,12 @@ abstract class Arr0 {
         return $r;
     }
 
-    static function chunk(array $arr, int $size) {
+    /**
+     * @return array[]
+     *
+     * @psalm-return list<array>
+     */
+    static function chunk(array $arr, int $size): array {
         return array_chunk($arr, $size, true);
     }
 
@@ -1015,7 +1033,7 @@ abstract class Arr0 {
      *     fn($value)
      * return true - all test ok, false - at least one test failed
      */
-    static function allKCB(array $arr, array $key2cb): bool {
+    static function allKCB(array $arr, array $key2cb): int {
         return Arr::all($key2cb, fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
     }
 

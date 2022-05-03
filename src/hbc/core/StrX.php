@@ -231,7 +231,7 @@ class StrX {
      *
      * @see https://github.com/danielstjules/Stringy/blob/3.1.0/LICENSE.txt
      */
-    protected static function charsArray(): array {
+    static function charsArray(): array {
         static $charsArray;
         if (isset($charsArray)) {
             return $charsArray;
