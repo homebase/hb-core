@@ -73,14 +73,14 @@ abstract class Arr0 {
                 if (!$cb($v)) {
                     return 0;
                 }
-                ++$cnt;
+                $cnt++;
             }
         } elseif (2 === $np) {
             foreach ($arr as $k => $v) {
                 if (!$cb($k, $v)) {
                     return 0;
                 }
-                ++$cnt;
+                $cnt++;
             }
         } else {
             error("Arr::all callback requires 1 or 2 arguments. got $np");
@@ -304,13 +304,13 @@ abstract class Arr0 {
         if (1 === $np) {
             foreach ($arr as $v) {
                 if ($cb($v)) {
-                    ++$cnt;
+                    $cnt++;
                 }
             }
         } elseif (2 === $np) {
             foreach ($arr as $k => $v) {
                 if ($cb($k, $v)) {
-                    ++$cnt;
+                    $cnt++;
                 }
             }
         } else {
@@ -723,7 +723,7 @@ abstract class Arr0 {
     ): int|array {
         if (\is_array($cb)) { // count multiple keys
             $count = self::flipTo($cb, 0); // [field => 0]
-            $C = function ($k, $v) use (&$count): void { if ($v) { ++$count[$k]; } };
+            $C = function ($k, $v) use (&$count): void { if ($v) { $count[$k]++; } };
             $cb = fn (array $r): int => self::each($count, fn ($k, $v) => $C($k, (int) isset($r[$k])));
             Arr::each($arr, $cb, $where, $skip, $while, $reverse);
 

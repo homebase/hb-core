@@ -61,7 +61,7 @@ class StrX {
 
         $c = ''; // current
         $item = '';
-        for ($pos = 0; $pos < $len; ++$pos) {
+        for ($pos = 0; $pos < $len; $pos++) {
             // no quotes there
             $c = $str[$pos]; // current char
             $item .= $c;
@@ -79,7 +79,7 @@ class StrX {
                 if (!$keep_escape_character) {
                     $item = substr($item, 0, -1);
                 } // remove ESCAPE char from Lexeme
-                ++$pos;
+                $pos++;
                 $item .= $str[$pos];
 
                 continue;
@@ -103,7 +103,7 @@ class StrX {
             // inside-bracket
             if ($bm) {
                 if ($c === $bmc) {
-                    --$bd;
+                    $bd--;
                     if (!$bd) {
                         $bm = '';
                     } // final closing bracket
@@ -111,7 +111,7 @@ class StrX {
                     continue; // closing bracket
                 }
                 if ($c === $bm) { // opening bracket inside bracket (non-quoted & non-escaped)
-                    ++$bd;
+                    $bd++;
                 }
 
                 continue;
@@ -119,7 +119,7 @@ class StrX {
             // bracket-open
             if (2 === $m) {
                 $bm = $c;
-                ++$bd;
+                $bd++;
                 $bmc = $MATCHING_BRACKET[$c];
 
                 continue;
@@ -206,7 +206,7 @@ class StrX {
         $i = 0;
         foreach ($x as $k => $v) {
             $q = ($i === $k) ? '' : "\"{$k}\"=>";
-            ++$i;
+            $i++;
             $t[] = $q.self::x2s($v, $deep + 1);
         }
         $s = self::_x2s_cut(implode(', ', $t), $cut, 50);

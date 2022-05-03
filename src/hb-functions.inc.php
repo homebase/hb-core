@@ -581,6 +581,7 @@ function value($value) {
  *
  * @param mixed $a
  * @param mixed $b
+ *
  * @return mixed
  */
 function then($a, $b) {
@@ -723,7 +724,7 @@ function benchmark(callable $fn, $seconds = 3, $fn_params = []) { // [$time_per_
     $cnt = 0;
     while (microtime(1) < $end) {
         $fn($fn_params);
-        ++$cnt;
+        $cnt++;
     }
     $end = microtime(1);
 

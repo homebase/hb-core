@@ -280,7 +280,7 @@ class Arr extends Arr0 {
             if ($k === $key) {
                 return $i;
             }
-            ++$i;
+            $i++;
         }
 
         return -1;

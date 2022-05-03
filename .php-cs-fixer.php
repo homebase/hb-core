@@ -51,7 +51,8 @@ $config
 	],
 	'strict_comparison' => false, // can break old code
 	'yoda_style' => false, // ugly sometimes
-	'increment_style' => false, // c++ not ++c
+	#'increment_style' => false, // c++ not ++c
+	'increment_style' => ['style' => 'post'] // c++ not ++c
     ]))->setFinder($finder)
 
 ;
