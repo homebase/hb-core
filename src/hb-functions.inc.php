@@ -420,7 +420,6 @@ function qk($data, string $entry_delimiter = ' ', string $key_value_delimiter = 
  *   c) HTTP-HEADER
  *   d) client HTTPS certificate (recommended) - http://nategood.com/client-side-certificate-authentication-in-ngi
  *
- * @psalm-return 1|string
  */
 function is_admin(string $name = ''): int|string {
     // "current-admin-name" | ""
@@ -428,9 +427,9 @@ function is_admin(string $name = ''): int|string {
         return $name === is_admin() ? $name : '';
     }
 
-    return 1;
+    \hb\todo();
 
-    /** @todo FIX-ME */
+    /*
     $a = &HB::$CONFIG['.is_admin'];
     if (null !== $a) {
         return $a; // 99%
@@ -444,6 +443,7 @@ function is_admin(string $name = ''): int|string {
     $m = (string) @HB::$CONFIG['is_admin']['method']; // "Class::method"  - is_admin can be called before CONFIG init
 
     return $a = $m ? $m() : '';
+    */
 }
 
 class TODO_Exception extends \hb\Error {
@@ -561,17 +561,16 @@ function json($data): string|false {
 }
 
 /**
- * @param  "ClassName"|Instance
- * @param mixed $class_or_instance
+ * @param string|object $class_or_instance "ClassName"|Instance
  */
-function instance($class_or_instance, ...$args): object {
+function instance(string|object $class_or_instance, ...$args): object {
     return \is_object($class_or_instance) ? $class_or_instance : iNew($class_or_instance, ...$args);
 }
 
 /**
  * if value is a closure - resolve it.
  *
- * @param any|Closure $value
+ * @param mixed|\Closure $value
  *
  * @return mixed
  */
@@ -611,9 +610,9 @@ function DS(string $name): contracts\DS {
  *
  * @legacy
  *
- * @return removed-value
+ * @return mixed removed-value
  */
-function hash_unset(array &$hash, string $key) {
+function hash_unset(array &$hash, string $key) : mixed {
     $vl = $hash[$key] ?? null;
     unset($hash[$key]);
 
@@ -658,14 +657,10 @@ function ttl($ttl = [3600, 33]): int {
 /**
  * Build "<a href>" tag + escaping.
  *
- * @param $url
- * @param $args_or_text
- * @param $text
- * @param $html         extra html
- *
+ * @param string $html         extra html
  * @return string Ex: a("url", ['param' => 'value'], "text") Ex: a("url", "text")
  */
-function a(string $url, $args_or_text = '', string $text = '', string $html = ''): string {
+function a(string $url, string|array $args_or_text = '', string $text = '', string $html = ''): string {
     // "<a href=.."
     if ('' === $text) {
         $text = $args_or_text;
@@ -688,7 +683,7 @@ function url(string $url, array $args): string {
 // returns first-empty value or last-argument
 // nvl($a, $b, "default");
 // nvl($a, $b, "0")        // return $a ? $a : ($b ? $b : "0");
-function nvl(...$args) {
+function nvl(...$args):mixed {
     // non-empty-value | last-argument
     if (\count($args) < 2) {
         throw new Exception('NVL(...) - 2+ args expected');

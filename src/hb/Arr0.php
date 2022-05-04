@@ -96,7 +96,7 @@ abstract class Arr0 {
      *     fn($value)
      *     fn($key, $value)
      *
-     * @return [$successful_key => $successful_return] | []
+     * @return array [$successful_key => $successful_return] | []
      */
     static function any(array $arr, callable $cb): array {
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
@@ -341,9 +341,8 @@ abstract class Arr0 {
      *     'μs' => 0.7 : php init.php --bench '\hb\Arr::fold(range(2,10), fn($c, $k, $v) => \\hb\\then($c[$k] = $v, $c), [])'
      *     'μs' => 0.8 : php init.php --bench '\hb\Arr::map(range(2,10), fn($v) => $v)'
      *
-     * @return $fold
+     * @return mixed $fold
      *
-     * @psalm-param 1|null $while
      */
     static function fold(
         iterable $arr,
@@ -537,7 +536,7 @@ abstract class Arr0 {
         } elseif (\is_string($cb)) { // one field
             $cb = function (array $r) use (&$sum, $cb): void { $sum += $r[$cb] ?? 0; };
         } elseif (\is_callable($cb)) { // callback
-            $cb = function ($r) use (&$sum): void { $sum += $cb($r); };
+            $cb = function ($r) use (&$sum, $cb): void { $sum += $cb($r); };
         } elseif (null === $cb) {
             $cb = function ($r) use (&$sum): void { $sum += $r; };
         }
@@ -634,7 +633,6 @@ abstract class Arr0 {
      * keys = space delimited keys | array of keys | [key => new_key] | callback
      *
      * @param array<mixed>|\Closure|int|string $keys   - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
-     * @param mixed                            $return
      */
     static function forget(array &$arr, string|int|array|\Closure $keys): array { // removed items
         $r = [];
@@ -676,7 +674,7 @@ abstract class Arr0 {
      * items where callback returned null are not returned - remove items from resulting arrays
      * same as partition (with null-result - remove)
      *
-     * @return [false_condition, true_condition]
+     * @return mixed[] [false_condition, true_condition]
      *
      * Example:
      *     extract items less than value, or more than value, remove items equal valkue:
@@ -787,8 +785,8 @@ abstract class Arr0 {
             $t = $np == 1 ? $cb($v) : $cb($ok, $v);
             if ($t !== null) {
                 $g = match (1) { // g - (int) group
-                    true => 1,
-                    false => 0,
+                    true => 1, /** @phpstan-ignore-line */
+                    false => 0, /** @phpstan-ignore-line */
                     // null => item excluded,
                     default => $t
                 };
@@ -826,7 +824,7 @@ abstract class Arr0 {
      * @param callable $where
      */
     static function _where(iterable $arr, $where): iterable {
-        error_if(\is_int($where), 'inefficient. use while=>(int) instead');
+        error_if(\is_int($where), 'inefficient. use while=>(int) instead');  /** @phpstan-ignore-line */
         $where = self::callback($where);
 
         switch ((new \ReflectionFunction($where))->getNumberOfParameters()) {
@@ -854,6 +852,7 @@ abstract class Arr0 {
     }
 
     static function _whereNot(iterable $arr, callable $where): iterable {
+        /** @phpstan-ignore-next-line */
         error_if(\is_int($where), 'inefficient. use while=>(int) instead');
         $where = self::callback($where);
 
@@ -967,20 +966,23 @@ abstract class Arr0 {
     }
 
     // convert something arrayable to array
-    static function value($iterable): array {
+    static function value(array|object $iterable): array {
         if (\is_array($iterable)) {
             return $iterable;
         }
         if (is_iterable($iterable)) {
             return iterator_to_array($iterable);
         }
-        if (\is_object($iterable) && method_exists($iterable, 'toArray')) {
-            return $iterable->toArray();
-        }
-        if (\is_object($iterable) && method_exists($iterable, '__toArray')) {
-            return $iterable->__toArray();
+        if (\is_object($iterable)) {
+            if  (method_exists($iterable, 'toArray')) {
+                return $iterable->toArray();
+            }
+            if (method_exists($iterable, '__toArray')) {
+               return $iterable->__toArray();
+            }
         }
         \hb\error("Can't cast ".get_debug_type($iterable).' to array');
+        return []; // php-stan
     }
 
     /**
@@ -1025,7 +1027,8 @@ abstract class Arr0 {
                 return 1;
             };
         }
-        error_if(1, "can't create callback from ".get_debug_type($cb));
+        error("can't create callback from ".get_debug_type($cb));
+        return fn() => 1; // php-stan
     }
 
     /**
@@ -1045,7 +1048,7 @@ abstract class Arr0 {
      * callback is:
      *     fn($value)
      *
-     * @return [$successful_key => $successful_return] | []
+     * @return array [$successful_key => $successful_return] | []
      */
     static function anyKCB(array $arr, array $key2cb): array {
         return Arr::any($key2cb, fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));

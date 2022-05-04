@@ -227,9 +227,8 @@ class Arr extends Arr0 {
      *
      * ex: $groups = A::partition(range(1,10), fn ($v) => $v % 3);  // split into three groups: 0,1,2
      *
-     * @param mixed $cb
      */
-    static function partition(array $arr, \Closure|string $cb): array { // [false|0, true|1, ...]
+    static function partition(array $arr, \Closure|string|array $cb): array { // [false|0, true|1, ...]
         if (\is_array($cb)) { // [keys-not-in-list, keys-in-list]
             $isIn = self::flipTo($cb); // value => 1
             $cb = fn ($k, $v) => $isIn[$k] ?? 0;
@@ -561,9 +560,12 @@ class Arr extends Arr0 {
 
     // Add an element to an array using "dot" notation if it doesn't exist.
     static function add(array $arr, string $key, mixed $value): array {
+        \hb\todo();
+        /*
         if (null === \hb\dhget($arr, $key, null)) {
             \hb\dhset($arr, $key, $value);
         }
+        */
 
         return $arr;
     }
@@ -599,11 +601,11 @@ class Arr extends Arr0 {
     }
 
     static function exceptFirst($arr, int $first): array {
-        return self::mapList($arr, skip: $first);
+        return self::map($arr, skip: $first);
     }
 
     static function exceptLast($arr, int $last): array {
-        return self::mapList($arr, skip: $last, reverse: 2);
+        return self::map($arr, skip: $last, reverse: 2);
     }
 
     /** @compat */
@@ -630,7 +632,7 @@ class Arr extends Arr0 {
     /**
      * Get a value from the array, and remove it.
      *
-     * @param mixed      $array
+     * @param mixed      $arr
      * @param mixed      $key
      * @param null|mixed $default
      * @param mixed      $arr
@@ -667,6 +669,7 @@ class Arr extends Arr0 {
         return $preserveKeys ? $kv : array_values($kv);
     }
 
+/*
     static function set(&$array, $key, $value): array {
         // ~DH::set
     }
@@ -686,6 +689,7 @@ class Arr extends Arr0 {
         // ~DH::get
         // data_get($data, '*.name');
     }
+*/
 
     /**
      * @psalm-return list<mixed>
@@ -759,7 +763,8 @@ class Arr extends Arr0 {
             return $arr;
         }
         if (\is_string($callback) || \is_array($callback)) {
-            $arr = DH::sort($arr, $callback);
+            \hb\todo();
+            //$arr = DH::sort($arr, $callback);
 
             return $descending ? array_reverse($arr, true) : $arr;
         }
@@ -773,9 +778,10 @@ class Arr extends Arr0 {
             return $descending ? array_reverse($arr, true) : $arr;
         }
         error('unsupported callback, 1 | 2 arguments expected');
+        return []; // php-stan
     }
 
-    static function sortBy(array $arr, $cb, bool $descending = false): array {
+    static function sortBy(iterable $arr, $cb, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
         $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b): int => $cb($b) <=> $cb($a);
         uasort($arr, $cb);
@@ -819,47 +825,47 @@ class Arr extends Arr0 {
         return array_map($cb, range(1, $times));
     }
 
-    /**
-     * push if not empty
-     */
-    static function pushNE(array $arr, mixed $value): array {
-        // todo
-    }
+    // /**
+    //  * push if not empty
+    //  */
+    // static function pushNE(array $arr, mixed $value): array {
+    //     // todo
+    // }
 
-    /**
-     * insert at first position if not empty
-     */
-    static function unshiftNE(array $arr, mixed $value): array {
-        // todo
-    }
+    // /**
+    //  * insert at first position if not empty
+    //  */
+    // static function unshiftNE(array $arr, mixed $value): array {
+    //     // todo
+    // }
 
-    /**
-     * push
-     */
-    static function push(array $arr, mixed $value): array {
-        // todo
-    }
+    // /**
+    //  * push
+    //  */
+    // static function push(array $arr, mixed $value): array {
+    //     // todo
+    // }
 
-    /**
-     * insert at first position
-     */
-    static function unshift(array $arr, mixed $value): array {
-        // todo
-    }
+    // /**
+    //  * insert at first position
+    //  */
+    // static function unshift(array $arr, mixed $value): array {
+    //     // todo
+    // }
 
-    /**
-     * pop last value, return it, modifies array
-     */
-    static function pop(array &$arr, mixed $value): mixed {
-        // todo
-    }
+    // /**
+    //  * pop last value, return it, modifies array
+    //  */
+    // static function pop(array &$arr, mixed $value): mixed {
+    //     // todo
+    // }
 
-    /**
-     * return first value, modifies array
-     */
-    static function shift(array &$arr, mixed $value): mixed {
-        // todo
-    }
+    // /**
+    //  * return first value, modifies array
+    //  */
+    // static function shift(array &$arr, mixed $value): mixed {
+    //     // todo
+    // }
 
     // unique(null | $field | $cb) - remove duplicates
 // uniqueStrict(... )  - same
