@@ -713,7 +713,7 @@ class Arr extends Arr0 {
         }
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         if (1 === $np) {
-            $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b) => $cb($b) <=> $cb($a);
+            $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b): int => $cb($b) <=> $cb($a);
             uksort($arr, $cb);
 
             return $arr;
@@ -767,7 +767,7 @@ class Arr extends Arr0 {
 
     static function sortBy($arr, $cb, $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
-        $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b) => $cb($b) <=> $cb($a);
+        $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b): int => $cb($b) <=> $cb($a);
         uasort($arr, $cb);
 
         return $arr;

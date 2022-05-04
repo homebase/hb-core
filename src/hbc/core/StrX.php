@@ -158,7 +158,7 @@ class StrX {
     // anything to ~ PHP string with unprintable characters replaced
     // ATTENTION: may/will intentionally lose data !!
     // will try to fit result in ~200 characters
-    static function x2s(/* mixed */ $x, int $deep = 0, int $cut = 200): string {
+    static function x2s(mixed $x, int $deep = 0, int $cut = 200): string {
         if ($deep > 10) {
             return "'nesting too deep!!'";
         }
@@ -199,7 +199,7 @@ class StrX {
             return self::x2s($x, $deep + 1);
         }
         if (($cnt = \count($x)) > 20) { // slice long arrays
-            $x = array_merge(\array_slice($x, 0, 10), ['...['.(\count($x) - 19).']...'], \array_slice($x, -9));
+            $x = array_merge(\array_slice($x, 0, 10), ['...['.($cnt - 19).']...'], \array_slice($x, -9));
             // return "\"... $cnt items\"";
         }
         $t = [];
@@ -215,10 +215,10 @@ class StrX {
     }
 
     // x2s helper
-    static function _x2s_cut($s, $len, $at): string {
+    static function _x2s_cut(string $s, int $len, int $at): string {
         if (\strlen($s) <= $len) {
             return $s;
-        }
+	}
         $skip = \strlen($s) - $len;
 
         return '"'.substr($s, 0, $len - $at)."...({$skip})...".substr($s, -($at - 12));
@@ -229,9 +229,11 @@ class StrX {
      *
      * Note: Adapted from Stringy\Stringy.
      *
+     * @return array<array<string>>
      * @see https://github.com/danielstjules/Stringy/blob/3.1.0/LICENSE.txt
      */
     static function charsArray(): array {
+        /** @var array<array<string>>|null $charsArray */
         static $charsArray;
         if (isset($charsArray)) {
             return $charsArray;
