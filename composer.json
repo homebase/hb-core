@@ -26,6 +26,8 @@
     "phpstan": "tools/phpstan analyse -c phpstan.neon src",
     "doc": "tools/phpDocumentor.phar -d 'src/hb,src/hbc' -t doc",
     "psalm": "tools/psalm.phar",
+    "psalm-dry": "tools/psalm.phar --alter --issues=MissingClosureReturnType,UnusedVariable,MissingReturnType,InvalidReturnType --dry-run",
+    "psalm-fix": "tools/psalm.phar --alter --issues=MissingClosureReturnType,UnusedVariable,MissingReturnType,InvalidReturnType",
     "cs-dry": "tools/php-cs-fixer fix --diff -v --dry-run src",
     "cs-fix": "tools/php-cs-fixer fix --diff -v src",
     "rector-dry": "tools/rector process src --dry-run",

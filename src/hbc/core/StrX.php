@@ -21,7 +21,7 @@ class StrX {
         $bm = ''; // bracket mode: "" | $closing_bracket
         $bmc = ''; // bracket mode - expected closing bracket (valid only when $bm defined)
         $bd = 0;  // bracket depth:
-        $pos = 0; // current position
+         // current position
         $str = trim($str, ' ');
         $len = \strlen($str);
         $R = [];  // result
@@ -53,7 +53,7 @@ class StrX {
         // Add Item to result set
         // if delimiter is not a space, trim extra spaces
         // usage: $item = $add($item);
-        $add = function ($item) use (&$R, $delimiter) { // empty string
+        $add = function ($item) use (&$R, $delimiter): string { // empty string
             $R[] = ' ' === $delimiter ? $item : trim($item);
 
             return '';
@@ -166,7 +166,7 @@ class StrX {
             $x = self::_x2s_cut($x, $cut, 50);
             // all unprintable characters presented as \$ASCII_CODE_2DIGIT-HEX
             // \r and \n presented as \r and \n
-            $f = function ($a) {
+            $f = function ($a): string {
                 $o = \ord($a[0]);
                 if (0xD === $o) {
                     return '\r';
@@ -215,7 +215,7 @@ class StrX {
     }
 
     // x2s helper
-    static function _x2s_cut($s, $len, $at) {
+    static function _x2s_cut($s, $len, $at): string {
         if (\strlen($s) <= $len) {
             return $s;
         }

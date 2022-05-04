@@ -95,7 +95,10 @@ class Arr extends Arr0 {
 
     // range() as a generator
     // @test: iterator_to_array(Arr::range(1, 10)) == range(1, 10)
-    static function range(int $start, int $end, int $step = 1) {
+    /**
+     * @psalm-return \Generator<int, int, mixed, void>
+     */
+    static function range(int $start, int $end, int $step = 1): \Generator {
         // generator
         for ($i = $start; $i <= $end; $i += $step) {
             yield $i;
@@ -168,7 +171,7 @@ class Arr extends Arr0 {
      * @param null|mixed $value
      * @param null|mixed $key
      */
-    static function splitAt(array $arr, $cb = null, $first = null, $last = null, $value = null, $key = null) {
+    static function splitAt(array $arr, $cb = null, $first = null, $last = null, $value = null, $key = null): array {
         // error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
         $cb = match (1) {
             $cb !== null => $cb,
@@ -176,7 +179,7 @@ class Arr extends Arr0 {
             $key !== null => fn ($k, $v) => $k === $key,
         };
         if ($first) { // php-cs fixer cant format function in match well
-            $cb = function ($v) use ($first) {
+            $cb = function ($v) use ($first): bool {
                 static $cnt = 0;
                 $cnt++;
 
@@ -676,7 +679,10 @@ class Arr extends Arr0 {
         // data_get($data, '*.name');
     }
 
-    public static function shuffle(array $arr, $seed = null) {
+    /**
+     * @psalm-return list<mixed>
+     */
+    public static function shuffle(array $arr, $seed = null): array {
         if (null === $seed) {
             shuffle($arr);
         } else {
@@ -707,7 +713,7 @@ class Arr extends Arr0 {
         }
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         if (1 === $np) {
-            $cb = $descending ? fn ($a, $b) => $cb($a) <=> $cb($b) : fn ($a, $b) => $cb($b) <=> $cb($a);
+            $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b) => $cb($b) <=> $cb($a);
             uksort($arr, $cb);
 
             return $arr;
@@ -761,14 +767,14 @@ class Arr extends Arr0 {
 
     static function sortBy($arr, $cb, $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
-        $cb = $descending ? fn ($a, $b) => $cb($a) <=> $cb($b) : fn ($a, $b) => $cb($b) <=> $cb($a);
+        $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b) => $cb($b) <=> $cb($a);
         uasort($arr, $cb);
 
         return $arr;
     }
 
     // Recursively sort an array by keys and values.
-    static function sortRecursive(array $arr, $descending = false) {
+    static function sortRecursive(array $arr, $descending = false): array {
         foreach ($arr as &$value) {
             \is_array($value) && $value = static::sortRecursive($value, $descending);
         }
@@ -781,7 +787,7 @@ class Arr extends Arr0 {
         return $arr;
     }
 
-    static function query($arr) {
+    static function query($arr): string {
         return http_build_query($arr, '', '&', PHP_QUERY_RFC3986);
     }
 

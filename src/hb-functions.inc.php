@@ -292,7 +292,7 @@ function x2s(/* mixed */ $x, int $deep = 0, int $cut = 200): string {
 // }
 
 // caller file & line as string
-function caller(int $level = 1) {
+function caller(int $level = 1): string {
     // "file:line"
     $t = debug_backtrace()[$level];
 
@@ -412,15 +412,17 @@ function qk($data, string $entry_delimiter = ' ', string $key_value_delimiter = 
  *  configure existing is_admin methods
  *  or provide your method
  *
- *  @see config "is_admin" node
- *
+ * @see config "is_admin" node
+
  * TODO - PROVIDE SAMPLE IMPLEMENTATION FOR IS_ADMIN
  *   a) Specific IPs / IP blocks
  *   b) Cookie
  *   c) HTTP-HEADER
  *   d) client HTTPS certificate (recommended) - http://nategood.com/client-side-certificate-authentication-in-ngi
+ *
+ * @psalm-return 1|string
  */
-function is_admin(string $name = ''): string {
+function is_admin(string $name = ''): int|string {
     // "current-admin-name" | ""
     if ($name) {
         return $name === is_admin() ? $name : '';
@@ -505,7 +507,7 @@ function err($format, ...$args): void {
 
 // HTML Escape
 // if $text is array - join it
-function h($text) {
+function h($text): string {
     // escaped text
     return htmlspecialchars(\is_array($text) ? implode('', $text) : $text, ENT_QUOTES, 'utf-8', false);
 }
@@ -551,7 +553,10 @@ function debug(/* mixed */ $data, int $level = 1): void {
 }
 
 // json_encode + default params
-function json($data) {
+/**
+ * @return false|string
+ */
+function json($data): string|false {
     return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }
 
@@ -658,9 +663,7 @@ function ttl($ttl = [3600, 33]): int {
  * @param $text
  * @param $html         extra html
  *
- * @return HTML
- *              Ex: a("url", ['param' => 'value'], "text")
- *              Ex: a("url", "text")
+ * @return string Ex: a("url", ['param' => 'value'], "text") Ex: a("url", "text")
  */
 function a(string $url, $args_or_text = '', string $text = '', string $html = ''): string {
     // "<a href=.."
@@ -673,7 +676,7 @@ function a(string $url, $args_or_text = '', string $text = '', string $html = ''
     return "<a href=\"{$url}\"".($html ? ' '.$html : '').'>'.h($text).'</a>';
 }
 
-function url(string $url, array $args) {
+function url(string $url, array $args): string {
     // @todo $url is [0=>url, "a-attribute" => 'value'] | ['url'=>url, "a-attribute" => 'value']
     // @todo $url is '@XXX' << use URL-aliaser
     return $args ? $url.'?'.http_build_query($args) : $url;
@@ -717,8 +720,12 @@ function between($v, $from, $to): bool {
  * @param callable $fn        [description]
  * @param int      $seconds   [description]
  * @param mixed    $fn_params
+ *
+ * @return (float|int)[]
+ *
+ * @psalm-return array{'μs': float, count: 0|positive-int}
  */
-function benchmark(callable $fn, $seconds = 3, $fn_params = []) { // [$time_per_iteration, iterations]
+function benchmark(callable $fn, $seconds = 3, $fn_params = []): array { // [$time_per_iteration, iterations]
     $start = microtime(1);
     $end = $start + $seconds;
     $cnt = 0;
@@ -732,7 +739,7 @@ function benchmark(callable $fn, $seconds = 3, $fn_params = []) { // [$time_per_
 }
 
 // is @method called
-function isSuppressed() {
+function isSuppressed(): bool {
     $t = error_reporting();
     // as of php8 default suppressed reporting value is
     //   E_USER_NOTICE | E_ERROR | E_WARNING | E_PARSE |  E_CORE_ERROR | E_CORE_WARNING | E_USER_DEPRECATED
