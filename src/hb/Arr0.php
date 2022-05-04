@@ -331,21 +331,24 @@ abstract class Arr0 {
      *  3. while     - fn($v) | fn($k, $v) | items-to-get | "fieldname" | ["field", "f" => v, f => null, ...]
      *  4. cb        - fn($v) => $v | fn($k, $v)
      *
+     * @param null|mixed $carry
      * @param null|mixed $where
      * @param null|mixed $skip
      * @param null|mixed $while
      * @param mixed      $reverse
-     *
+
      * NB: fold is fast - sometimes faster than map
      *     'μs' => 0.7 : php init.php --bench '\hb\Arr::fold(range(2,10), fn($c, $k, $v) => \\hb\\then($c[$k] = $v, $c), [])'
      *     'μs' => 0.8 : php init.php --bench '\hb\Arr::map(range(2,10), fn($v) => $v)'
      *
      * @return $fold
+     *
+     * @psalm-param 1|null $while
      */
     static function fold(
         iterable $arr,
-        callable $cb,
-        mixed $carry = null,    // initial value
+        \Closure $cb,
+        $carry = null,    // initial value
         $where = null,
         $skip = null,
         $while = null,
@@ -470,7 +473,7 @@ abstract class Arr0 {
         }
     }
 
-    static function iterRecursiveDot(iterable $arr, $path = ''): iterable {
+    static function iterRecursiveDot(iterable $arr, string|int $path = ''): iterable {
         foreach ($arr as $k => $v) {
             $p = $path ? "$path.$k" : $k;
             if (\is_array($v)) {
@@ -804,7 +807,7 @@ abstract class Arr0 {
         return array_chunk($arr, $size, true);
     }
 
-    static function where(iterable $arr, $callback): array {
+    static function where(iterable $arr, \Closure $callback): array {
         // @todo - array_filter
         return iterator_to_array(self::_where($arr, $callback));
     }
@@ -850,7 +853,7 @@ abstract class Arr0 {
         }
     }
 
-    static function _whereNot(iterable $arr, $where): iterable {
+    static function _whereNot(iterable $arr, callable $where): iterable {
         error_if(\is_int($where), 'inefficient. use while=>(int) instead');
         $where = self::callback($where);
 
@@ -990,7 +993,7 @@ abstract class Arr0 {
      *                  if key is string & value != null - check that field have specified value (strict comparison)
      *                  if key is string & value is null - field absent or have value of null
      */
-    static function callback(mixed $cb): \Closure {
+    static function callback(\Closure|int|string|array $cb): \Closure {
         // todo - switch to match(true)
         // if (null === $cb) {
         //    return null;

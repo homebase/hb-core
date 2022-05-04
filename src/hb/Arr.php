@@ -511,8 +511,10 @@ class Arr extends Arr0 {
         return $kv ? key($kv) : $default;
     }
 
-    // first X values (keys preserved)
-    static function firstX(iterable $arr, $count = 1, $where = null): array {
+    /**
+     *  first X values (keys preserved)
+     */
+    static function firstX(iterable $arr, int $count = 1, $where = null): array {
         if (\is_array($arr) && !$where) {
             return \array_slice($arr, 0, $count, true);
         }
@@ -520,8 +522,10 @@ class Arr extends Arr0 {
         return self::fold($arr, fn ($a, $k, $v) => \hb\then($a[$k] = $v, $a), [], where: $where, while: $count);
     }
 
-    // last X values  (keys preserved)
-    static function lastX(iterable $arr, $count = 1, $where = null): array {
+    /**
+     *  last X values  (keys preserved)
+     */
+    static function lastX(iterable $arr, int $count = 1, $where = null): array {
         if (\is_array($arr) && !$where) {
             return \array_slice($arr, -$count, null, true);
         }
@@ -765,7 +769,7 @@ class Arr extends Arr0 {
         error('unsupported callback, 1 | 2 arguments expected');
     }
 
-    static function sortBy($arr, $cb, $descending = false): array {
+    static function sortBy(array $arr, $cb, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
         $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b): int => $cb($b) <=> $cb($a);
         uasort($arr, $cb);
