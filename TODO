@@ -17,4 +17,10 @@
  ☐ replace (new \ReflectionFunction($where))->getNumberOfParameters()  => \hb\paramCount(\Closure)
 
  ☐ php-stan
+
  ☐ psalm
+  
+   - CODE FIXING - try more options  !!! //  issues=all  is completely unusable - breaks lots of things
+    https://psalm.dev/docs/manipulating_code/fixing/
+
+ ☐ rector

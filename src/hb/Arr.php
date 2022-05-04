@@ -513,6 +513,8 @@ class Arr extends Arr0 {
 
     /**
      *  first X values (keys preserved)
+     *
+     * @param null|mixed $where
      */
     static function firstX(iterable $arr, int $count = 1, $where = null): array {
         if (\is_array($arr) && !$where) {
@@ -524,6 +526,8 @@ class Arr extends Arr0 {
 
     /**
      *  last X values  (keys preserved)
+     *
+     * @param null|mixed $where
      */
     static function lastX(iterable $arr, int $count = 1, $where = null): array {
         if (\is_array($arr) && !$where) {
@@ -685,6 +689,8 @@ class Arr extends Arr0 {
 
     /**
      * @psalm-return list<mixed>
+     *
+     * @param null|mixed $seed
      */
     public static function shuffle(array $arr, $seed = null): array {
         if (null === $seed) {

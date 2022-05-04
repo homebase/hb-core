@@ -413,7 +413,7 @@ function qk($data, string $entry_delimiter = ' ', string $key_value_delimiter = 
  *  or provide your method
  *
  * @see config "is_admin" node
-
+ *
  * TODO - PROVIDE SAMPLE IMPLEMENTATION FOR IS_ADMIN
  *   a) Specific IPs / IP blocks
  *   b) Cookie
@@ -554,7 +554,7 @@ function debug(/* mixed */ $data, int $level = 1): void {
 
 // json_encode + default params
 /**
- * @return false|string
+ * @param mixed $data
  */
 function json($data): string|false {
     return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

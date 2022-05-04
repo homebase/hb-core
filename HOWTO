@@ -6,6 +6,10 @@ https://psalm.dev/docs/running_psalm/dealing_with_code_issues/
    * @psalm-suppress InvalidReturnStatement
    * @psalm-suppress all
 
+## code fixing
+  be careful, NOT all fixes are correct!!
+  * https://psalm.dev/docs/manipulating_code/fixing/  
+
 # PhpStan Docs
   https://phpstan.org/blog/guides
 

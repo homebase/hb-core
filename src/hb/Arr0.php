@@ -336,7 +336,7 @@ abstract class Arr0 {
      * @param null|mixed $skip
      * @param null|mixed $while
      * @param mixed      $reverse
-
+     *
      * NB: fold is fast - sometimes faster than map
      *     'μs' => 0.7 : php init.php --bench '\hb\Arr::fold(range(2,10), fn($c, $k, $v) => \\hb\\then($c[$k] = $v, $c), [])'
      *     'μs' => 0.8 : php init.php --bench '\hb\Arr::map(range(2,10), fn($v) => $v)'

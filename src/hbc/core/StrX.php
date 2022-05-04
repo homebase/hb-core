@@ -218,7 +218,7 @@ class StrX {
     static function _x2s_cut(string $s, int $len, int $at): string {
         if (\strlen($s) <= $len) {
             return $s;
-	}
+        }
         $skip = \strlen($s) - $len;
 
         return '"'.substr($s, 0, $len - $at)."...({$skip})...".substr($s, -($at - 12));
@@ -230,10 +230,11 @@ class StrX {
      * Note: Adapted from Stringy\Stringy.
      *
      * @return array<array<string>>
+     *
      * @see https://github.com/danielstjules/Stringy/blob/3.1.0/LICENSE.txt
      */
     static function charsArray(): array {
-        /** @var array<array<string>>|null $charsArray */
+        /** @var null|array<array<string>> $charsArray */
         static $charsArray;
         if (isset($charsArray)) {
             return $charsArray;
