@@ -4,3 +4,5 @@ parameters:
 	level: 6
 	paths:
 		- src
+#	ignoreErrors:
+#		- '#^No error to ignore is reported #'

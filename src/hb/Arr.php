@@ -88,14 +88,18 @@ class Arr extends Arr0 {
         return array_combine($keys, $values);
     }
 
-    // Divide an array into two arrays. One with keys and the other with values.
+    /**
+     *  Divide an array into two arrays. One with keys and the other with values.
+     *  @param mixed[] $arr
+     *  @return mixed[]
+     */
     static function divide(array $arr): array {  // [keys, values]
         return [array_keys($arr), array_values($arr)];
     }
 
-    // range() as a generator
-    // @test: iterator_to_array(Arr::range(1, 10)) == range(1, 10)
     /**
+     * range() as a generator
+     * @test: iterator_to_array(Arr::range(1, 10)) == range(1, 10)    
      * @psalm-return \Generator<int, int, mixed, void>
      */
     static function range(int $start, int $end, int $step = 1): \Generator {
@@ -173,11 +177,16 @@ class Arr extends Arr0 {
      */
     static function splitAt(array $arr, $cb = null, $first = null, $last = null, $value = null, $key = null): array {
         // error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
+        /* php-stan & psalm do not like this
         $cb = match (1) {
             $cb !== null => $cb,
             $value !== null => fn ($v) => $v === $value,
             $key !== null => fn ($k, $v) => $k === $key,
         };
+        */
+        $value !== null && $cb = fn ($v) => $v === $value; /** @phpstan-ignore-line */
+        $key !== null && $cb = fn ($k, $v) => $k === $key; /** @phpstan-ignore-line */
+
         if ($first) { // php-cs fixer cant format function in match well
             $cb = function ($v) use ($first): bool {
                 static $cnt = 0;
@@ -593,28 +602,28 @@ class Arr extends Arr0 {
     }
 
     // use DH::except for dot notation support
-    static function except($arr, string|int|array|\Closure $keys): array {
+    static function except(iterable $arr, string|int|array|\Closure $keys): array {
         \is_array($arr) || $arr = self::value($arr);
         static::forget($arr, $keys);
 
         return $arr;
     }
 
-    static function exceptFirst($arr, int $first): array {
+    static function exceptFirst(iterable $arr, int $first): array {
         return self::map($arr, skip: $first);
     }
 
-    static function exceptLast($arr, int $last): array {
+    static function exceptLast(iterable $arr, int $last): array {
         return self::map($arr, skip: $last, reverse: 2);
     }
 
     /** @compat */
-    static function reject($arr, \Closure $cb): array {
+    static function reject(iterable $arr, \Closure $cb): array {
         return self::except($arr, $cb);
     }
 
     /** @compat */
-    static function reduce($arr, $cb, $inital = null): mixed {
+    static function reduce(iterable $arr, \Closure $cb, mixed $inital = null): mixed {
         return self::fold($arr, $cb, $inital);
     }
 
@@ -631,13 +640,8 @@ class Arr extends Arr0 {
 
     /**
      * Get a value from the array, and remove it.
-     *
-     * @param mixed      $arr
-     * @param mixed      $key
-     * @param null|mixed $default
-     * @param mixed      $arr
      */
-    static function pull(&$arr, $key, $default = null): mixed {
+    static function pull(iterable &$arr, string|int $key, mixed $default = null): mixed {
         $kv = static::forget($arr, $key);
 
         return reset($kv) ?? $default;
