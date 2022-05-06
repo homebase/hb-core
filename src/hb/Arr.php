@@ -742,8 +742,6 @@ class Arr extends Arr0 {
             return $descending ? array_reverse($arr, true) : $arr;
         }
         error('unsupported callback, 1 | 2 arguments expected');
-
-        return [];  // just for phpstan/psalm
     }
 
     /**
@@ -782,7 +780,6 @@ class Arr extends Arr0 {
             return $descending ? array_reverse($arr, true) : $arr;
         }
         error('unsupported callback, 1 | 2 arguments expected');
-        return []; // php-stan
     }
 
     static function sortBy(iterable $arr, $cb, bool $descending = false): array {

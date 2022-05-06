@@ -314,6 +314,7 @@ function then($a, $b) {
 /**
  * remove key from hash.
  * @legacy
+ * @param mixed[] $hash
  * @return mixed removed-value
  */
 function hash_unset(array &$hash, string $key) : mixed {
@@ -344,6 +345,7 @@ function ttl(int|array $ttl = [3600, 33]): int {
 /**
  * Build "<a href>" tag + escaping.
  *
+ * @param string|string[] $args_or_text
  * @param string $html         extra html
  * @return string Ex: a("url", ['param' => 'value'], "text") Ex: a("url", "text")
  */
@@ -360,6 +362,7 @@ function a(string $url, string|array $args_or_text = '', string $text = '', stri
 
 /**
  * Build URL (Safe)
+ * @param string[] $args
  */
 function url(string $url, array $args = []): string {
     // @todo $url is [0=>url, "a-attribute" => 'value'] | ['url'=>url, "a-attribute" => 'value']
@@ -367,13 +370,16 @@ function url(string $url, array $args = []): string {
     return $args ? $url.'?'.http_build_query($args) : $url;
 }
 
-// DEPERACATED:
-//   use $a ?: "default" instead
-// oracle NVL - first non empty value | null
-// returns first-empty value or last-argument
-// nvl($a, $b, "default");
-// nvl($a, $b, "0")        // return $a ? $a : ($b ? $b : "0");
-function nvl(...$args):mixed {
+/**
+ *  DEPERACATED:
+ *   use $a ?: "default" instead
+ *  oracle NVL - first non empty value | null
+ *  returns first-empty value or last-argument
+ *  nvl($a, $b, "default");
+ *  nvl($a, $b, "0")        // return $a ? $a : ($b ? $b : "0");
+ * @param mixed $args
+ */
+ function nvl(...$args):mixed {
     // non-empty-value | last-argument
     if (\count($args) < 2) {
         throw new Exception('NVL(...) - 2+ args expected');
@@ -455,6 +461,9 @@ function error_unless($boolean, string $message): void {
     }
 }
 
+/**
+ * @return never
+ */
 function error(string $message): void {
     throw new \hb\Error($message);  // \Error descendant
 }

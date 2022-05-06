@@ -31,10 +31,10 @@ abstract class Arr0 {
     /**
      * create hash [value => $set, ..] from list of values
      *
-     * @param array<mixed> $arr
+     * @param mixed[] $arr
      * @param mixed        $set
      *
-     * @return array<mixed> $arr
+     * @return mixed[]
      */
     static function flipTo(array $arr, $set = 1): array {
         return Arr::map($arr, fn ($k, $v) => [$v => $set]);
@@ -42,6 +42,7 @@ abstract class Arr0 {
 
     /**
      * create hash [value => 1, ..] from list of values
+     * @param mixed[] $arr
      */
     static function flip1(array $arr): array {
         return self::flipTo($arr, 1);
@@ -57,6 +58,8 @@ abstract class Arr0 {
      *     fn($value)
      *     fn($key, $value)
      *
+     * @param mixed[] $arr
+     * 
      * return
      *    (int) nn - all nn tests were sucessful
      *     0 - at least one test failed
@@ -95,7 +98,8 @@ abstract class Arr0 {
      * callback is:
      *     fn($value)
      *     fn($key, $value)
-     *
+     * 
+     * @param mixed[] $arr
      * @return array [$successful_key => $successful_return] | []
      */
     static function any(array $arr, callable $cb): array {
@@ -231,7 +235,7 @@ abstract class Arr0 {
      *
      *  Example: duplicate even numbers in list:
      *    A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
-     *
+     * 
      * @param null|mixed $where
      * @param null|mixed $skip
      * @param null|mixed $while
@@ -281,7 +285,7 @@ abstract class Arr0 {
      *  2. skip      - fn($v) | fn($k, $v) | items-to-skip | "fieldname" | ["field", "f" => v, f => null, ...]
      *  3. while     - fn($v) | fn($k, $v) | items-to-get | "fieldname" | ["field", "f" => v, f => null, ...]
      *  4. cb        - fn($v) => $v | fn($k, $v)
-     *
+     * 
      * @param null|mixed $where
      * @param null|mixed $skip
      * @param null|mixed $while
@@ -632,7 +636,7 @@ abstract class Arr0 {
      *
      * keys = space delimited keys | array of keys | [key => new_key] | callback
      *
-     * @param array<mixed>|\Closure|int|string $keys   - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
+     * @param mixed[]|\Closure|int|string $keys   - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
      */
     static function forget(array &$arr, string|int|array|\Closure $keys): array { // removed items
         $r = [];
@@ -799,7 +803,7 @@ abstract class Arr0 {
     }
 
     /**
-     * @return array<mixed>
+     * @return mixed[]
      */
     static function chunk(array $arr, int $size): array {
         return array_chunk($arr, $size, true);
@@ -982,7 +986,6 @@ abstract class Arr0 {
             }
         }
         \hb\error("Can't cast ".get_debug_type($iterable).' to array');
-        return []; // php-stan
     }
 
     /**
@@ -1028,7 +1031,6 @@ abstract class Arr0 {
             };
         }
         error("can't create callback from ".get_debug_type($cb));
-        return fn() => 1; // php-stan
     }
 
     /**
