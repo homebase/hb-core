@@ -748,16 +748,16 @@ class Arr extends Arr0 {
      * sort, preserve keys
      *
      * sort($a)
-     * sort($a, fn($left, $right) => $left <=> $right)
      * sort($a, fn($row) => $by)
-     * sort($a, "field -field2")  @see DH::sort
+     * sort($a, fn($left, $right) => $left <=> $right)
+     * sort($a, "field field2 -reverseField3")  @see DH::sort
      *
      * @param mixed      $arr
      * @param null|mixed $callback
      *
      * @return array<mixed>
      */
-    static function sort($arr, $callback = null, bool $descending = false): array {
+    static function sort(array|object $arr, $callback = null, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
         if (!$callback) {
             $descending ? arsort($arr) : asort($arr);
@@ -782,6 +782,9 @@ class Arr extends Arr0 {
         error('unsupported callback, 1 | 2 arguments expected');
     }
 
+    /**
+     * sort by function of field fn($row) => $by
+     */
     static function sortBy(iterable $arr, $cb, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
         $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b): int => $cb($b) <=> $cb($a);
