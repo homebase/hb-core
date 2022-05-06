@@ -117,8 +117,10 @@ abstract class Arr0 {
                     return [$k => $r];
                 }
             }
+        } else {
+            error("Arr::any callback requires 1 or 2 arguments. got $np");
         }
-        error("Arr::any callback requires 1 or 2 arguments. got $np");
+        return [];
     }
 
     /**
