@@ -28,6 +28,8 @@
     "stan2": "tools/phpstan analyse --level 2 -c phpstan.neon src",
     "stan3": "tools/phpstan analyse --level 3 -c phpstan.neon src",
     "stan4": "tools/phpstan analyse --level 4 -c phpstan.neon src",
+    "stan5": "tools/phpstan analyse --level 5 -c phpstan.neon src",
+    "stan6": "tools/phpstan analyse --level 6 -c phpstan.neon src",
     "doc": "tools/phpDocumentor.phar -d 'src/hb,src/hbc' -t doc",
     "psalm": "tools/psalm.phar",
     "psalm-dry": "tools/psalm.phar --alter --issues=MissingClosureReturnType,UnusedVariable,MissingReturnType,InvalidReturnType --dry-run",
