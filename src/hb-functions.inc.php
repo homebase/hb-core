@@ -7,9 +7,9 @@ declare(strict_types=1);
 namespace hb;
 
 class Exception extends \Exception {
-    /** @var mixed[] $payload */
+    /** @var mixed[] */
     public array $payload;      // optional hash payload
-    
+
     /**
      * @param mixed[] $payload
      */
@@ -22,9 +22,9 @@ class Exception extends \Exception {
 // Non recoverable Error
 // thrown by error_if, error_unless
 class Error extends \Error {
-    /** @var mixed[] $payload */
+    /** @var mixed[] */
     public array $payload;      // optional hash payload
-    
+
     /**
      * @param mixed[] $payload
      */
@@ -33,7 +33,6 @@ class Error extends \Error {
         parent::__construct($msg, $code);
     }
 }
-
 
 // anything to ~ PHP string with unprintable characters replaced
 // ATTENTION: may/will intentionally lose data !!
@@ -77,22 +76,22 @@ function caller(int $level = 1): string {
  * if ($cnt = once())
  *   i('log')->error("$cnt errors in last 10 seconds");
  */
-function once(string $key = '', int $timeout = 10, int $skip_events = 0) : int|bool {
+function once(string $key = '', int $timeout = 10, int $skip_events = 0): int|bool {
     if (!$key) {
         $key = caller();
     }
-    $data = \apcu_fetch($key);
+    $data = apcu_fetch($key);
     $now = time();
     // first time
     if (!$data) {
-        return (int) \apcu_add($key, [1, $now], $timeout) && !$skip_events; // return 1
+        return (int) apcu_add($key, [1, $now], $timeout) && !$skip_events; // return 1
     }
     // increment
     if ($data[1] + $timeout >= $now || ($skip_events && $skip_events > $data[0])) {
-        return !\apcu_store($key, [++$data[0], $data[1]], $timeout); // return false
+        return !apcu_store($key, [++$data[0], $data[1]], $timeout); // return false
     }
     // expired
-    \apcu_store($key, [1, $now], $timeout);
+    apcu_store($key, [1, $now], $timeout);
 
     return $data[0]; // return inc
 }
@@ -106,15 +105,17 @@ function once(string $key = '', int $timeout = 10, int $skip_events = 0) : int|b
  * key_value_delimiter   - key/value delimiter
  *
  * example: qw("a b c:Data") == ["a", "b" , "c" => "Data"]
- * @param string|mixed[] $data
+ *
+ * @param mixed[]|string   $data
  * @param non-empty-string $entry_delimiter
  * @param non-empty-string $key_value_delimiter
+ *
  * @return mixed[]
  */
 function qw(string|array $data, string $entry_delimiter = ' ', string $key_value_delimiter = ':'): array {
     if (!\is_string($data)) {
         return $data;
-    }        
+    }
     if (!$data) {
         return [];
     }
@@ -138,9 +139,10 @@ function qw(string|array $data, string $entry_delimiter = ' ', string $key_value
  * qw like function, Quote Keys
  * example: qk("a b c:Data") == array( "a" => true, "b"=> true , "c" => "Data").
  *
- * @param string|mixed[] $data 
+ * @param mixed[]|string   $data
  * @param non-empty-string $entry_delimiter
  * @param non-empty-string $key_value_delimiter
+ *
  * @return mixed[]
  */
 function qk(string|array $data, string $entry_delimiter = ' ', string $key_value_delimiter = ':'): array {
@@ -181,7 +183,6 @@ function qk(string|array $data, string $entry_delimiter = ' ', string $key_value
  *   b) Cookie
  *   c) HTTP-HEADER
  *   d) client HTTPS certificate (recommended) - http://nategood.com/client-side-certificate-authentication-in-ngi
- *
  */
 function is_admin(string $name = ''): string {
     // "current-admin-name" | ""
@@ -206,7 +207,7 @@ function is_admin(string $name = ''): string {
 
     return $a = $m ? $m() : '';
     */
-    return ""; // php-stan
+    return ''; // php-stan
 }
 
 class TODO_Exception extends \hb\Error {
@@ -217,14 +218,14 @@ function todo(string $str = ''): void {
 
 /**
  * COLORED sprintf for (mostly) for CLI mode
+ *
  * @ see i('cli')
  *  Ex:
  * \hb\e("{red}{bold}Sample {bg_green}{white}$text{/}")      << as is, no sprintf
  * \hb\e("{red}{bold}Sample {bg_green}{white}%s{/}", $text)  << use sprintf
- * 
+ *
  * @param mixed $args
  */
-
 function e(string $format, ...$args): void {
     // @todo("implement stylish array presenation");
     if (\PHP_SAPI === 'cli') {
@@ -255,7 +256,7 @@ function err(string $format, ...$args): void {
     // STDERR
     // @todo("implement stylish array presenation");
     if (\PHP_SAPI === 'cli') {
-        \hb\todo();        
+        \hb\todo();
         // i('cli')->err($format."\n", ...$args);
         return;
     }
@@ -271,6 +272,7 @@ function err(string $format, ...$args): void {
 /**
  *  HTML Escape
  *  if $text is array - join it
+ *
  *  @param string|string[] $text
  */
 function h(string|array $text): string {
@@ -285,11 +287,10 @@ function json(mixed $data): string|false {
     return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }
 
-
 /**
  * if value is a closure - resolve it.
  *
- * @param mixed|\Closure $value
+ * @param \Closure|mixed $value
  *
  * @return mixed
  */
@@ -313,11 +314,14 @@ function then($a, $b) {
 
 /**
  * remove key from hash.
+ *
  * @legacy
+ *
  * @param mixed[] $hash
+ *
  * @return mixed removed-value
  */
-function hash_unset(array &$hash, string $key) : mixed {
+function hash_unset(array &$hash, string $key): mixed {
     $vl = $hash[$key] ?? null;
     unset($hash[$key]);
 
@@ -328,7 +332,7 @@ function hash_unset(array &$hash, string $key) : mixed {
  * Time-to-Live calculation by different cache implementations
  * supported ttl: (int) seconds, [(int) seconds, (int) randomize-prc].
  *
- * @param int|array<int> $ttl
+ * @param array<int>|int $ttl
  */
 function ttl(int|array $ttl = [3600, 33]): int {
     // ttl .. ttl+rnd(%)
@@ -346,7 +350,8 @@ function ttl(int|array $ttl = [3600, 33]): int {
  * Build "<a href>" tag + escaping.
  *
  * @param string|string[] $args_or_text
- * @param string $html         extra html
+ * @param string          $html         extra html
+ *
  * @return string Ex: a("url", ['param' => 'value'], "text") Ex: a("url", "text")
  */
 function a(string $url, string|array $args_or_text = '', string $text = '', string $html = ''): string {
@@ -362,6 +367,7 @@ function a(string $url, string|array $args_or_text = '', string $text = '', stri
 
 /**
  * Build URL (Safe)
+ *
  * @param string[] $args
  */
 function url(string $url, array $args = []): string {
@@ -370,29 +376,30 @@ function url(string $url, array $args = []): string {
     return $args ? $url.'?'.http_build_query($args) : $url;
 }
 
-/**
- *  DEPERACATED:
- *   use $a ?: "default" instead
- *  oracle NVL - first non empty value | null
- *  returns first-empty value or last-argument
- *  nvl($a, $b, "default");
- *  nvl($a, $b, "0")        // return $a ? $a : ($b ? $b : "0");
- * @param mixed $args
- */
- function nvl(...$args):mixed {
-    // non-empty-value | last-argument
-    if (\count($args) < 2) {
-        throw new Exception('NVL(...) - 2+ args expected');
-    }
-    foreach ($args as $a) {
-        if ($a) {
-            return $a;
-        }
-        $l = $a;
-    }
+ /**
+  *  DEPERACATED:
+  *   use $a ?: "default" instead
+  *  oracle NVL - first non empty value | null
+  *  returns first-empty value or last-argument
+  *  nvl($a, $b, "default");
+  *  nvl($a, $b, "0")        // return $a ? $a : ($b ? $b : "0");
+  *
+  * @param mixed $args
+  */
+ function nvl(...$args): mixed {
+     // non-empty-value | last-argument
+     if (\count($args) < 2) {
+         throw new Exception('NVL(...) - 2+ args expected');
+     }
+     foreach ($args as $a) {
+         if ($a) {
+             return $a;
+         }
+         $l = $a;
+     }
 
-    return $l;
-}
+     return $l;
+ }
 
 /**
  * is value between $from .. $to (inclusive)

@@ -32,7 +32,7 @@ abstract class Arr0 {
      * create hash [value => $set, ..] from list of values
      *
      * @param mixed[] $arr
-     * @param mixed        $set
+     * @param mixed   $set
      *
      * @return mixed[]
      */
@@ -42,7 +42,9 @@ abstract class Arr0 {
 
     /**
      * create hash [value => 1, ..] from list of values
+     *
      * @param mixed[] $arr
+     *
      * @return mixed[]
      */
     static function flip1(array $arr): array {
@@ -60,7 +62,7 @@ abstract class Arr0 {
      *     fn($key, $value)
      *
      * @param mixed[] $arr
-     * 
+     *
      * return
      *    (int) nn - all nn tests were sucessful
      *     0 - at least one test failed
@@ -99,8 +101,9 @@ abstract class Arr0 {
      * callback is:
      *     fn($value)
      *     fn($key, $value)
-     * 
+     *
      * @param mixed[] $arr
+     *
      * @return mixed[] [$successful_key => $successful_return] | []
      */
     static function any(array $arr, callable $cb): array {
@@ -120,6 +123,7 @@ abstract class Arr0 {
         } else {
             error("Arr::any callback requires 1 or 2 arguments. got $np");
         }
+
         return [];
     }
 
@@ -148,12 +152,14 @@ abstract class Arr0 {
      *
      * when $map is array (old_field_name=>new_field+name) - ($arr is array of arrays) - @see only()
      *   we return NON-NULL columns from fieldlist when at least one field is not null PLUS we rename field
-     * @param iterable<mixed> $arr 
-     * @param null|mixed $map
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
-     * @param mixed      $reverse
+     *
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $map
+     * @param null|mixed      $where
+     * @param null|mixed      $skip
+     * @param null|mixed      $while
+     * @param mixed           $reverse
+     *
      * @return mixed[]
      */
     static function map(
@@ -235,10 +241,12 @@ abstract class Arr0 {
      *
      *  Example: duplicate even numbers in list:
      *    A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
-     * @param iterable<mixed> $arr 
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
+     *
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $where
+     * @param null|mixed      $skip
+     * @param null|mixed      $while
+     *
      * @return mixed[]
      */
     static function mapList(
@@ -286,10 +294,11 @@ abstract class Arr0 {
      *  2. skip      - fn($v) | fn($k, $v) | items-to-skip | "fieldname" | ["field", "f" => v, f => null, ...]
      *  3. while     - fn($v) | fn($k, $v) | items-to-get | "fieldname" | ["field", "f" => v, f => null, ...]
      *  4. cb        - fn($v) => $v | fn($k, $v)
-     * @param iterable<mixed> $arr 
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
+     *
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $where
+     * @param null|mixed      $skip
+     * @param null|mixed      $while
      *
      * @return int - number of iterations where result is not empty
      */
@@ -335,20 +344,19 @@ abstract class Arr0 {
      *  2. skip      - fn($v) | fn($k, $v) | items-to-skip | "fieldname" | ["field", "f" => v, f => null, ...]
      *  3. while     - fn($v) | fn($k, $v) | items-to-get | "fieldname" | ["field", "f" => v, f => null, ...]
      *  4. cb        - fn($v) => $v | fn($k, $v)
-     * 
-     * @param iterable<mixed> $arr 
-     * @param null|mixed $carry
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
-     * @param mixed      $reverse
+     *
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $carry
+     * @param null|mixed      $where
+     * @param null|mixed      $skip
+     * @param null|mixed      $while
+     * @param mixed           $reverse
      *
      * NB: fold is fast - sometimes faster than map
      *     'μs' => 0.7 : php init.php --bench '\hb\Arr::fold(range(2,10), fn($c, $k, $v) => \\hb\\then($c[$k] = $v, $c), [])'
      *     'μs' => 0.8 : php init.php --bench '\hb\Arr::map(range(2,10), fn($v) => $v)'
      *
      * @return mixed $fold
-     *
      */
     static function fold(
         iterable $arr,
@@ -386,11 +394,12 @@ abstract class Arr0 {
      *  1. where
      *  2. skip
      *  3. while
-     * @param iterable<mixed> $arr 
-     * @param ?callable $where
-     * @param ?callable $skip
-     * @param ?callable $while
-     * @param bool|int  $reverse
+     *
+     * @param iterable<mixed> $arr
+     * @param ?callable       $where
+     * @param ?callable       $skip
+     * @param ?callable       $while
+     * @param bool|int        $reverse
      */
     static function iter(
         iterable $arr,
@@ -432,12 +441,12 @@ abstract class Arr0 {
      *     returns $key => [value, callback($value)]
      * if callback accept 2 arguments:
      *     returns $key => [value, callback($key, $value)]
-     * 
-     * @param iterable<mixed> $arr 
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
-     * @param mixed      $reverse
+     *
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $where
+     * @param null|mixed      $skip
+     * @param null|mixed      $while
+     * @param mixed           $reverse
      */
     static function iterCB(
         iterable $arr,
@@ -464,8 +473,9 @@ abstract class Arr0 {
     /**
      * recursive iterator, returns only leaf values
      * yields [(array)$path =>  $value]
-     * @param string[] $path
-     * @param iterable<mixed> $arr 
+     *
+     * @param string[]        $path
+     * @param iterable<mixed> $arr
      */
     static function iterRecursive(iterable $arr, array $path = []): \Generator {
         foreach ($arr as $k => $v) {
@@ -482,8 +492,8 @@ abstract class Arr0 {
     }
 
     /**
-      * @param iterable<mixed> $arr 
-      */
+     * @param iterable<mixed> $arr
+     */
     static function iterRecursiveDot(iterable $arr, string|int $path = ''): \Generator {
         foreach ($arr as $k => $v) {
             $p = $path ? "$path.$k" : $k;
@@ -519,14 +529,15 @@ abstract class Arr0 {
      * $cb = \Closure          : sum callbacks
      * $cb = "fieldName"       : sum of $row["fieldName"]
      * $cb = [list of fields]  : count not null $row["fieldName"] for every field  >> ['fieldName' => sum, ..]
-     * 
-     * @param iterable<mixed> $arr 
+     *
+     * @param iterable<mixed>          $arr
      * @param \Closure|string|string[] $cb
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
-     * @param mixed      $reverse
-     * @return int|float|mixed[]
+     * @param null|mixed               $where
+     * @param null|mixed               $skip
+     * @param null|mixed               $while
+     * @param mixed                    $reverse
+     *
+     * @return float|int|mixed[]
      */
     static function sum(
         iterable $arr,
@@ -564,12 +575,12 @@ abstract class Arr0 {
      * $cb = \Closure          : sum callbacks
      * $cb = "fieldName"       : sum of $row["fieldName"]
      * $cb = [list of fields]  : count not null $row["fieldName"] for every field  >> ['fieldName' => sum, ..]
-     * 
-     * @param iterable<mixed> $arr 
+     *
+     * @param iterable<mixed>          $arr
      * @param \Closure|string|string[] $cb
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
+     * @param null|mixed               $where
+     * @param null|mixed               $skip
+     * @param null|mixed               $while
      */
     static function min(
         iterable $arr,
@@ -578,7 +589,7 @@ abstract class Arr0 {
         $skip = null,
         $while = null
     ): mixed {
-        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  /** @phpstan-ignore-line */
+        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
         if (!\is_array($cb)) {
             return min(Arr::mapList($arr, $cb));
         }
@@ -591,11 +602,12 @@ abstract class Arr0 {
      * $cb = \Closure          : sum callbacks
      * $cb = "fieldName"       : sum of $row["fieldName"]
      * $cb = [list of fields]  : count not null $row["fieldName"] for every field  >> ['fieldName' => sum, ..]
-     * @param iterable<mixed> $arr 
+     *
+     * @param iterable<mixed>          $arr
      * @param \Closure|string|string[] $cb
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
+     * @param null|mixed               $where
+     * @param null|mixed               $skip
+     * @param null|mixed               $while
      */
     static function max(
         iterable $arr,
@@ -604,7 +616,7 @@ abstract class Arr0 {
         $skip = null,
         $while = null
     ): mixed {
-        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  /** @phpstan-ignore-line */
+        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
         if (!\is_array($cb)) {
             return max(Arr::mapList($arr, $cb));
         }
@@ -617,13 +629,14 @@ abstract class Arr0 {
      *
      * note:  keys with NULL value are not transferred
      *
-     * @param string[]|string $keys - list of keys or space delimited list of keys (@see \hb\qw)
-     *                           or mapping: source_array_key => dest_array_key
-     * @param mixed[] $a
+     * @param string|string[] $keys - list of keys or space delimited list of keys (@see \hb\qw)
+     *                              or mapping: source_array_key => dest_array_key
+     * @param mixed[]         $a
+     *
      * @return mixed[]
-     * Example:
-     *  - Arr::only($_POST,"age name address:location");
-     *  - Arr::only($_POST, ["age", "name", "address" => location"]);  // same as above
+     *                 Example:
+     *                 - Arr::only($_POST,"age name address:location");
+     *                 - Arr::only($_POST, ["age", "name", "address" => location"]);  // same as above
      */
     static function only(array $a, string|array|\Closure $keys): array {
         if ($keys instanceof \Closure) {
@@ -649,9 +662,11 @@ abstract class Arr0 {
      * @see Arr::except non-destructive  method
      *
      * keys = space delimited keys | array of keys | [key => new_key] | callback
-     * @param mixed[] $arr 
+     *
+     * @param mixed[]                     $arr
+     * @param \Closure|int|mixed[]|string $keys - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
+     *
      * @return mixed[]
-     * @param mixed[]|\Closure|int|string $keys   - space delimited list of keys or "key:new_key" or array of keys / key=>new_key or a \Closure
      */
     static function forget(array &$arr, string|int|array|\Closure $keys): array { // removed items
         $r = [];
@@ -681,7 +696,9 @@ abstract class Arr0 {
 
     /**
      * filter array via callback
-     * @param iterable<mixed> $arr 
+     *
+     * @param iterable<mixed> $arr
+     *
      * @return mixed[]
      */
     static function filter(iterable $arr, \Closure $callback): array {
@@ -694,12 +711,9 @@ abstract class Arr0 {
      * @see partition
      * items where callback returned null are not returned - remove items from resulting arrays
      * same as partition (with null-result - remove)
-     *
-     *
-     * Example:
-     *     extract items less than value, or more than value, remove items equal valkue:
      *     [$less_than_2, $more_than_2] = Arr::filter2($arr, fn($v) => $v == 2 ? null : $v > 2);
-     * @param iterable<mixed> $arr 
+     * @param iterable<mixed> $arr
+     *
      * @return array{0: mixed, 1: mixed} [false_condition, true_condition]
      */
     static function filter2(iterable $arr, \Closure $cb): array {
@@ -729,13 +743,15 @@ abstract class Arr0 {
      * $cb = \Closure          : count non-empty
      * $cb = "fieldName"       : count where field is not null. $row["fieldName"]
      * $cb = [list of fields]  : count where field not null $row["fieldName"] for every field  >> ['fieldName' => count, ..]
-     * @param iterable<mixed> $arr 
-     * @param null|mixed $cb
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
-     * @param mixed      $reverse
-     * @return mixed[]|int
+     *
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $cb
+     * @param null|mixed      $where
+     * @param null|mixed      $skip
+     * @param null|mixed      $while
+     * @param mixed           $reverse
+     *
+     * @return int|mixed[]
      */
     static function count(
         iterable $arr,
@@ -766,11 +782,13 @@ abstract class Arr0 {
     /**
      * value => nn_occurences
      * ~= https://laravel.com/docs/8.x/collections#method-countBy
-     * @param iterable<mixed> $arr 
-     * @param null|mixed $cb
-     * @param null|mixed $where
-     * @param null|mixed $skip
-     * @param null|mixed $while
+     *
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $cb
+     * @param null|mixed      $where
+     * @param null|mixed      $skip
+     * @param null|mixed      $while
+     *
      * @return mixed[]
      */
     static function countBy(iterable $arr, $cb = null, $where = null, $skip = null, $while = null): array {
@@ -798,7 +816,9 @@ abstract class Arr0 {
      *     null       - item ignored
      *
      * @see partition
-     * @param iterable<mixed> $arr 
+     *
+     * @param iterable<mixed> $arr
+     *
      * @return array<mixed>
      */
     static function groupBy(iterable $arr, string|int|\Closure $cb): array {
@@ -811,8 +831,8 @@ abstract class Arr0 {
             $t = $np == 1 ? $cb($v) : $cb($ok, $v);
             if ($t !== null) {
                 $g = match (1) { // g - (int) group
-                    true => 1, /** @phpstan-ignore-line */
-                    false => 0, /** @phpstan-ignore-line */
+                    true => 1, // @phpstan-ignore-line
+                    false => 0, // @phpstan-ignore-line
                     // null => item excluded,
                     default => $t
                 };
@@ -826,6 +846,7 @@ abstract class Arr0 {
 
     /**
      * @param mixed[] $arr
+     *
      * @return mixed[]
      */
     static function chunk(array $arr, int $size): array {
@@ -833,35 +854,39 @@ abstract class Arr0 {
     }
 
     /**
-      * @param iterable<mixed> $arr
-      * @return mixed[]
-      */
+     * @param iterable<mixed> $arr
+     *
+     * @return mixed[]
+     */
     static function where(iterable $arr, \Closure $callback): array {
         // @todo - array_filter
         return iterator_to_array(self::_where($arr, $callback));
     }
 
     /**
-      * @param iterable<mixed> $arr
-      * @return mixed[]
-      */
+     * @param iterable<mixed> $arr
+     *
+     * @return mixed[]
+     */
     static function whereNot(iterable $arr, callable $callback): array {
         return iterator_to_array(self::_whereNot($arr, $callback));
     }
 
     /**
-      * @param iterable<mixed> $arr
-      * @return mixed[]
-      */
+     * @param iterable<mixed> $arr
+     *
+     * @return mixed[]
+     */
     static function while(iterable $arr, callable $callback): array {
         return iterator_to_array(self::_while($arr, $callback));
     }
 
     /**
      * _where generator
-      * @param iterable<mixed> $arr
-      */
-      static function _where(iterable $arr, mixed $where): \Generator {
+     *
+     * @param iterable<mixed> $arr
+     */
+    static function _where(iterable $arr, mixed $where): \Generator {
         error_if(\is_int($where), 'inefficient. use while=>(int) instead');
         $where = self::callback($where);
 
@@ -890,10 +915,10 @@ abstract class Arr0 {
     }
 
     /**
-      * @param iterable<mixed> $arr
-      */
+     * @param iterable<mixed> $arr
+     */
     static function _whereNot(iterable $arr, callable $where): \Generator {
-        /** @phpstan-ignore-next-line */
+        // @phpstan-ignore-next-line
         error_if(\is_int($where), 'inefficient. use while=>(int) instead');
         $where = self::callback($where);
 
@@ -964,6 +989,7 @@ abstract class Arr0 {
 
     /**
      * _skip aka skipWhile generator
+     *
      * @param iterable<mixed> $arr
      */
     static function _skip(iterable $arr, mixed $skip): \Generator {
@@ -1007,7 +1033,9 @@ abstract class Arr0 {
 
     /**
      * convert something arrayable to array
+     *
      * @param iterable<mixed>|object $iterable
+     *
      * @return mixed[]
      */
     static function value(iterable|object $iterable): array {
@@ -1018,11 +1046,11 @@ abstract class Arr0 {
             return iterator_to_array($iterable);
         }
         if (\is_object($iterable)) {
-            if  (method_exists($iterable, 'toArray')) {
+            if (method_exists($iterable, 'toArray')) {
                 return $iterable->toArray();
             }
             if (method_exists($iterable, '__toArray')) {
-               return $iterable->__toArray();
+                return $iterable->__toArray();
             }
         }
         \hb\error("Can't cast ".get_debug_type($iterable).' to array');
@@ -1037,8 +1065,8 @@ abstract class Arr0 {
      *                  if key is int - check that field is not null
      *                  if key is string & value != null - check that field have specified value (strict comparison)
      *                  if key is string & value is null - field absent or have value of null
-     * 
-     * @param \Closure|int|string|mixed[] $cb
+     *
+     * @param \Closure|int|mixed[]|string $cb
      */
     static function callback(\Closure|int|string|array $cb): \Closure {
         // todo - switch to match(true)
@@ -1077,8 +1105,10 @@ abstract class Arr0 {
 
     /**
      * if all callbacks not empty? => int  where $keys value is not null
-     * @param mixed[] $arr
+     *
+     * @param mixed[]    $arr
      * @param callable[] $key2cb : $key => $callback($value) => eval_value
+     *
      * @return int -  ">0": NN tests ok, 0 - at least one test failed; -1 - no tests performed
      */
     static function allKCB(array $arr, array $key2cb): int {
@@ -1087,9 +1117,10 @@ abstract class Arr0 {
 
     /**
      * if any non-empty callback on non-null value
-     * 
-     * @param mixed[] $arr
+     *
+     * @param mixed[]    $arr
      * @param callable[] $key2cb : $key => $callback($value) => $value
+     *
      * @return mixed[] - [$successful_key => $successful_return] | []
      */
     static function anyKCB(array $arr, array $key2cb): array {
@@ -1098,8 +1129,10 @@ abstract class Arr0 {
 
     /**
      * return $arr where specific keys mapped, keys with null callback-result removed
-     * @param mixed[] $arr
+     *
+     * @param mixed[]    $arr
      * @param callable[] $key2cb : $key => $callback($value) => $value
+     *
      * @return mixed[]
      */
     static function mapKCB(array $arr, array $key2cb): array {

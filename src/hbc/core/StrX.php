@@ -15,6 +15,7 @@ class StrX {
      * @test: core/ParseLine
      *
      * @param mixed $keep_escape_character
+     *
      * @return mixed[]
      */
     static function parseLine(string $str, string $delimiter = ' ', $keep_escape_character = 1): array {
