@@ -208,6 +208,7 @@ class Arr extends Arr0 {
         if ($last) {
             return array_reverse(self::splitAt(array_reverse($arr), first: $last));
         }
+        error_unless($cb, 'empty callback');
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         $a = [];  // part 1
         $b = [];  // part 2
@@ -275,6 +276,9 @@ class Arr extends Arr0 {
     static function MD5(iterable $dh, bool $orderless = true): string {
         // unique MD5 hash
         $r = [];
+        if ($orderless) {
+            ksort($dh);
+        }
         foreach ($dh as $key => $value) {
             if (\is_int($key) && $orderless) {
                 $key = '';
@@ -290,9 +294,6 @@ class Arr extends Arr0 {
             } else {
                 trigger_error("only scalars, arrays and nulls supported. key: $key"); // need something else = add it
             }
-        }
-        if ($orderless) {
-            ksort($r);
         }
 
         return md5(implode("\n", $r));
@@ -449,8 +450,7 @@ class Arr extends Arr0 {
     /**
      * @param mixed[] $arr
      *
-     * @return array   list of values
-     * @return mixed[]
+     * @return mixed[] list of values
      */
     static function flattenListRecursive(array $arr): array {
         return self::mapList(self::iterRecursive($arr), fn ($v) => [$v]);
@@ -468,13 +468,13 @@ class Arr extends Arr0 {
     static function dropValues(array $arr, ...$values): array {
         $drop = self::flipTo($values);
 
-        return self::map($arr, fn ($k, $v) => ($drop[$v] ?? 0) ? [] : [$k => $v]);
+        return self::map($arr, fn ($k, mixed $v) => ($drop[$v] ?? 0) ? [] : [$k => $v]);
     }
 
     /**
      *  key of minimal value
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function minValueKey(iterable $arr): mixed {
         \is_array($arr) || $arr = iterator_to_array($arr);
@@ -645,12 +645,11 @@ class Arr extends Arr0 {
     /**
      *  first X values (keys preserved)
      *
-     * @param mixed[]    $arr
-     * @param null|mixed $where
+     * @param mixed[] $arr
      *
      * @return mixed[]
      */
-    static function firstX(iterable $arr, int $count = 1, $where = null): array {
+    static function firstX(iterable $arr, int $count = 1, mixed $where = null): array {
         if (\is_array($arr) && !$where) {
             return \array_slice($arr, 0, $count, true);
         }
@@ -659,7 +658,7 @@ class Arr extends Arr0 {
     }
 
     /**
-     *  last X values  (keys preserved)
+     * last X values  (keys preserved)
      *
      * @param mixed[]    $arr
      * @param null|mixed $where
@@ -758,7 +757,7 @@ class Arr extends Arr0 {
     /**
      * use DH::except for dot notation support
      *
-     * @param mixed[]                     $arr
+     * @param iterable<mixed>             $arr
      * @param \Closure|int|mixed[]|string $keys
      *
      * @return mixed[]
@@ -905,7 +904,7 @@ class Arr extends Arr0 {
      * ksort($a, fn($left, $right) => $left <=> $right)
      * ksort($a, fn($row) => $by)
      *
-     * @param null|callable   $cb  - callback
+     * @param null|\Closure   $cb  - callback
      * @param iterable<mixed> $arr
      *
      * @return mixed[]
@@ -977,7 +976,7 @@ class Arr extends Arr0 {
      *
      * @return mixed[]
      */
-    static function sortBy(iterable $arr, callable $cb, bool $descending = false): array {
+    static function sortBy(iterable $arr, \Closure $cb, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
         $cb = $descending ? fn ($a, $b): int => $cb($a) <=> $cb($b) : fn ($a, $b): int => $cb($b) <=> $cb($a);
         uasort($arr, $cb);
@@ -1031,7 +1030,7 @@ class Arr extends Arr0 {
     /**
      *  @return mixed[]
      */
-    static function times(int $times, callable $cb): array {
+    static function times(int $times, \Closure $cb): array {
         //  == for(range(1..$times) as $i) $r[$i] =$cb($i);
         return array_map($cb, range(1, $times));
     }

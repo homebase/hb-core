@@ -68,7 +68,7 @@ abstract class Arr0 {
      *     0 - at least one test failed
      *    -1 - no tests were performed, $arr empty
      */
-    static function all(array $arr, callable $cb): int {
+    static function all(array $arr, \Closure $cb): int {
         if (!$arr) {
             return -1;
         }
@@ -106,7 +106,7 @@ abstract class Arr0 {
      *
      * @return mixed[] [$successful_key => $successful_return] | []
      */
-    static function any(array $arr, callable $cb): array {
+    static function any(array $arr, \Closure $cb): array {
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         if (1 === $np) {
             foreach ($arr as $k => $v) {
@@ -243,18 +243,15 @@ abstract class Arr0 {
      *    A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
      *
      * @param iterable<mixed> $arr
-     * @param null|mixed      $where
-     * @param null|mixed      $skip
-     * @param null|mixed      $while
      *
      * @return mixed[]
      */
     static function mapList(
         iterable $arr,
         callable $map,
-        $where = null,
-        $skip = null,
-        $while = null,
+        mixed $where = null,
+        mixed $skip = null,
+        mixed $while = null,
         bool|int $reverse = false
     ): array {
         if ($where || $skip || $while || $reverse) {
@@ -532,20 +529,16 @@ abstract class Arr0 {
      *
      * @param iterable<mixed>          $arr
      * @param \Closure|string|string[] $cb
-     * @param null|mixed               $where
-     * @param null|mixed               $skip
-     * @param null|mixed               $while
-     * @param mixed                    $reverse
      *
      * @return float|int|mixed[]
      */
     static function sum(
         iterable $arr,
         $cb = null,
-        $where = null,
-        $skip = null,
-        $while = null,
-        $reverse = false
+        mixed $where = null,
+        mixed $skip = null,
+        mixed $while = null,
+        bool $reverse = false
     ): int|float|array {
         $sum = 0;
         if (\is_array($cb)) { // array of fields
@@ -560,7 +553,7 @@ abstract class Arr0 {
             };
         } elseif (\is_string($cb)) { // one field
             $cb = function (array $r) use (&$sum, $cb): void { $sum += $r[$cb] ?? 0; };
-        } elseif (\is_callable($cb)) { // callback
+        } elseif ($cb instanceof \Closure) { // callback
             $cb = function ($r) use (&$sum, $cb): void { $sum += $cb($r); };
         } elseif (null === $cb) {
             $cb = function ($r) use (&$sum): void { $sum += $r; };
@@ -590,7 +583,7 @@ abstract class Arr0 {
         $while = null
     ): mixed {
         ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
-        if (!\is_array($cb)) {
+        if ($cb instanceof \Closure) {
             return min(Arr::mapList($arr, $cb));
         }
 
@@ -617,7 +610,7 @@ abstract class Arr0 {
         $while = null
     ): mixed {
         ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
-        if (!\is_array($cb)) {
+        if ($cb instanceof \Closure) {
             return max(Arr::mapList($arr, $cb));
         }
 
@@ -629,9 +622,9 @@ abstract class Arr0 {
      *
      * note:  keys with NULL value are not transferred
      *
-     * @param string|string[] $keys - list of keys or space delimited list of keys (@see \hb\qw)
-     *                              or mapping: source_array_key => dest_array_key
-     * @param mixed[]         $a
+     * @param \Closure|string|string[] $keys - list of keys or space delimited list of keys (@see \hb\qw)
+     *                                       or mapping: source_array_key => dest_array_key
+     * @param mixed[]                  $a
      *
      * @return mixed[]
      *                 Example:
@@ -712,6 +705,7 @@ abstract class Arr0 {
      * items where callback returned null are not returned - remove items from resulting arrays
      * same as partition (with null-result - remove)
      *     [$less_than_2, $more_than_2] = Arr::filter2($arr, fn($v) => $v == 2 ? null : $v > 2);
+     *
      * @param iterable<mixed> $arr
      *
      * @return array{0: mixed, 1: mixed} [false_condition, true_condition]
@@ -917,8 +911,7 @@ abstract class Arr0 {
     /**
      * @param iterable<mixed> $arr
      */
-    static function _whereNot(iterable $arr, callable $where): \Generator {
-        // @phpstan-ignore-next-line
+    static function _whereNot(iterable $arr, mixed $where): \Generator {
         error_if(\is_int($where), 'inefficient. use while=>(int) instead');
         $where = self::callback($where);
 
@@ -1076,8 +1069,8 @@ abstract class Arr0 {
         if ($cb instanceof \Closure) {
             return $cb;
         }
-        if (\is_int($cb) && $cb) {
-            return function ($a) use (&$cb) { return $cb > 0 ? $cb-- : 0; };
+        if (\is_int($cb) && $cb) { // just a countdown 3,2,1,0,0,0...
+            return function (mixed $a) use (&$cb) { return $cb > 0 ? $cb-- : 0; };
         }
         if (\is_string($cb) && $cb) {
             $cb = qw($cb);

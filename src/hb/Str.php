@@ -30,9 +30,9 @@ class Str {
      *
      * @param string|string[] $prefixes
      */
-    static function startsWith(string $s, $prefixes): bool {
+    static function startsWith(string $s, string|array $prefixes): bool {
         foreach ((array) $prefixes as $needle) {
-            if ('' !== $needle && mb_substr($s, 0, mb_strlen($needle)) === (string) $needle) {
+            if ('' !== $needle && mb_substr($s, 0, mb_strlen($needle)) === $needle) {
                 return true;
             }
         }
@@ -254,7 +254,7 @@ class Str {
      * @param array<string> $needles - substrings
      */
     static function containsAll(string $s, array $needles): bool {
-        foreach ((array) $needles as $needle) {
+        foreach ($needles as $needle) {
             if ('' !== $needle && false === mb_strpos($s, $needle)) {
                 return false;
             }
@@ -267,7 +267,7 @@ class Str {
      * is string matches a given pattern(s).
      * NOTE: "*" converted to ".*"
      *
-     * @param array<string> $patterns - substrings
+     * @param array<string>|string $patterns - substrings
      */
     // ~ laravel compatible, args order corrected
     static function is(string $s, string|array $patterns): bool {
@@ -390,7 +390,7 @@ class Str {
         // First Match !!! ORDER IS DIFFERENT than HB1
         preg_match($regexp, $s, $m);
 
-        return (string) ($m[1] ?? '');
+        return $m[1] ?? '';
     }
 
     /**
@@ -402,10 +402,10 @@ class Str {
     static function cs(/* mixed */ $s, string $fmt_true, string $fmt_false = ''): string {
         // !!! ORDER IS DIFFERENT than HB1
         if ($s) {
-            return sprintf($fmt_true, \is_scalar($s) ? $s : \hb\x2s($s));
+            return sprintf($fmt_true, \is_scalar($s) ? (string) $s : \hb\x2s($s));
         }
 
-        return $fmt_false ? sprintf($fmt_false, \is_scalar($s) ? $s : \hb\x2s($s)) : '';
+        return $fmt_false ? sprintf($fmt_false, \is_scalar($s) ? (string) $s : \hb\x2s($s)) : '';
     }
 
     /**

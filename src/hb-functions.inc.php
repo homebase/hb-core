@@ -339,9 +339,8 @@ function ttl(int|array $ttl = [3600, 33]): int {
     if (\is_array($ttl)) {
         error_unless(\is_int($ttl[0]), 'ttl-part must be int');
 
-        return $ttl[0] + random_int(0, $ttl[0] * $ttl[1] / 100);
+        return $ttl[0] + random_int(0, (int) ($ttl[0] * $ttl[1] / 100));
     }
-    error_unless(\is_int($ttl), 'ttl must be int');
 
     return $ttl;
 }
