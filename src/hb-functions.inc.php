@@ -106,7 +106,7 @@ function once(string $key = '', int $timeout = 10, int $skip_events = 0): int|bo
  *
  * example: qw("a b c:Data") == ["a", "b" , "c" => "Data"]
  *
- * @param string[]|string   $data
+ * @param string|string[]  $data
  * @param non-empty-string $entry_delimiter
  * @param non-empty-string $key_value_delimiter
  *
