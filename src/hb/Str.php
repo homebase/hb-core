@@ -28,7 +28,7 @@ class Str {
     /**
      * is string starts with prefix? (prefixes)
      *
-     * @param mixed $prefixes
+     * @param string|string[] $prefixes
      */
     static function startsWith(string $s, $prefixes): bool {
         foreach ((array) $prefixes as $needle) {

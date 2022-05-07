@@ -168,7 +168,10 @@ class StrX {
             $x = self::_x2s_cut($x, $cut, 50);
             // all unprintable characters presented as \$ASCII_CODE_2DIGIT-HEX
             // \r and \n presented as \r and \n
-            $f = function ($a): string {
+            /**
+             * @param string[] $a
+             */
+            $f = function (array $a): string {
                 $o = \ord($a[0]);
                 if (0xD === $o) {
                     return '\r';
