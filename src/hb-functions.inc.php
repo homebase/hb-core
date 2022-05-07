@@ -337,7 +337,7 @@ function hash_unset(array &$hash, string $key): mixed {
 function ttl(int|array $ttl = [3600, 33]): int {
     // ttl .. ttl+rnd(%)
     if (\is_array($ttl)) {
-        // @psalm-suppress RedundantConditionGivenDocblockType
+        /** @psalm-suppress RedundantConditionGivenDocblockType */
         error_unless(\is_int($ttl[0]), 'ttl-part must be int');
 
         return $ttl[0] + random_int(0, (int) ($ttl[0] * $ttl[1] / 100));
@@ -450,9 +450,9 @@ function isSuppressed(): bool {
  * non recoverable Error -  developer uses Code Incorrect Way
  * throw \hb\Error exception if ...
  *
- * @param mixed $boolean
+ * @return void
  */
-function error_if($boolean, string $message): void {
+function error_if(mixed $boolean, string $message): void {
     if ($boolean) {
         throw new \hb\Error($message);  // \Error descendant
     }
@@ -462,9 +462,9 @@ function error_if($boolean, string $message): void {
  * non recoverable Error -  developer uses Code Incorrect Way
  * throw \hb\Error exception if ...
  *
- * @param mixed $boolean
+ * @return void
  */
-function error_unless($boolean, string $message): void {
+function error_unless(mixed $boolean, string $message): void {
     if (!$boolean) {
         throw new \hb\Error($message);  // \Error descendant
     }

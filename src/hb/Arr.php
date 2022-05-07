@@ -221,7 +221,7 @@ class Arr extends Arr0 {
 
                 continue;
             }
-            // @psalm-suppress TooFewArguments
+            /** @psalm-suppress TooFewArguments */
             if (($np == 1 && $cb($v)) || ($np > 1 && $cb($k, $v))) {
                 $b[$k] = $v;
                 $p = 1;
@@ -855,9 +855,11 @@ class Arr extends Arr0 {
         if ($cnt <= $sampleSize) {
             return $preserveKeys ? $arr : array_values($arr);
         }
+        if (! $arr)
+            error("empty array");
         $keys = array_rand($arr, $sampleSize);
         if (1 == $sampleSize) {
-            // @psalm-suppress all
+            /** @psalm-suppress all */
             return $preserveKeys ? [$keys => $arr[$keys]] : $arr[$keys];
         }
         $kv = self::only($arr, $keys);

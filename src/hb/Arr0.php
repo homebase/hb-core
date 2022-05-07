@@ -182,7 +182,7 @@ abstract class Arr0 {
         }
         if (\is_array($map)) {
             $map = /*
-             * @return array[]
+             * @return mixed[]
              *
              * @psalm-return array<array>
              */
@@ -194,9 +194,11 @@ abstract class Arr0 {
         switch ((new \ReflectionFunction($map))->getNumberOfParameters()) {
             case 1: // callback($value) => $value
                 if (\is_array($arr)) {
+                    /** @psalm-suppress all */
                     $r = array_map($map, $arr);
                 } else { // generator
                     foreach ($arr as $k => $v) {
+                        /** @psalm-suppress TooFewArguments */
                         $r[$k] = $map($v);
                     }
                 }
@@ -206,6 +208,7 @@ abstract class Arr0 {
             case 2: // callback($key, $value) => [$k=>v, ...]
                 foreach ($arr as $k => $v) {
                     foreach ($map($k, $v) as $new_k => $new_v) {
+                        /** @psalm-suppress RedundantCondition */
                         if ($new_k !== null) {
                             $r[$new_k] = $new_v;
                         }
@@ -549,7 +552,7 @@ abstract class Arr0 {
             $cb = function (array $r) use (&$sum, $cb): void { $sum += $r[$cb] ?? 0; };
         } elseif ($cb instanceof \Closure) { // callback
             $cb = function ($r) use (&$sum, $cb): void { $sum += $cb($r); };
-        } elseif (null === $cb) {
+        } else {
             $cb = function ($r) use (&$sum): void { $sum += $r; };
         }
         Arr::each($arr, $cb, $where, $skip, $while, $reverse);
@@ -559,9 +562,9 @@ abstract class Arr0 {
 
     /**
      * min ($callback | $field | $fields)
-     * $cb = \Closure          : sum callbacks
-     * $cb = "fieldName"       : sum of $row["fieldName"]
-     * $cb = [list of fields]  : count not null $row["fieldName"] for every field  >> ['fieldName' => sum, ..]
+     * $cb = \Closure          : min callbacks
+     * $cb = "fieldName"       : min of $row["fieldName"]
+     * $cb = [list of fields]  : min $row["fieldName"] for every field  >> ['fieldName' => min, ..]
      *
      * @param iterable<mixed>          $arr
      * @param \Closure|string|string[] $cb
@@ -576,19 +579,24 @@ abstract class Arr0 {
         $skip = null,
         $while = null
     ): mixed {
+        error_unless($arr, "non empty array expected");
         ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
+        if (is_string($cb)) {
+            /** @psalm-suppress ArgumentTypeCoercion */            
+            return min(self::map($arr, $cb));
+        }
         if ($cb instanceof \Closure) {
+            /** @psalm-suppress ArgumentTypeCoercion */
             return min(Arr::mapList($arr, $cb));
         }
-
         return Arr::map($cb, fn ($k, $field) => [$field, Arr::min($arr, $field)]); // fieldname => min_Value
     }
 
     /**
      * max ($callback | $field | $fields)
-     * $cb = \Closure          : sum callbacks
-     * $cb = "fieldName"       : sum of $row["fieldName"]
-     * $cb = [list of fields]  : count not null $row["fieldName"] for every field  >> ['fieldName' => sum, ..]
+     * $cb = \Closure          : max(callbacks)
+     * $cb = "fieldName"       : max of $row["fieldName"]
+     * $cb = [list of fields]  : max $row["fieldName"] for every field  >> ['fieldName' => max, ..]
      *
      * @param iterable<mixed>          $arr
      * @param \Closure|string|string[] $cb
@@ -603,11 +611,16 @@ abstract class Arr0 {
         $skip = null,
         $while = null
     ): mixed {
+        error_unless($arr, "non empty array expected");
         ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
         if ($cb instanceof \Closure) {
+            /** @psalm-suppress ArgumentTypeCoercion */
             return max(Arr::mapList($arr, $cb));
         }
-
+        if (is_string($cb)) {
+            /** @psalm-suppress ArgumentTypeCoercion */
+            return max(self::map($arr, $cb));
+        }
         return Arr::map($cb, fn ($k, $field) => [$field, Arr::max($arr, $field)]); // fieldname => max_Value
     }
 
@@ -816,6 +829,7 @@ abstract class Arr0 {
         $r = [];
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         self::each($arr, function ($ok, $v) use (&$r, $cb, $np): void {  // $ok - original key
+            /** @psalm-suppress TooManyArguments */
             $t = $np == 1 ? $cb($v) : $cb($ok, $v);
             if ($t !== null) {
                 /** @psalm-suppress all */
