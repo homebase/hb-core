@@ -209,6 +209,8 @@ class Arr extends Arr0 {
             return array_reverse(self::splitAt(array_reverse($arr), first: $last));
         }
         error_unless($cb, 'empty callback');
+
+        /** @psalm-suppress PossiblyNullArgument */
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         $a = [];  // part 1
         $b = [];  // part 2
@@ -219,6 +221,7 @@ class Arr extends Arr0 {
 
                 continue;
             }
+            // @psalm-suppress TooFewArguments
             if (($np == 1 && $cb($v)) || ($np > 1 && $cb($k, $v))) {
                 $b[$k] = $v;
                 $p = 1;
@@ -472,12 +475,15 @@ class Arr extends Arr0 {
     }
 
     /**
-     *  key of minimal value
+     * key of minimal value, null if no values
      *
      * @param iterable<mixed> $arr
      */
     static function minValueKey(iterable $arr): mixed {
         \is_array($arr) || $arr = iterator_to_array($arr);
+        if (!$arr) {
+            return null;
+        }
         $min = min($arr);
 
         return array_search($min, $arr, true);
@@ -487,10 +493,13 @@ class Arr extends Arr0 {
     /**
      *  key of maximal value
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function maxValueKey(iterable $arr): mixed {
         \is_array($arr) || $arr = iterator_to_array($arr);
+        if (!$arr) {
+            return null;
+        }
         $max = max($arr);
 
         return array_search($max, $arr, true);
@@ -502,7 +511,7 @@ class Arr extends Arr0 {
      * keys preserved
      * order or duplicate-value keys is random
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      *
      * @return mixed[]
      */
@@ -541,7 +550,7 @@ class Arr extends Arr0 {
      * keys preserved
      * order or duplicate-value keys is random
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      *
      * @return mixed[]
      */
@@ -576,7 +585,7 @@ class Arr extends Arr0 {
     /**
      * first value from array | null
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function first(iterable $arr, mixed $where = null, mixed $default = null, mixed $map = null): mixed {
         if (\is_array($arr) && !$map && !$where) {
@@ -590,7 +599,7 @@ class Arr extends Arr0 {
     /**
      * first KEY from array | null
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function firstKey(iterable $arr, mixed $where = null, mixed $default = null, mixed $map = null): mixed {
         $r = self::map($arr, $map, where: $where, while: 1);
@@ -601,7 +610,7 @@ class Arr extends Arr0 {
     /**
      * second value from array | null
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function second(iterable $arr, mixed $where = null, mixed $default = null): mixed {
         $items = array_values(self::firstX($arr, 2, $where));
@@ -612,7 +621,7 @@ class Arr extends Arr0 {
     /**
      * third value from array | null
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function third(iterable $arr, mixed $where = null, mixed $default = null): mixed {
         $items = array_values(self::firstX($arr, 3, $where));
@@ -623,7 +632,7 @@ class Arr extends Arr0 {
     /**
      * last value from array
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function last(iterable $arr, mixed $where = null, mixed $default = null, mixed $map = null): mixed {
         $r = self::map($arr, $map, where: $where, while: 1, reverse: 1);
@@ -634,7 +643,7 @@ class Arr extends Arr0 {
     /**
      * last key from array | null
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      */
     static function lastKey(iterable $arr, mixed $where = null, mixed $default = null): mixed {
         $kv = self::lastX($arr, 1, $where);
@@ -645,7 +654,7 @@ class Arr extends Arr0 {
     /**
      *  first X values (keys preserved)
      *
-     * @param mixed[] $arr
+     * @param iterable<mixed> $arr
      *
      * @return mixed[]
      */
@@ -660,8 +669,8 @@ class Arr extends Arr0 {
     /**
      * last X values  (keys preserved)
      *
-     * @param mixed[]    $arr
-     * @param null|mixed $where
+     * @param iterable<mixed> $arr
+     * @param null|mixed      $where
      *
      * @return mixed[]
      */
@@ -848,6 +857,7 @@ class Arr extends Arr0 {
         }
         $keys = array_rand($arr, $sampleSize);
         if (1 == $sampleSize) {
+            // @psalm-suppress all
             return $preserveKeys ? [$keys => $arr[$keys]] : $arr[$keys];
         }
         $kv = self::only($arr, $keys);

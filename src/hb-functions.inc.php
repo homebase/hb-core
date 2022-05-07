@@ -337,6 +337,7 @@ function hash_unset(array &$hash, string $key): mixed {
 function ttl(int|array $ttl = [3600, 33]): int {
     // ttl .. ttl+rnd(%)
     if (\is_array($ttl)) {
+        // @psalm-suppress RedundantConditionGivenDocblockType
         error_unless(\is_int($ttl[0]), 'ttl-part must be int');
 
         return $ttl[0] + random_int(0, (int) ($ttl[0] * $ttl[1] / 100));
@@ -355,11 +356,13 @@ function ttl(int|array $ttl = [3600, 33]): int {
  */
 function a(string $url, string|array $args_or_text = '', string $text = '', string $html = ''): string {
     // "<a href=.."
-    if ('' === $text) {
-        $text = $args_or_text;
-        $args_or_text = [];
+    if (\is_array($args_or_text)) {
+        $url = url($url, $args_or_text); // args
+    } else {
+        error_if($text, 'cant combine string-args and text');
+
+        return a($url, [], $args_or_text, $html);
     }
-    $url = url($url, $args_or_text); // args
 
     return "<a href=\"{$url}\"".($html ? ' '.$html : '').'>'.h($text).'</a>';
 }
@@ -414,7 +417,7 @@ function between($v, $from, $to): bool {
 /**
  * benchmark function
  *
- * @param callable $fn        [description]
+ * @param \Closure $fn        [description]
  * @param int      $seconds   [description]
  * @param mixed    $fn_params
  *
@@ -422,7 +425,7 @@ function between($v, $from, $to): bool {
  *
  * @psalm-return array{'μs': float, count: 0|positive-int}
  */
-function benchmark(callable $fn, $seconds = 3, $fn_params = []): array { // [$time_per_iteration, iterations]
+function benchmark(\Closure $fn, $seconds = 3, $fn_params = []): array { // [$time_per_iteration, iterations]
     $start = microtime(true);
     $end = $start + $seconds;
     $cnt = 0;

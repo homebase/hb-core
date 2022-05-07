@@ -153,33 +153,31 @@ abstract class Arr0 {
      * when $map is array (old_field_name=>new_field+name) - ($arr is array of arrays) - @see only()
      *   we return NON-NULL columns from fieldlist when at least one field is not null PLUS we rename field
      *
-     * @param iterable<mixed> $arr
-     * @param null|mixed      $map
-     * @param null|mixed      $where
-     * @param null|mixed      $skip
-     * @param null|mixed      $while
-     * @param mixed           $reverse
+     * @param iterable<mixed>              $arr
+     * @param \Closure|int|string|string[] $map
      *
      * @return mixed[]
      */
     static function map(
         iterable $arr,
-        $map = null,
-        $where = null,
-        $skip = null,
-        $while = null,
-        $reverse = false,
+        int|string|array|\Closure $map = null,
+        mixed $where = null,
+        mixed $skip = null,
+        mixed $while = null,
+        mixed $reverse = false,
     ): array {
         if ($where || $skip || $while || $reverse) {
             $arr = self::iter($arr, $where, $skip, $while, $reverse);
         }
         if (!$map) {
             error_if(\is_array($arr), 'you need at least one callback for map method');
+
+            /** @psalm-suppress PossiblyInvalidArgument */
             $r = iterator_to_array($arr);
 
             return 2 === $reverse ? array_reverse($r, true) : $r;
         }
-        if (\is_string($map)) {
+        if (\is_string($map) || \is_int($map)) {
             $map = fn ($k, array $v): array => isset($v[$map]) ? [$k => $v[$map]] : [];
         }
         if (\is_array($map)) {
@@ -248,7 +246,7 @@ abstract class Arr0 {
      */
     static function mapList(
         iterable $arr,
-        callable $map,
+        \Closure $map,
         mixed $where = null,
         mixed $skip = null,
         mixed $while = null,
@@ -301,7 +299,7 @@ abstract class Arr0 {
      */
     static function each(
         iterable $arr,
-        callable $cb,
+        \Closure $cb,
         $where = null,
         $skip = null,
         $while = null,
@@ -393,9 +391,9 @@ abstract class Arr0 {
      *  3. while
      *
      * @param iterable<mixed> $arr
-     * @param ?callable       $where
-     * @param ?callable       $skip
-     * @param ?callable       $while
+     * @param ?\Closure       $where
+     * @param ?\Closure       $skip
+     * @param ?\Closure       $while
      * @param bool|int        $reverse
      */
     static function iter(
@@ -440,18 +438,14 @@ abstract class Arr0 {
      *     returns $key => [value, callback($key, $value)]
      *
      * @param iterable<mixed> $arr
-     * @param null|mixed      $where
-     * @param null|mixed      $skip
-     * @param null|mixed      $while
-     * @param mixed           $reverse
      */
     static function iterCB(
         iterable $arr,
-        callable $cb,
-        $where = null,
-        $skip = null,
-        $while = null,
-        $reverse = false
+        \Closure $cb,
+        mixed $where = null,
+        mixed $skip = null,
+        mixed $while = null,
+        mixed $reverse = false
     ): \Generator {
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         $iter = self::iter($arr, $where, $skip, $while, $reverse);
@@ -824,6 +818,7 @@ abstract class Arr0 {
         self::each($arr, function ($ok, $v) use (&$r, $cb, $np): void {  // $ok - original key
             $t = $np == 1 ? $cb($v) : $cb($ok, $v);
             if ($t !== null) {
+                /** @psalm-suppress all */
                 $g = match (1) { // g - (int) group
                     true => 1, // @phpstan-ignore-line
                     false => 0, // @phpstan-ignore-line
@@ -862,7 +857,7 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function whereNot(iterable $arr, callable $callback): array {
+    static function whereNot(iterable $arr, \Closure $callback): array {
         return iterator_to_array(self::_whereNot($arr, $callback));
     }
 
@@ -871,7 +866,7 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function while(iterable $arr, callable $callback): array {
+    static function while(iterable $arr, \Closure $callback): array {
         return iterator_to_array(self::_while($arr, $callback));
     }
 
@@ -1038,14 +1033,14 @@ abstract class Arr0 {
         if (is_iterable($iterable)) {
             return iterator_to_array($iterable);
         }
-        if (\is_object($iterable)) {
-            if (method_exists($iterable, 'toArray')) {
-                return $iterable->toArray();
-            }
-            if (method_exists($iterable, '__toArray')) {
-                return $iterable->__toArray();
-            }
+        // if (\is_object($iterable)) {
+        if (method_exists($iterable, 'toArray')) {
+            return $iterable->toArray();
         }
+        if (method_exists($iterable, '__toArray')) {
+            return $iterable->__toArray();
+        }
+        // }
         \hb\error("Can't cast ".get_debug_type($iterable).' to array');
     }
 
