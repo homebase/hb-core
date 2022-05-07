@@ -656,7 +656,6 @@ class Arr extends Arr0 {
      * return up to $sampleSize items
      *
      * @param mixed $arr
-     *
      * @return array [key => value | [value, ...]
      */
     static function randomSample($arr, int $sampleSize, bool $preserveKeys = true): array {
@@ -784,6 +783,7 @@ class Arr extends Arr0 {
 
     /**
      * sort by function of field fn($row) => $by
+     * @param iterable<mixed> $arr
      */
     static function sortBy(iterable $arr, $cb, bool $descending = false): array {
         \is_array($arr) || $arr = self::value($arr);
@@ -792,8 +792,11 @@ class Arr extends Arr0 {
 
         return $arr;
     }
-
-    // Recursively sort an array by keys and values.
+    
+    /**
+     * Recursively sort an array by (if assoc) keys OR values.
+     * @return mixed[]
+     */
     static function sortRecursive(array $arr, $descending = false): array {
         foreach ($arr as &$value) {
             \is_array($value) && $value = static::sortRecursive($value, $descending);
@@ -807,14 +810,18 @@ class Arr extends Arr0 {
         return $arr;
     }
 
-    static function query($arr): string {
+    /**
+     * @param mixed[] $arr
+     */
+    static function query(array $arr): string {
         return http_build_query($arr, '', '&', PHP_QUERY_RFC3986);
     }
 
     /**
      * If the given value is not an array and not null, wrap it in one.
-     *
+     * same as (array) $value
      * @param mixed $value
+     * @return mixed[]
      */
     static function wrap($value): array {
         if (null === $value) {
@@ -824,7 +831,10 @@ class Arr extends Arr0 {
         return \is_array($value) ? $value : [$value];
     }
 
-    static function times($times, $cb): array {
+    /**
+     *  @return mixed[]
+     */
+    static function times(int $times, callable $cb): array {
         //  == for(range(1..$times) as $i) $r[$i] =$cb($i);
         return array_map($cb, range(1, $times));
     }
