@@ -52,7 +52,9 @@ $config
 	'strict_comparison' => false, // can break old code
 	'yoda_style' => false, // ugly sometimes
 	#'increment_style' => false, // c++ not ++c
-	'increment_style' => ['style' => 'post'] // c++ not ++c
+	'increment_style' => ['style' => 'post'], // c++ not ++c
+	'single_line_comment_style' => false,  // psalm does not support "//" comments
+	'phpdoc_to_comment' => false, // psalm does not like this	
     ]))->setFinder($finder)
 
 ;

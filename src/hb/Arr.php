@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+/*
+ * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+ */
 
 namespace hb;
 
@@ -221,6 +223,7 @@ class Arr extends Arr0 {
 
                 continue;
             }
+
             /** @psalm-suppress TooFewArguments */
             if (($np == 1 && $cb($v)) || ($np > 1 && $cb($k, $v))) {
                 $b[$k] = $v;
@@ -855,8 +858,9 @@ class Arr extends Arr0 {
         if ($cnt <= $sampleSize) {
             return $preserveKeys ? $arr : array_values($arr);
         }
-        if (! $arr)
-            error("empty array");
+        if (!$arr) {
+            error('empty array');
+        }
         $keys = array_rand($arr, $sampleSize);
         if (1 == $sampleSize) {
             /** @psalm-suppress all */

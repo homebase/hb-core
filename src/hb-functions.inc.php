@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+/*
+ * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+ */
 
 namespace hb;
 
@@ -449,8 +451,6 @@ function isSuppressed(): bool {
 /**
  * non recoverable Error -  developer uses Code Incorrect Way
  * throw \hb\Error exception if ...
- *
- * @return void
  */
 function error_if(mixed $boolean, string $message): void {
     if ($boolean) {
@@ -461,8 +461,6 @@ function error_if(mixed $boolean, string $message): void {
 /**
  * non recoverable Error -  developer uses Code Incorrect Way
  * throw \hb\Error exception if ...
- *
- * @return void
  */
 function error_unless(mixed $boolean, string $message): void {
     if (!$boolean) {

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-// This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+/*
+ * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
+ */
 
 namespace hb;
 
@@ -579,16 +581,17 @@ abstract class Arr0 {
         $skip = null,
         $while = null
     ): mixed {
-        error_unless($arr, "non empty array expected");
+        error_unless($arr, 'non empty array expected');
         ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
-        if (is_string($cb)) {
-            /** @psalm-suppress ArgumentTypeCoercion */            
+        if (\is_string($cb)) {
+            /** @psalm-suppress ArgumentTypeCoercion */
             return min(self::map($arr, $cb));
         }
         if ($cb instanceof \Closure) {
             /** @psalm-suppress ArgumentTypeCoercion */
             return min(Arr::mapList($arr, $cb));
         }
+
         return Arr::map($cb, fn ($k, $field) => [$field, Arr::min($arr, $field)]); // fieldname => min_Value
     }
 
@@ -611,16 +614,17 @@ abstract class Arr0 {
         $skip = null,
         $while = null
     ): mixed {
-        error_unless($arr, "non empty array expected");
+        error_unless($arr, 'non empty array expected');
         ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
         if ($cb instanceof \Closure) {
             /** @psalm-suppress ArgumentTypeCoercion */
             return max(Arr::mapList($arr, $cb));
         }
-        if (is_string($cb)) {
+        if (\is_string($cb)) {
             /** @psalm-suppress ArgumentTypeCoercion */
             return max(self::map($arr, $cb));
         }
+
         return Arr::map($cb, fn ($k, $field) => [$field, Arr::max($arr, $field)]); // fieldname => max_Value
     }
 
