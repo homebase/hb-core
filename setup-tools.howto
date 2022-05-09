@@ -1,3 +1,5 @@
-checkout https://github.com/homebase/php-tools somewhere
-run ./install all there
-create symlink ln -s $PATH/php-tools/bin tools
+* checkout https://github.com/homebase/php-tools somewhere
+* run `./install all` there
+* create symlink `ln -s $PHP_TOOLS_PATH/php-tools/bin tools`
+
+* to make tests runnable place create symlink for `stest` in your `~/bin` or `/usr/local/bin`
