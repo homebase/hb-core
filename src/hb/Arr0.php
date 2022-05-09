@@ -137,7 +137,8 @@ abstract class Arr0 {
      *
      * Order of callbacks:
      *
-     *  0. reverse   - false|0, 1|true - reverse, 2 - reverse, apply callbacks, reverse again
+     *  0. reverse   - false, true
+     *  0. fromEnd   - reverse, apply all methods, reverse again (double reverse)
      *  1. where     - fn($v) | fn($k, $v) | "fieldname" | ["field", "f" => v, f => null, ...]
      *  2. skip      - fn($v) | fn($k, $v) | items-to-skip | "fieldname" | ["field", "f" => v, f => null, ...]
      *  3. while     - fn($v) | fn($k, $v) | items-to-get | "fieldname" | ["field", "f" => v, f => null, ...]
@@ -156,6 +157,9 @@ abstract class Arr0 {
      *   we return NON-NULL columns from fieldlist when at least one field is not null PLUS we rename field
      *
      * @param iterable<mixed>              $arr
+     * @param \Closure|int|string|string[] $where
+     * @param \Closure|int|string|string[] $skip
+     * @param \Closure|int|string|string[] $while
      * @param \Closure|int|string|string[] $map
      *
      * @return mixed[]
@@ -163,11 +167,15 @@ abstract class Arr0 {
     static function map(
         iterable $arr,
         int|string|array|\Closure $map = null,
-        mixed $where = null,
-        mixed $skip = null,
-        mixed $while = null,
-        mixed $reverse = false,
+        int|string|array|\Closure $where = null,
+        int|string|array|\Closure $skip = null,
+        int|string|array|\Closure $while = null,
+        bool $reverse = false,
+        bool $fromEnd = false
     ): array {
+        if ($fromEnd) {
+            $reverse = true;
+        }
         if ($where || $skip || $while || $reverse) {
             $arr = self::iter($arr, $where, $skip, $while, $reverse);
         }
@@ -177,17 +185,13 @@ abstract class Arr0 {
             /** @psalm-suppress PossiblyInvalidArgument */
             $r = iterator_to_array($arr);
 
-            return 2 === $reverse ? array_reverse($r, true) : $r;
+            return $fromEnd ? array_reverse($r, true) : $r;
         }
         if (\is_string($map) || \is_int($map)) {
             $map = fn ($k, array $v): array => isset($v[$map]) ? [$k => $v[$map]] : [];
         }
         if (\is_array($map)) {
-            $map = /*
-             * @return mixed[]
-             *
-             * @psalm-return array<array>
-             */
+            $map = /** @return mixed[] */
             fn ($k, array $v): array => ($r = self::only($v, $map)) ? [$k => $r] : [];
         }
 
@@ -225,18 +229,19 @@ abstract class Arr0 {
                 // break;
         }
 
-        return 2 === $reverse ? array_reverse($r, true) : $r;
+        return $fromEnd ? array_reverse($r, true) : $r;
     }
 
     /**
      * Map List (non associative arrays) => List
-     *  Can do all: chop leading/finishing items, expand item into several or none, converting, filtering, while
+     *  Can do all: chop leading/trailing items, expand item into several or none, converting, filtering, while
      *
      * Suggested usage (use php8 named arguments):
      *   Arr::mapList($arr, $callback, where: fn($a) => $a % 2, skip: 10, while: fn($a) => $a > 19,  reverse: 1)
      *
      * Order of callbacks:
      *  0. reverse   - false|0, 1|true - reverse, 2 - reverse, apply callbacks, reverse again
+     *  0. fromEnd   - reverse, apply all methods, reverse again  (double reverse)
      *  1. where     - fn($v) | fn($k, $v)
      *  2. skip      - fn($v) | fn($k, $v)
      *  3. while     - fn($v) | fn($k, $v)
@@ -255,8 +260,12 @@ abstract class Arr0 {
         mixed $where = null,
         mixed $skip = null,
         mixed $while = null,
-        bool|int $reverse = false
+        bool $reverse = false,
+        bool $fromEnd = false
     ): array {
+        if ($fromEnd) {
+            $reverse = true;
+        }
         if ($where || $skip || $while || $reverse) {
             $arr = self::iter($arr, $where, $skip, $while, $reverse);
         }
@@ -278,7 +287,7 @@ abstract class Arr0 {
             error('Arr::mapList callback must accept one or two arguments: fn($value) or fn($key, $value)');
         }
 
-        return 2 === $reverse ? array_reverse($r) : $r;
+        return $fromEnd ? array_reverse($r) : $r;
     }
 
     /**
@@ -350,7 +359,6 @@ abstract class Arr0 {
      * @param null|mixed      $where
      * @param null|mixed      $skip
      * @param null|mixed      $while
-     * @param mixed           $reverse
      *
      * NB: fold is fast - sometimes faster than map
      *     'μs' => 0.7 : php init.php --bench '\hb\Arr::fold(range(2,10), fn($c, $k, $v) => \\hb\\then($c[$k] = $v, $c), [])'
@@ -365,7 +373,7 @@ abstract class Arr0 {
         $where = null,
         $skip = null,
         $while = null,
-        $reverse = false
+        bool $reverse = false
     ): mixed {
         if ($where || $skip || $while || $reverse) {
             $arr = self::iter($arr, $where, $skip, $while, $reverse);
@@ -395,18 +403,17 @@ abstract class Arr0 {
      *  2. skip
      *  3. while
      *
-     * @param iterable<mixed> $arr
-     * @param ?\Closure       $where
-     * @param ?\Closure       $skip
-     * @param ?\Closure       $while
-     * @param bool|int        $reverse
+     * @param iterable<mixed>              $arr
+     * @param \Closure|int|string|string[] $where
+     * @param \Closure|int|string|string[] $skip
+     * @param \Closure|int|string|string[] $while
      */
     static function iter(
         iterable $arr,
-        $where = null,
-        $skip = null,
-        $while = null,
-        $reverse = false
+        int|string|array|\Closure $where = null,
+        int|string|array|\Closure $skip = null,
+        int|string|array|\Closure $while = null,
+        bool $reverse = false
     ): \Generator {
         if ($reverse) {
             if (!\is_array($arr)) {
@@ -754,7 +761,6 @@ abstract class Arr0 {
      * @param null|mixed      $where
      * @param null|mixed      $skip
      * @param null|mixed      $while
-     * @param mixed           $reverse
      *
      * @return int|mixed[]
      */
@@ -764,7 +770,7 @@ abstract class Arr0 {
         $where = null,
         $skip = null,
         $while = null,
-        $reverse = false
+        bool $reverse = false
     ): int|array {
         if (\is_array($cb)) { // count multiple keys
             $count = self::flipTo($cb, 0); // [field => 0]

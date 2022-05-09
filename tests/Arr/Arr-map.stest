@@ -72,8 +72,8 @@ A::map($range5, skip:1, while:3);
 A::map($range5, skip:1, while:3, reverse:true);
     ["4"=>4, "3"=>3, 2];
 
-// double reverse:
-A::map($range5, skip:1, while:3, reverse:2);
+// double reverse: (skip and while from the end of an array)
+A::map($range5, skip:1, while:3, fromEnd:true);
     ["2"=>2, "3"=>3, "4"=>4];
 
 // difference between while and where:

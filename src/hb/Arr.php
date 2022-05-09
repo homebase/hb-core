@@ -638,7 +638,7 @@ class Arr extends Arr0 {
      * @param iterable<mixed> $arr
      */
     static function last(iterable $arr, mixed $where = null, mixed $default = null, mixed $map = null): mixed {
-        $r = self::map($arr, $map, where: $where, while: 1, reverse: 1);
+        $r = self::map($arr, $map, where: $where, while: 1, reverse: true);
 
         return $r ? reset($r) : $default;
     }
@@ -681,7 +681,7 @@ class Arr extends Arr0 {
         if (\is_array($arr) && !$where) {
             return \array_slice($arr, -$count, null, true);
         }
-        $r = self::fold($arr, fn ($a, $k, $v) => \hb\then($a[$k] = $v, $a), [], where: $where, while: $count, reverse: 1);
+        $r = self::fold($arr, fn ($a, $k, $v) => \hb\then($a[$k] = $v, $a), [], where: $where, while: $count, reverse: true);
 
         return array_reverse($r, true);
     }
@@ -796,7 +796,7 @@ class Arr extends Arr0 {
      * @return mixed[]
      */
     static function exceptLast(iterable $arr, int $last): array {
-        return self::map($arr, skip: $last, reverse: 2);
+        return self::map($arr, skip: $last, fromEnd: true);
     }
 
     /** @compat
