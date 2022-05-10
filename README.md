@@ -3,9 +3,8 @@
 checked with `psalm (level 2)` && `php-stan (level 6)`
 
 ## Install
-After checkout do:
-* `composer install`
-* do steps from `setup-tools.howto`
+1. `composer install`
+2. do steps from `setup-tools.howto`
 
 # Provided Classes & Functions
 
@@ -31,6 +30,9 @@ After checkout do:
 > `composer psalm-dry`   AND   `composer psalm-fix`
     review/apply suggested code changes by psalm, be careful always do dry before applying
 
+> `composer cs-dry`   AND   `composer cs-fix`
+    review/apply suggested code changes by php-code-fixer, be careful always do dry before applying
+
 > `composer doc`
     generate phpDocumentor documentation in `doc` folder
 
@@ -39,5 +41,4 @@ After checkout do:
 
 > `./check-push`
     do all checks, add all new files to git, do `git commit -v` and `git push --tags`
-
 
