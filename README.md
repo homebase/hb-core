@@ -29,7 +29,7 @@ After checkout do:
     php syntax check
 
 > `composer psalm-dry`   AND   `composer psalm-fix`
-    suggested code changes by psalm, be careful always do dry before applying
+    review/apply suggested code changes by psalm, be careful always do dry before applying
 
 > `composer doc`
     generate phpDocumentor documentation in `doc` folder
