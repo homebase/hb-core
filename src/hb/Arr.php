@@ -178,7 +178,7 @@ class Arr extends Arr0 {
      *
      * @see partition, groupBy
      *
-     * @param mixed[]    $arr
+     * @param mixed[] $arr
      *
      * @return mixed[]
      */

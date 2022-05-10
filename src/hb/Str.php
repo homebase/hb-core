@@ -67,11 +67,11 @@ class Str {
     /**
      * is string ends with suffix? (suffixes)
      *
-     * @param string|scalar[] $suffixes
+     * @param scalar[]|string $suffixes
      */
     static function endsWith(string $s, string|array $suffixes): bool {
         foreach ((array) $suffixes as $needle) {
-            if (mb_substr($s, -mb_strlen((string)$needle)) === (string) $needle) {
+            if (mb_substr($s, -mb_strlen((string) $needle)) === (string) $needle) {
                 return true;
             }
         }
@@ -395,8 +395,6 @@ class Str {
     /**
      * conditional sprintf
      * cs($a,"A=%s")   is kinda the same as $a ? sprintf("A=%s", $a) : "";   (plus x2s is applied for non scalars)
-     *
-     * @param mixed $s
      */
     static function cs(mixed $s, string $fmt_true, string $fmt_false = ''): string {
         // !!! ORDER IS DIFFERENT than HB1
@@ -470,10 +468,11 @@ class Str {
     /**
      * have full-word-substring(s) in string(s) - case sensitive (default)
      * ala: grep -wi
+     *
      * @param string|string[] $str
      * @param string|string[] $substring
      */
-    static function haveSubstring(string|array $str, string|array $substring , bool $caseSensitive=true): bool {
+    static function haveSubstring(string|array $str, string|array $substring, bool $caseSensitive = true): bool {
         if (\is_array($str)) {
             foreach ($str as $s) {
                 if (self::haveSubstring($s, $substring)) {
@@ -493,7 +492,7 @@ class Str {
             return false;
         }
 
-        return (bool) preg_match('!\\b\\Q'.$substring.'\\E\\b!'.($caseSensitive?"":"i"), $str);
+        return (bool) preg_match('!\\b\\Q'.$substring.'\\E\\b!'.($caseSensitive ? '' : 'i'), $str);
     }
 
     /**
@@ -524,7 +523,6 @@ class Str {
 
     /**
      * Generate a URL friendly "slug" from a given string.  ~ copied from laravel
-     *
      */
     static function slug(string $s, string $separator = '-', bool $toAscii = true): string {
         if ($toAscii) {

@@ -7,6 +7,18 @@ then
     exit 1
 fi
 
+composer cs-dry > /dev/null 2>/dev/null
+if [ $? -ne 0 ]
+then
+   composer cs-dry
+   echo
+   echo $(tput setab 3)$(tput setaf 7)*** APPLY Code Styling? ***$(tput sgr0)
+   echo press ^C to stop, any other key to continue
+   read
+   composer cs-fix
+fi
+
+
 composer test-q
 if [ $? -ne 0 ] 
 then
@@ -29,13 +41,6 @@ then
     composer stan
     exit 1
 fi
-
-#composer cs-dry
-#if [ $? -ne 0 ] 
-#then
-#    echo "cs failed"
-#    exit 1
-#fi
 
 echo
 echo $(tput setab 2)$(tput setaf 7)*** CHECK SUCCESS ***$(tput sgr0)

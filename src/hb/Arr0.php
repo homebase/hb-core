@@ -250,10 +250,11 @@ abstract class Arr0 {
      *  Example: duplicate even numbers in list:
      *    A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
      *
-     * @param iterable<mixed> $arr
+     * @param iterable<mixed>              $arr
      * @param \Closure|int|string|string[] $where
      * @param \Closure|int|string|string[] $skip
      * @param \Closure|int|string|string[] $while
+     *
      * @return mixed[]
      */
     static function mapList(
