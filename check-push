@@ -7,4 +7,5 @@ then
 fi
 git add .
 git commit -v
+git push
 git push --tags
