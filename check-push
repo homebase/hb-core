@@ -2,8 +2,12 @@
 ./check-commit
 if [ $? -eq 2 ]
 then
-    echo "Push cancelled, commit failed"
+  if ! git diff --quiet
+  then
+    echo "Push cancelled, changed files present"
+    echo "do \"git push\" yourself"
     exit 1
+  fi
 fi
 git push
 if [ $? -ne 0 ]
