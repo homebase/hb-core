@@ -1,10 +1,15 @@
 # Static Standalone Classes for Homebase 2 php 8/8.1 Framework
 
-checked with `psalm (level 2)` && `php-stan (level 6)`
+checked with `[psalm](https://psalm.dev/docs/annotating_code/supported_annotations/) (level 2)` && `[php-stan](https://phpstan.org/writing-php-code/phpdocs-basics) (level 6)`
 
 ## Install
 1. `composer install`
-2. do steps from `setup-tools.howto`
+2. `install [php-tools](https://github.com/homebase/php-tools#install)`
+3. `ln -s ~/src/php-tools/bin tools`
+
+## Using it
+- `composer require --dev homebase2/hb-core` - recommended
+= `composer require homebase2/hb-core` for stable version
 
 # Provided Classes & Functions
 
