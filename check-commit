@@ -1,15 +1,20 @@
 #!/bin/bash
 ./check
-if [ $? -eq 1 ] 
-then
+if [ $? -eq 1 ]; then
     echo "Check Failed"
     exit 1
 fi
+
 git add .
-git commit -v
-if [ $? -eq 1 ]
-then
-    # most likely empty message
-    echo "Exiting, commit failed"
-    exit 2
+
+#if ! git diff --exit-code
+if `git status | grep -q "nothing to commit"`; then
+    echo "no files to commit"
+else
+    git commit -v
+    if [ $? -eq 1 ]; then
+        # most likely empty message
+        echo "Exiting, commit failed"
+        exit 2
+    fi
 fi

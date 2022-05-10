@@ -1,13 +1,10 @@
 #!/bin/bash
 ./check-commit
-if [ $? -eq 2 ]
+if [ $? -ne 0 ]
 then
-  if ! git diff --quiet
-  then
     echo "Push cancelled, changed files present"
     echo "do \"git push\" yourself"
     exit 1
-  fi
 fi
 git push
 if [ $? -ne 0 ]
@@ -15,6 +12,7 @@ then
     echo
     echo $(tput setab 1)$(tput setaf 7)*** GIT-PUSH Failed ***$(tput sgr0)
     echo
+    exit 1
 fi
 
 echo
