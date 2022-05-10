@@ -25,6 +25,7 @@
   "scripts": {
     "phpstan": "tools/phpstan analyse -c phpstan.neon src",
     "stan": "tools/phpstan analyse -c phpstan.neon src",
+    "stan-q": "tools/phpstan -q analyse -c phpstan.neon src",
     "stan2": "tools/phpstan analyse --level 2 -c phpstan.neon src",
     "stan3": "tools/phpstan analyse --level 3 -c phpstan.neon src",
     "stan4": "tools/phpstan analyse --level 4 -c phpstan.neon src",
@@ -39,8 +40,7 @@
     "rector-dry": "tools/rector process src --dry-run",
     "rector": "tools/rector process src",
     "test": "tools/stest-all tests",
-    "tests": "tools/stest-all -q tests",
-    "test-quite": "tools/stest-all -q tests",
+    "test-q": "tools/stest-all -q tests",
     "lint": "find src -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v \"No syntax errors detected\" )"
   }    
 }

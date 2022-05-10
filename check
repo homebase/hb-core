@@ -1,0 +1,37 @@
+#!/bin/sh
+
+composer lint
+if [ $? -eq 1 ] 
+then
+    echo "Syntax Check Failed"
+    exit 1
+fi
+
+composer test-q
+if [ $? -ne 0 ] 
+then
+    echo "Unit Test Failed"
+    exit 1
+fi
+
+composer psalm > psalm.local
+if [ $? -ne 0 ] 
+then
+    echo "Psalm Failed"
+    exit 1
+fi
+
+composer stan-q
+if [ $? -ne 0 ] 
+then
+    echo "php-Stan Failed"
+    composer stan
+    exit 1
+fi
+
+#composer cs-dry
+#if [ $? -ne 0 ] 
+#then
+#    echo "cs failed"
+#    exit 1
+#fi

@@ -1,0 +1,10 @@
+#!/bin/bash
+./check
+if [ $? -eq 1 ] 
+then
+    echo "Check Failed"
+    exit 1
+fi
+git add .
+git commit -v
+git push --tags

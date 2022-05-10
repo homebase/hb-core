@@ -1,6 +1,7 @@
 ☐ pre-commit githook - do php lint
 
-☐ composer git-hook
+ ☐ stest-all - Error Code on test fail - howto
+
 
 ☐ class Naming & coding standard
 
@@ -24,3 +25,8 @@
     https://psalm.dev/docs/manipulating_code/fixing/
 
  ☐ rector
+
+
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+Archive:
+ ✔ composer git-hook @done (22-05-09 17:34)

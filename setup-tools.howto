@@ -1,4 +1,4 @@
-* checkout https://github.com/homebase/php-tools somewhere
+* checkout https://github.com/homebase/php-tools somewhere (suggestion: ~/src/)
 * run `./install all` there
 * create symlink `ln -s $PHP_TOOLS_PATH/php-tools/bin tools`
 
