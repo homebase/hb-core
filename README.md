@@ -14,8 +14,8 @@ checked with [psalm](https://psalm.dev/docs/annotating_code/supported_annotation
 # Provided Classes & Functions
 
 - src/hb-functions.inc.php - "\hb" namespace functions used by framework
-- Arr - array methods
-- Str - string methods
+- [Arr](src/hb/Arr.php) & [Arr0](src/hb/Arr0.php) - array methods
+- [Str](src/hb/Str.php) - string methods
 - DH  - hb\deephash (deep array) methods (TODO)
 
 ## Notable tools provided
