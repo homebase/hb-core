@@ -67,11 +67,11 @@ class Str {
     /**
      * is string ends with suffix? (suffixes)
      *
-     * @param mixed $suffixes
+     * @param string|scalar[] $suffixes
      */
-    static function endsWith(string $s, $suffixes): bool {
+    static function endsWith(string $s, string|array $suffixes): bool {
         foreach ((array) $suffixes as $needle) {
-            if (mb_substr($s, -mb_strlen($needle)) === (string) $needle) {
+            if (mb_substr($s, -mb_strlen((string)$needle)) === (string) $needle) {
                 return true;
             }
         }
@@ -157,12 +157,8 @@ class Str {
 
     /**
      * substring (unicode)
-     *
-     * @param mixed      $string
-     * @param mixed      $start
-     * @param null|mixed $length
      */
-    static function substr($string, $start, $length = null): string {
+    static function substr(string $string, int $start, int $length = null): string {
         return mb_substr($string, $start, $length, 'UTF-8');
     }
 
@@ -402,7 +398,7 @@ class Str {
      *
      * @param mixed $s
      */
-    static function cs(/* mixed */ $s, string $fmt_true, string $fmt_false = ''): string {
+    static function cs(mixed $s, string $fmt_true, string $fmt_false = ''): string {
         // !!! ORDER IS DIFFERENT than HB1
         if ($s) {
             return sprintf($fmt_true, \is_scalar($s) ? (string) $s : \hb\x2s($s));
@@ -472,13 +468,12 @@ class Str {
     }
 
     /**
-     * have full-word-substring(s) in string(s) - case insensitive
+     * have full-word-substring(s) in string(s) - case sensitive (default)
      * ala: grep -wi
-     *
-     * @param mixed $str
-     * @param mixed $substring
+     * @param string|string[] $str
+     * @param string|string[] $substring
      */
-    static function haveSubstring(/* string | array */ $str, /* string | array */ $substring): bool {
+    static function haveSubstring(string|array $str, string|array $substring , bool $caseSensitive=true): bool {
         if (\is_array($str)) {
             foreach ($str as $s) {
                 if (self::haveSubstring($s, $substring)) {
@@ -498,7 +493,7 @@ class Str {
             return false;
         }
 
-        return (bool) preg_match('!\\b\\Q'.$substring.'\\E\\b!i', $str);
+        return (bool) preg_match('!\\b\\Q'.$substring.'\\E\\b!'.($caseSensitive?"":"i"), $str);
     }
 
     /**
@@ -530,9 +525,8 @@ class Str {
     /**
      * Generate a URL friendly "slug" from a given string.  ~ copied from laravel
      *
-     * @param mixed $toAscii
      */
-    static function slug(string $s, string $separator = '-', $toAscii = true): string {
+    static function slug(string $s, string $separator = '-', bool $toAscii = true): string {
         if ($toAscii) {
             $s = static::ascii($s);
         }
@@ -551,10 +545,8 @@ class Str {
 
     /**
      * Generate a URL from string == slug method
-     *
-     * @param mixed $toAscii
      */
-    static function url(string $s, string $separator = '-', $toAscii = true): string {
+    static function url(string $s, string $separator = '-', bool $toAscii = true): string {
         return self::slug($s, $separator, $toAscii);
     }
 
