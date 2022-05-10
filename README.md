@@ -47,3 +47,7 @@ checked with [psalm](https://psalm.dev/docs/annotating_code/supported_annotation
 > `./check-push`
     do all checks, add all new files to git, do `git commit -v` and `git push --tags`
 
+
+
+PS:<br>
+ this project was bootstrapped from [composer-php8-template](https://github.com/parf/composer-php8-template)
