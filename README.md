@@ -9,7 +9,7 @@ checked with [psalm](https://psalm.dev/docs/annotating_code/supported_annotation
 
 ## Using it
 - `composer require --dev homebase2/hb-core` - recommended
-= `composer require homebase2/hb-core` for stable version
+- `composer require homebase2/hb-core` for stable version
 
 # Provided Classes & Functions
 
