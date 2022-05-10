@@ -11,7 +11,7 @@ git add .
 if `git status | grep -q "nothing to commit"`; then
     echo "no files to commit"
 else
-    git commit -v
+    git commit -v -s
     if [ $? -eq 1 ]; then
         # most likely empty message
         echo "Exiting, commit failed"

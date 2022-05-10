@@ -6,7 +6,7 @@ then
     echo "do \"git push\" yourself"
     exit 1
 fi
-git push --signed
+git push
 if [ $? -ne 0 ]
 then
     echo
