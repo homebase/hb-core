@@ -14,9 +14,10 @@ then
     exit 1
 fi
 
-composer psalm > psalm.local
+composer psalm > psalm.local 2>psalm.err.local
 if [ $? -ne 0 ] 
 then
+    cat psalm.err.local psalm.local
     echo "Psalm Failed"
     exit 1
 fi
@@ -35,3 +36,7 @@ fi
 #    echo "cs failed"
 #    exit 1
 #fi
+
+echo
+echo $(tput setab 2)$(tput setaf 7)*** CHECK SUCCESS ***$(tput sgr0)
+echo

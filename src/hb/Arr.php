@@ -165,11 +165,11 @@ class Arr extends Arr0 {
     }
 
     /**
-     * Split array into two parts: [items_before_condition, items_after]
+     * Split array into two parts: [[items_before_condition], [remaining_items]]
      *
      * Important - YOU CAN PASS ONLY ONE CONDITION at a time
      *
-     * splitAt(cb: callback)     => [items_before_callback_success, remaining_items]
+     * splitAt(cb: callback)     => [[items_before_callback_success], [remaining_items]]
      *        callback: fn($value) | fn($key, $value)
      * splitAt(first: $nn_items)   => [nn_items, remaining_items]
      * splitAt(last: $nn_items)   => [remaining_items, nn_items]
@@ -179,15 +179,10 @@ class Arr extends Arr0 {
      * @see partition, groupBy
      *
      * @param mixed[]    $arr
-     * @param null|mixed $cb
-     * @param null|mixed $first
-     * @param null|mixed $last
-     * @param null|mixed $value
-     * @param null|mixed $key
      *
      * @return mixed[]
      */
-    static function splitAt(array $arr, $cb = null, $first = null, $last = null, $value = null, $key = null): array {
+    static function splitAt(array $arr, \Closure $cb = null, int $first = null, int $last = null, mixed $value = null, int|string $key = null): array {
         // error_if(func_num_args() > 2, "splitAt requires exactly two arguments");
         /* php-stan & psalm do not like this
         $cb = match (1) {

@@ -251,15 +251,17 @@ abstract class Arr0 {
      *    A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
      *
      * @param iterable<mixed> $arr
-     *
+     * @param \Closure|int|string|string[] $where
+     * @param \Closure|int|string|string[] $skip
+     * @param \Closure|int|string|string[] $while
      * @return mixed[]
      */
     static function mapList(
         iterable $arr,
         \Closure $map,
-        mixed $where = null,
-        mixed $skip = null,
-        mixed $while = null,
+        int|string|array|\Closure $where = null,
+        int|string|array|\Closure $skip = null,
+        int|string|array|\Closure $while = null,
         bool $reverse = false,
         bool $fromEnd = false
     ): array {

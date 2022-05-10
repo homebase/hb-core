@@ -14,4 +14,16 @@ then
     exit 1
 fi
 git push
+if [ $? -ne 0 ]
+then
+    echo
+    echo $(tput setab 1)$(tput setaf 7)*** GIT-PUSH Failed ***$(tput sgr0)
+    echo
+fi
+
+echo
+echo $(tput setab 2)$(tput setaf 7)*** GIT-PUSH SUCCESS ***$(tput sgr0)
+echo
+
 git push --tags
+
