@@ -47,7 +47,10 @@ checked with [psalm](https://psalm.dev/docs/annotating_code/supported_annotation
 > `./check-push`
     do all checks, add all new files to git, do `git commit -v` and `git push --tags`
 
-
+> `./psysh`
+    php shell: [Docs](https://developpaper.com/psysh-php-interactive-console/)<br>
+    notable commands: `wtf`, `doc ClassName`, `doc ClassName::method`, `show ClassName::method`, `ls -l ClassName`, `ls -l --grep all \hb\Arr`
+    use `help` to see more
 
 PS:<br>
  this project was bootstrapped from [composer-php8-template](https://github.com/parf/composer-php8-template)

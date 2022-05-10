@@ -1,0 +1,2 @@
+#!/bin/sh
+./tools/psysh --config .psys.php $*
