@@ -8,7 +8,7 @@ tested with [spartan-test](https://github.com/parf/spartan-test), checked with [
 3. `ln -s ~/src/php-tools/bin tools`
 
 ## Using it
-- `composer require --dev homebase2/hb-core` - **recommended**
+- `composer require "homebase2/hb-core:dev-main" - **recommended**
 - `composer require homebase2/hb-core` for stable version
 
 # Provided Classes & Functions
