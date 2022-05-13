@@ -1,7 +1,7 @@
 #  (DH) Deep Hash
  
-Provides Access to nested structures using dot notation
-**"Dot.Notation" getters and setters for Deep Arrays, Objects and \Closures**
+Provides Access to nested structures using dot notation<br>
+`Dot.Notation` getters and setters for Nested Arrays, Objects and \Closures
 
 Provides set of static methods and dynamic class.
 
@@ -164,6 +164,7 @@ update / remove many items
       DH::getP - "path" => value  ("path" => $value presentation of deep structure)
       DH::getP(wpath)
       DH::set($getP)  // save data back
+<details>
 <summary>Examples:</summary>
 
     $dh = [
@@ -186,10 +187,11 @@ syntax similar to wildcard path, but "?" used instead of "*" and only this forms
     "aa.(xx|yy)"
 
 
-### DH::getQ($dh, qpath) : ["?=key(s)" => value]
+### DH::getQ($dh, qpath) : [? => value]
     DH::getQ("path.?.name") : array [? => value, ...]
-    DH::getQ("?.(name|age)") : array [? => (name|age) => value, ...]
     DH::getQ("path.?.path2.?.name") : array [? => ? => value]
+    DH::getQ("?.(name|age)") : array [? => (name|age) => value, ...]
+ <details>
  <summary>Examples:</summary>
 
     $dh = [
