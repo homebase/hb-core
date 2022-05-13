@@ -284,9 +284,16 @@ function h(string|array $text): string {
 
 /**
  * json_encode + default params
+ * "@json(...)"" - return "" on error (no exception)
  */
-function json(mixed $data): string|false {
-    return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+function json(mixed $data): string {
+    $r = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    if ($r === false) {
+        if (isSuppressed())
+            return "";
+        error("can't make json");
+    }
+    return $r;
 }
 
 /**
