@@ -17,6 +17,21 @@ Provides set of static methods and dynamic class.
      no errors when asking for partially resolved method/closure : return partially resolved closure
        dh[arity3closure.a.b] : arity1closure
 
+
+    -
+     couple paragraphs what does this class do DH <=> dot-notation, modification, extraction, merging, renaming
+
+    -
+     iterators
+       leaf-first
+       stucture-only
+       leaf-only
+       structure (how to descend)
+
+     flatten (dh => dot-notation, resolve=true)
+
+     dh - array|object - no support for \Closure as a root DH object
+
  ```
 
 ## Basic Static Methods
