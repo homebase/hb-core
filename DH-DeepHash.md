@@ -13,7 +13,7 @@ Provides set of static methods and dynamic class.
 
 ## Objects and Closures Traversal
 <details>
-<summary>Details ...</summary>
+<summary>:large_blue_circle: Objects and Closures Traversal Details ...</summary>
 
 ### Closures Traversal
     closure.xxx            -- if closure have 0-arity, resolve apply "xxx" to result
@@ -41,10 +41,10 @@ Provides set of static methods and dynamic class.
 </details>
 
 ### path syntax extensions for objects
-*Special "object-only" cases*
-`object.@property`    	-- enforce property
-`object.&method`       		-- enforce method call (only usable for \ArrayAccess case)
-`object.:property`     	-- static property || CONSTANT (all upper case)
+    *Special "object-only" cases*
+    `object.@property`    	-- enforce property
+    `object.&method`       		-- enforce method call (only usable for \ArrayAccess case)
+    `object.:property`     	-- static property || CONSTANT (all upper case)
 
 
 ## iDeepHash class
@@ -63,7 +63,7 @@ $dh->{$method} 						 all methods from DH class
 ```
 
 <details>
-<summary>Flags:</summary>
+<summary>:large_blue_circle: Default and Non-Default Flags for DH::i(); get; getRef, ...</summary>
 	
 ### DEFAULT Flags (bit values)
 * `STRICT` 	- throw exception when no item and no default given
@@ -78,20 +78,18 @@ $dh->{$method} 						 all methods from DH class
 </details>
 
 ## Methods
-all methods receive DeepHash as a first element 
+all methods receive array|\hb\DH|object as first argument
 
 ### DH::get($dh, string|array, $default, $flags = default_flags) : mixed | Exception  
-        DH::get($dh, "path", $default) : value
-        DH::get($dh, ["path", ...], $detault) : [$value, ...]
-        DH::get($dh, ["key" => "path", ...], $detault) : [key => $value, ...]
-        @see flags below
-<details>
-<summary>Examples:</summary>
+    DH::get($dh, "path", $default) : value
+    DH::get($dh, ["path", ...], $detault) : [$value, ...]
+    DH::get($dh, ["key" => "path", ...], $detault) : [key => $value, ...]
 
-    $value = DH::get($dh, "a.b.c");
-    [$v1, $v2] = DH::get($dh, ["path.1", "path.2"]);
-    $name = DH::get($dh, ["f" => "name.first", "l" => "name.last"]);
-</details>
+    Examples:
+      $value = DH::get($dh, "a.b.c");
+      [$v1, $v2] = DH::get($dh, ["path.1", "path.2"]);
+      $nameFirstLast = DH::get($dh, ["f" => "name.first", "l" => "name.last"]);
+
 
 ### DH::getRef($dh, string|array $path, $flags = DH::AUTOCREATE) => \&$value | Exception
     get element's reference
@@ -113,7 +111,7 @@ all methods receive DeepHash as a first element
     same as DH::set($dh, "a.b.c", null)
 
 ---
-####	Wildcard Path (wpath)
+#### :cherries:	Wildcard Path (wpath)
 used by `getW`, `setW`, `getP`, `setP` and some other commands
 Set of wildcard paths delimited by space or "\n" or "\t"
 
@@ -172,7 +170,7 @@ update / remove many items
 	    
 </details>
 
-####	Q-Path (qpath)
+#### :cherries:	Q-Path (qpath)
 used by `getQ`, `setQ` and some other commands
 syntax similar to wildcard path, but "?" used instead of "*" and only this forms supported:
     
