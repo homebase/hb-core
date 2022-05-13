@@ -11,7 +11,6 @@ Provides set of static methods and dynamic class.
     DH::set($dh, "a.b.c", $value)       ===   $dh['a']['b']['c'] = $value
     DH::remove($dh, "a.b.c")            ===   unset($dh['a']['b']['c'])
 
-## Objects and Closures Traversal
 <details>
 <summary>:large_blue_circle: Objects and Closures Traversal Details ...</summary>
 
@@ -40,12 +39,14 @@ Provides set of static methods and dynamic class.
         NOT-FOUND-EXCEPTION (when strict and no-default value)
 </details>
 
-### path syntax extensions for objects
+<details>
+<summary>:large_blue_circle: Path syntax extensions for objects ...</summary>
+
     *Special "object-only" cases*
     `object.@property`    	-- enforce property
     `object.&method`       		-- enforce method call (only usable for \ArrayAccess case)
     `object.:property`     	-- static property || CONSTANT (all upper case)
-
+</details>
 
 ## iDeepHash class
  ```
@@ -55,40 +56,43 @@ $dh = DH::i([], flags);              iDeepHash([])
 $dh = DH::ref(&$existing_array);     iDeepHash by reference
 $dh = DH::create(['a.b.c' => 1,..]); $dh=DH::i(); $dh->set(...)
 $dh()                                @return arrray
-echo $dh["dot.path"]				 read access deep element
-echo $dh["?dot.path"]				 non-strict access
-echo $dh[["a", "b", "c"]]			 array path
-$dh["dot.path"] = "value"			 write access deep element
-$dh->{$method} 						 all methods from DH class
+echo $dh["dot.path"]		     read access deep element
+echo $dh["?dot.path"]		     non-strict access
+echo $dh[["a", "b", "c"]]	     array path
+$dh["dot.path"] = "value"	     write access deep element
+$dh->{$method} 			     all methods from DH class
 ```
 
 <details>
 <summary>:large_blue_circle: Default and Non-Default Flags for DH::i(); get; getRef, ...</summary>
 	
 ### DEFAULT Flags (bit values)
-* `STRICT` 	- throw exception when no item and no default given
-* `ERROR`		- throw \Error when structural error (ex. traverse deep into int value)
-* `AUTORESOLVE` 	- when node is \Closure() or Method() - resolve it and return result
-* `AUTOCREATE`      - used by `getRef` method only, create structure on access
+* `STRICT` 	  - throw exception when no item and no default given
+* `ERROR`	  - throw \Error when structural error (ex. traverse deep into int value)
+* `AUTORESOLVE`   - when node is \Closure() or Method() - resolve it and return result
+* `AUTOCREATE`    - used by `getRef` method only, create structure on access
     
 ### Non-DEFAULT Flags
-* `SAVE_RESOLVED`   --  when final node is \Closure or Method() - resolve it and store it BACK to DH MODIFYING original data<br><small>SAVE_RESOLVED=SAVE_RESOLVED_CLOSURES|SAVE_RESOLVED_METHODS</small>
+* `SAVE_RESOLVED` - when node is \Closure or Method() - resolve it and store it BACK to DH MODIFYING original data<br><small>SAVE_RESOLVED=SAVE_RESOLVED_CLOSURES|SAVE_RESOLVED_METHODS</small>
 	* `SAVE_RESOLVED_CLOSURES`
 	* `SAVE_RESOLVED_METHODS`
+
+You can achieve similar results with `DH::cacher( closure() )` method
+	
 </details>
 
 ## Methods
 all methods receive array|\hb\DH|object as first argument
 
-### DH::get($dh, string|array, $default, $flags = default_flags) : mixed | Exception  
+### DH::get($dh, string|array $path, $default, $flags = default_flags) : mixed | Exception  
     DH::get($dh, "path", $default) : value
-    DH::get($dh, ["path", ...], $detault) : [$value, ...]
-    DH::get($dh, ["key" => "path", ...], $detault) : [key => $value, ...]
+    DH::get($dh, ["path", ...], $default) : [$value, ...]
+    DH::get($dh, ["key" => "path", ...], $default) : [key => $value, ...]
 
     Examples:
       $value = DH::get($dh, "a.b.c");
       [$v1, $v2] = DH::get($dh, ["path.1", "path.2"]);
-      $nameFirstLast = DH::get($dh, ["f" => "name.first", "l" => "name.last"]);
+      $nameFL = DH::get($dh, ["f" => "name.first", "l" => "name.last"]);
 
 
 ### DH::getRef($dh, string|array $path, $flags = DH::AUTOCREATE) => \&$value | Exception
@@ -102,7 +106,8 @@ all methods receive array|\hb\DH|object as first argument
 </details>
 
 ### DH::set($dh, string|array $path, value)
-	same as getRef($path, autocreate) + assign
+same as getRef($path, autocreate) + assign
+
     DH::set("path", value)
     DH::set("path", null)  // delete key
     DH::set(["path" => value, ...])
@@ -120,11 +125,12 @@ Set of wildcard paths delimited by space or "\n" or "\t"
 	"aa.**.bb" 	 - all elements and subelements in $dh["aa"] that have subkey "bb"
 				   "aa.xx.bb" and "aa.xx.yy.bb" - included
 	"aa bb" 	 - $dh["aa"] and $dh["cc"]
-	"aa.(bb|cc)" - $dh["aa"]["bb"] && $dh["aa"]["cc"] (if present)
-	"aa.* -aa.bb"  - all subelements from "aa" with an exception of "aa.bb"
+	"aa.(bb|cc)"     - $dh["aa"]["bb"] && $dh["aa"]["cc"] (if present)
+	"aa.* -aa.bb"    - all subelements from "aa" with an exception of "aa.bb"
 
 ### DH::getW($dh, wpath) : $dh_subset
-	wpath - Wildcard Path - see below
+wpath - Wildcard Path - see below
+
     DH::getW(wildcard) - extract SUBSET from $dh, @return new DH
     DH::getW(wpath) : array [path => .. => value]        // DH => DH
     DH::getW($dh, "path path.* path.**.name path.(k1|k2) -path") : array [path => .. => value]
@@ -132,10 +138,10 @@ Set of wildcard paths delimited by space or "\n" or "\t"
 <details>
 <summary>Examples:</summary>
 
- 	$dh = [
-	 	1 => ["name" => ["first" => "Joe", "last" => "Black"], "age" => 6500], 
-	 	2 => ["name" => ["first" => "Silent", "last" => "Bob"], "age" => 28]]
-	];
+    $dh = [
+	1 => ["name" => ["first" => "Joe", "last" => "Black"], "age" => 6500], 
+	2 => ["name" => ["first" => "Silent", "last" => "Bob"], "age" => 28]]
+    ];
     DH::getW($dh, "*.name.first");
         [ 1 => ["name" => ["first" => "Joe"]], [2 => ["name" => ["first" => "Silent"]] ]
     DH::getW($dh, "2.name.(first|last)");
@@ -150,8 +156,9 @@ update $dh from $dh2 - @see `array_replace_recursive`<br>can use to store back v
 
 ### DH::setW($dh, wpath, $value)
 update / remove many items
-      `DH::setW("*.data.ssn", "hidden")`
-      `DH::setW("*.data.ssn", null)`         // delete items
+
+    `DH::setW("*.data.ssn", "hidden")`
+    `DH::setW("*.data.ssn", null)`         // delete items
 
 ###  DH::getP($dh, wpath) : ["dot.path" => $value]
       DH::getP - "path" => value  ("path" => $value presentation of deep structure)
@@ -159,10 +166,10 @@ update / remove many items
       DH::set($getP)  // save data back
 <summary>Examples:</summary>
 
- 	$dh = [
-	 	1 => ["name" => ["first" => "Joe", "last" => "Black"], "age" => 6500], 
-	 	2 => ["name" => ["first" => "Silent", "last" => "Bob"], "age" => 28]]
-	];
+    $dh = [
+	1 => ["name" => ["first" => "Joe", "last" => "Black"], "age" => 6500], 
+	2 => ["name" => ["first" => "Silent", "last" => "Bob"], "age" => 28]]
+    ];
     DH::getP($dh, "*.name.first");
         [ "1.name.first" => "Joe", ["2.name.first" => "Silent"]
     DH::getW($dh, "1.name.first 2.* -2.name");
@@ -171,9 +178,9 @@ update / remove many items
 </details>
 
 #### :cherries:	Q-Path (qpath)
-used by `getQ`, `setQ` and some other commands
-syntax similar to wildcard path, but "?" used instead of "*" and only this forms supported:
-    
+used by `getQ`, `setQ` and some other commands<br>
+syntax similar to wildcard path, but "?" used instead of "*" and only this forms supported:    
+
     "aa.?.bb"
     "aa.?.bb.?"
     "aa.(xx|yy)"
@@ -185,10 +192,10 @@ syntax similar to wildcard path, but "?" used instead of "*" and only this forms
     DH::getQ("path.?.path2.?.name") : array [? => ? => value]
  <summary>Examples:</summary>
 
- 	$dh = [
-	 	1 => ["name" => ["first" => "Joe", "last" => "Black"], "age" => 6500], 
-	 	2 => ["name" => ["first" => "Silent", "last" => "Bob"], "age" => 28]]
-	];
+    $dh = [
+	1 => ["name" => ["first" => "Joe", "last" => "Black"], "age" => 6500], 
+	2 => ["name" => ["first" => "Silent", "last" => "Bob"], "age" => 28]]
+    ];
     DH::getQ($dh, "?.name.first");
         [ 1 => "Joe", 2 => "Silent"]
     DH::getQ($dh, "?.name.?");
@@ -200,19 +207,23 @@ syntax similar to wildcard path, but "?" used instead of "*" and only this forms
 </details>
 
 ### DH::setQ($dh, qpath, array $getQ)  - opposite of getQ
+
     DH::setQ($dh, "path.?.name", [? => value, ...])
     Ex: DH::setQ($dh, "?.name.first", [1 => "Jim", 2 => "Loud"])
 
 ### DH::getV($dh, "view 2.0 syntax path")
+	TODO
  
 ### DH::setCB($dh, wpath, $callback(array $path, $current) : $new_value)
-	 update DH via callback
+update DH via callback
+
+	Ex: `DH::setCB($dh, "*.name.(first|last)", fn($path, $v) => ucfirst($v))`
  
-### DH::setQCB(qpath, $callback(array $qpath, $current) : $new_value)
-	 update DH via callback
+### DH::setQCB($dh, qpath, $callback(array $qpath, $current) : $new_value)
+update DH via callback
 
 ### DH::**getArrayRef(\$dh, \$path)** : &$array | Exception
- { getRef; if not array - initialize as array, return reference }
+{ getRef; if not array - initialize as array, return reference }
 
 ###  DH::getCallback : \Closure|null|Exception
 { getParent(); if instance return $instance->method(...); if \Closure - return it}
@@ -225,16 +236,16 @@ similar to {DH::getArrayRef; do array_XXX on reference}
 * DH::push
  
 ## Merging datasets
- 
- * `DH::merge($dh, $dh2, callback($path, $current_value=null, $new_value=null) : ?result`<br>universal merge method, developers can implement any logic there<br>null result considered as remove item
+* `DH::merge($dh, $dh2, callback($path, $current_value=null, $new_value=null) : ?result`<br>universal merge method, developers can implement any logic there<br>null result considered as remove item
 *  `DH::update($dh, $dh2)`            -- override ALL nodes (existing and new) - array_recursive_replace
 *  `DH::updateExisting($dh, $dh2)`    -- override existing nodes ONLY
 *  `DH::importNew(dh, $dh2)`         -- import new Nodes Only
 
 # Data Caching
-caching layer around your closure/instance_methods
-`DH::cacher(\Closure(array $path)|instance, $cacheAdapter=null, $cacheAdapterArgs = []) : \Closure`
-Default - cache in php memory, available cache adapters: apc, memcached, redis, mysql, json-file
+caching layer around your closure/instance_methods<br>
+`DH::cacher(\Closure(array $path)|instance, $cacheAdapter=null, $cacheAdapterArgs = []) : \Closure`<br>
+Default behaviour: cache in php memory, available cache adapters: apc, memcached, redis, mysql, json-file
+
 Usage: `$dh["path"] = `DH::cacher( $my_closure );`
 
 # Core DH0 methods
