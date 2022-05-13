@@ -6,6 +6,11 @@ Provides Access to nested structures using dot notation<br>
 Provides set of static methods and dynamic class.
 
 ```
+
+ NO MORE FLAGS !!!!
+
+
+
     TODO:
      rekey("*.from.*.key:*.to.*.new_name ...")
      getW("*.from.*.key:*.to.*.new_name ...")
@@ -13,10 +18,13 @@ Provides set of static methods and dynamic class.
      getW("from.key:to.name") : ["to" => ["name" => $val]]
      getW("**") - resolve all return result
 
+     doc trait\DH
+
+     doc iDeepHash
+
     -
      no errors when asking for partially resolved method/closure : return partially resolved closure
        dh[arity3closure.a.b] : arity1closure
-
 
     -
      couple paragraphs what does this class do DH <=> dot-notation, modification, extraction, merging, renaming
@@ -31,6 +39,13 @@ Provides set of static methods and dynamic class.
      flatten (dh => dot-notation, resolve=true)
 
      dh - array|object - no support for \Closure as a root DH object
+
+    - idea for iterator
+        public function toArray() {
+          return get_object_vars($this);
+        }
+
+    - array methods:     last, first, MD5
 
  ```
 
@@ -99,12 +114,16 @@ $dh->{$method} 			     all methods from DH class
 * `STRICT` 	  - throw exception when no item and no default given
 * `ERROR`	  - throw \Error when structural error (ex. traverse deep into int value)
 * `AUTORESOLVE`   - when node is \Closure() or Method() - resolve it and return result
-* `AUTOCREATE`    - used by `getRef` method only, create structure on access
+
+* NO ---   `AUTOCREATE`    - used by `getRef` method only, create structure on access   --- make an bool OPTION to getREF
+
     
 ### Non-DEFAULT Flags
 * `SAVE_RESOLVED` - when node is \Closure or Method() - resolve it and store it BACK to DH MODIFYING original data<br><small>SAVE_RESOLVED=SAVE_RESOLVED_CLOSURES|SAVE_RESOLVED_METHODS</small>
 	* `SAVE_RESOLVED_CLOSURES`
 	* `SAVE_RESOLVED_METHODS`
+
+^^^ JUNK/USELESS/DANGEROUS - DH::cacher is much better alternative
 
 You can achieve similar results with `DH::cacher( closure() )` method
 	

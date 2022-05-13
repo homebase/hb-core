@@ -289,10 +289,12 @@ function h(string|array $text): string {
 function json(mixed $data): string {
     $r = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     if ($r === false) {
-        if (isSuppressed())
-            return "";
+        if (isSuppressed()) {
+            return '';
+        }
         error("can't make json");
     }
+
     return $r;
 }
 
@@ -480,4 +482,34 @@ function error_unless(mixed $boolean, string $message): void {
  */
 function error(string $message): void {
     throw new \hb\Error($message);  // \Error descendant
+}
+
+/**
+ * throw exception if ...
+ * Copied from laravel: https://laravel-news.com/throw_if-throw_unless
+ *
+ * @psalm-suppress InvalidThrow
+ *
+ * @param Exception|string $exception [description]
+ * @param mixed            $boolean
+ */
+function throw_if($boolean, $exception, string $message = ''): void {
+    if ($boolean) {
+        throw (\is_string($exception) ? new $exception($message) : $exception);
+    }
+}
+
+/**
+ * throw exception if ...
+ * Copied from laravel: https://laravel-news.com/throw_if-throw_unless
+ *
+ * @psalm-suppress InvalidThrow
+ *
+ * @param Exception|string $exception [description]
+ * @param mixed            $boolean
+ */
+function throw_unless($boolean, $exception, string $message = ''): void {
+    if (!$boolean) {
+        throw (\is_string($exception) ? new $exception($message) : $exception);
+    }
 }

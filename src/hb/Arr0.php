@@ -47,7 +47,7 @@ abstract class Arr0 {
      *
      * @param mixed[] $arr
      *
-     * @return mixed[]
+     * @return int[]
      */
     static function flip1(array $arr): array {
         return self::flipTo($arr, 1);
