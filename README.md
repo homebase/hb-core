@@ -2,10 +2,6 @@
 
 tested with [spartan-test](https://github.com/parf/spartan-test), checked with [psalm](https://psalm.dev/docs/annotating_code/supported_annotations/) (level 2) && [php-stan](https://phpstan.org/writing-php-code/phpdocs-basics) (level 6)
 
-## Install
-1. `composer install`
-2. install [php-tools](https://github.com/homebase/php-tools#install)
-3. `ln -s ~/src/php-tools/bin tools`
 
 ## Using it
 - `composer require "homebase2/hb-core:dev-main"` - **recommended**
@@ -13,10 +9,24 @@ tested with [spartan-test](https://github.com/parf/spartan-test), checked with [
 
 # Provided Classes & Functions
 
-- src/hb-functions.inc.php - "\hb" namespace functions used by framework
-- [Arr](src/hb/Arr.php) & [Arr0](src/hb/Arr0.php) - array methods
 - [Str](src/hb/Str.php) - string methods
-- DH  - hb\deephash (deep array) methods (TODO)
+- [Arr](src/hb/Arr.php) & [Arr0](src/hb/Arr0.php) - Generic Array Methods
+- [DH aka DeepHash](DH-DeepHash.md)  - Deep(aka nested) Array methods
+- TODO: AH - Array of Hashes/Records (~ sql tables)
+- TODO: ADH - Array of AH (~ mongo records)
+- [\hb\ functions](src/hb-functions.inc.php) - used by framework
+
+
+
+# FRAMEWORK DEVELOPMENT STUFF
+TODO - move to Homebase Development Document
+
+
+## Install
+1. `composer install`
+2. install [php-tools](https://github.com/homebase/php-tools#install)
+3. `ln -s ~/src/php-tools/bin tools`
+
 
 ## Notable tools provided
 

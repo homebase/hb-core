@@ -5,11 +5,25 @@ Provides Access to nested structures using dot notation<br>
 
 Provides set of static methods and dynamic class.
 
+```
+    TODO:
+     rekey("*.from.*.key:*.to.*.new_name ...")
+     getW("*.from.*.key:*.to.*.new_name ...")
+     get(["from" => "aaa.bbb"]) : ["aaa.bbb" => $val]
+     getW("from.key:to.name") : ["to" => ["name" => $val]]
+     getW("**") - resolve all return result
+
+    -
+     no errors when asking for partially resolved method/closure : return partially resolved closure
+       dh[arity3closure.a.b] : arity1closure
+
+ ```
+
 ## Basic Static Methods
-    DH::get($dh, "a.b.c")               ===   $dh['a']['b']['c'] + Exceptions
-    DH::get($dh, "a.b.c", $default)     ===   $dh['a']['b']['c'] ?? $default
-    DH::set($dh, "a.b.c", $value)       ===   $dh['a']['b']['c'] = $value
-    DH::remove($dh, "a.b.c")            ===   unset($dh['a']['b']['c'])
+    DH::get($dh, "a.b.c")               ~=   $dh['a']['b']['c'] + Exceptions
+    DH::get($dh, "a.b.c", $default)     ~=   $dh['a']['b']['c'] ?? $default
+    DH::set($dh, "a.b.c", $value)       ~=   $dh['a']['b']['c'] = $value
+    DH::remove($dh, "a.b.c")            ~=   unset($dh['a']['b']['c'])
 
 <details>
 <summary>:large_blue_circle: Objects and Closures Traversal Details ...</summary>
@@ -55,7 +69,7 @@ $dh = DH::i(['a' => 1, ...]);        iDeepHash(iterable)
 $dh = DH::i([], flags);              iDeepHash([])
 $dh = DH::ref(&$existing_array);     iDeepHash by reference
 $dh = DH::create(['a.b.c' => 1,..]); $dh=DH::i(); $dh->set(...)
-$dh()                                @return arrray
+$dh()                                @return &internal_data
 echo $dh["dot.path"]		     read access deep element
 echo $dh["?dot.path"]		     non-strict access
 echo $dh[["a", "b", "c"]]	     array path
