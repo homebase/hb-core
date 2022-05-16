@@ -40,7 +40,7 @@ $config
         'modernize_strpos' => true, // needs PHP 8+ or polyfill
         'use_arrow_functions' => true,
         'heredoc_indentation' => true,
-        'list_syntax' => ['syntax' => 'long'],
+        'list_syntax' => ['syntax' => 'short'],
         'visibility_required' => ['elements' => ['property']],
         'phpdoc_summary' => false, // no useless dots
         'explicit_string_variable' => false,  // "$a xxx $b" is OK !!

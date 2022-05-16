@@ -734,7 +734,7 @@ abstract class Arr0 {
     static function filter2(iterable $arr, \Closure $cb): array {
         $f = $t = []; // false, true
         // iterCB($r, $cb) => $k => [$v, $cb]
-        foreach (self::iterCB($arr, $cb) as $k => list($v, $c)) {
+        foreach (self::iterCB($arr, $cb) as $k => [$v, $c]) {
             if ($c === null) {
                 continue;
             }
