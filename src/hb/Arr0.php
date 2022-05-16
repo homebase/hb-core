@@ -720,7 +720,7 @@ abstract class Arr0 {
     }
 
     /**
-     * filter array via callback into Two arrays
+     * filter array via callback into Two arrays (and optionally filter out some elements)
      *
      * @see partition
      * items where callback returned null are not returned - remove items from resulting arrays
@@ -733,7 +733,7 @@ abstract class Arr0 {
      */
     static function filter2(iterable $arr, \Closure $cb): array {
         $f = $t = []; // false, true
-        // iterCB($r, $cb) => $k => [$v, $cb]
+        // iterate over $k => [value, arity($cb) == 1 ? callback($v) : callback($k, $v)]
         foreach (self::iterCB($arr, $cb) as $k => [$v, $c]) {
             if ($c === null) {
                 continue;
