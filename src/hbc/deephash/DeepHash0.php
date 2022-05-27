@@ -25,40 +25,18 @@ use function hb\error_if;
 
 abstract class DeepHash0 {
     /**
-     * Create FLAT structure from Deep Hash
-     * node => node => v    to   "node.node" => v
-     *
-     * same as Laravel:array_dot()
-     * same as self::getP($dh, "**")
-     *
-     * @see getDot($dh, $path)
-     *
-     * @param mixed[]|object $dh
-     * @param string         $prefix - internal - prefix for retuned keys
-     *
-     * @return mixed[] flattened array
-     */
-    static function flatten(array|object $dh, /* internal */ string $prefix = ''): array {
-        $r = [];
-        foreach ($dh as $k => $v) {
-            if (\is_array($v) || (\is_object($v) && is_iterable($v))) {
-                /** @psalm-suppress InvalidArgument */
-                $r = $r + self::flatten($v, $prefix.$k.'.');
-            } else {
-                $r[$prefix.$k] = $v;
-            }
-        }
-
-        return $r;
-    }
-
-    /**
      * take care of get errors and exceptions
      *
      * @param mixed[]|object        $dh
      * @param int[]|string|string[] $path
      */
     static function _get(array|object $dh, string|array $path, mixed ...$default): mixed {
+        if (\is_string($path) && $path && $path[0] === '?') { # "?path" == _get("path", null)
+            $path = substr($path, 1);
+            if (!$default) {
+                $default = [null];
+            }
+        }
         $v = self::q($dh, $path);
         error_if($v === null, 'DH structure error');
         if (!$v) {
@@ -86,5 +64,33 @@ abstract class DeepHash0 {
         }
 
         return ['todo'];
+    }
+
+    /**
+     * Create FLAT structure from Deep Hash
+     * node => node => v    to   "node.node" => v
+     *
+     * same as Laravel:array_dot()
+     * same as self::getP($dh, "**")
+     *
+     * @see getDot($dh, $path)
+     *
+     * @param mixed[]|object $dh
+     * @param string         $prefix - internal - prefix for retuned keys
+     *
+     * @return mixed[] flattened array
+     */
+    static function flatten(array|object $dh, /* internal */ string $prefix = ''): array {
+        $r = [];
+        foreach ($dh as $k => $v) {
+            if (\is_array($v) || (\is_object($v) && is_iterable($v))) {
+                /** @psalm-suppress InvalidArgument */
+                $r = $r + self::flatten($v, $prefix.$k.'.');
+            } else {
+                $r[$prefix.$k] = $v;
+            }
+        }
+
+        return $r;
     }
 }

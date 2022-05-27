@@ -57,28 +57,14 @@ abstract class DeepHash extends DeepHash0 {
     }
 
     /**
-     * dot-notation presentation of dh[$path]
-     * ["dot.path" => $value]
-     *
-     * @see flatten
-     *
-     * @param mixed[]|object        $dh
-     * @param int[]|string|string[] $path
-     *
-     * @return array<string,mixed>
-     */
-    static function getDot(array|object $dh, string|array $path = ''): array {
-        return self::flatten(self::get($dh, $path));
-    }
-
-    /**
-     * [get description]
+     * get
      *
      * @param mixed[]|object        $dh
      * @param int[]|string|string[] $path
      */
     static function get(array|object $dh, string|array $path, mixed ...$default): mixed {
         if (\is_string($path)) {
+            # if (once()) {
             return self::_get($dh, $path, ...$default);
         }
         $r = [];
@@ -87,6 +73,76 @@ abstract class DeepHash extends DeepHash0 {
         }
 
         return $r;
+    }
+
+    /**
+     * get1 - first EXISING item or NULL
+     *
+     * @param mixed[]|object $dh
+     * @param string         $pathList - space delimited list of pathes
+     */
+    static function get1(array|object $dh, string $pathList): mixed {
+        foreach (explode(' ', $pathList) as $p) {
+            $v = self::q($dh, $p);
+            \hb\error_if($v === null, 'DH structure error');
+            if ($v) {
+                return $v[0] ?? null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * getW - extract DH subset as DH
+     *
+     * @param mixed[]|object $dh
+     * @param string         $wpath - wildcard path
+     *
+     * @return mixed[]
+     */
+    static function getW(array|object $dh, string $wpath): ?array {
+        return [];
+    }
+
+    /**
+     * getQ - extract items
+     *
+     * @param mixed[]|object $dh
+     * @param string         $qpath - query path
+     *
+     * @return mixed[]
+     */
+    static function getQ(array|object $dh, string $qpath): ?array {
+        return [];
+    }
+
+    /**
+     * getV - extract items using View Path Syntax
+     *
+     * @param mixed[]|object $dh
+     * @param string         $vpath - view path
+     *
+     * @return mixed[]
+     */
+    static function getV(array|object $dh, string $vpath): ?array {
+        return [];
+    }
+
+    /**
+     * dot-notation presentation of dh[$path]
+     * ["dot.path" => $value]
+     * ~same as getW($dh, "*")
+     *
+     * @see flatten, getW
+     *
+     * @param mixed[]|object        $dh
+     * @param int[]|string|string[] $path
+     *
+     * @return array<string,mixed>
+     */
+    static function getDot(array|object $dh, string|array $path = ''): array {
+        return self::flatten(self::get($dh, $path));
     }
 
     /**

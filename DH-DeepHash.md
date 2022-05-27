@@ -52,6 +52,7 @@ Provides set of static methods and dynamic class.
 ## Basic Static Methods
     DH::get($dh, "a.b.c")               ~=   $dh['a']['b']['c'] + Exceptions
     DH::get($dh, "a.b.c", $default)     ~=   $dh['a']['b']['c'] ?? $default
+    DH::get($dh, "?a.b.c")              ~=   DH::get($dh, "a.b.c", null)
     DH::set($dh, "a.b.c", $value)       ~=   $dh['a']['b']['c'] = $value
     DH::remove($dh, "a.b.c")            ~=   unset($dh['a']['b']['c'])
 
@@ -143,6 +144,13 @@ all methods receive array|\hb\DH|object as first argument
       $nameFL = DH::get($dh, ["f" => "name.first", "l" => "name.last"]);
 
 
+### DH::get1($dh, string|array $pathlist) : value
+    get first NON empty path OR NULL
+
+    DH::get1($dh, "path1 path2 ...") : value
+    DH::get1($dh, [path1, path2, ...]) : value
+
+
 ### DH::getRef($dh, string|array $path, $flags = DH::AUTOCREATE) => \&$value | Exception
     get element's reference
 <details>
@@ -228,7 +236,7 @@ update / remove many items
 
 #### :cherries:	Q-Path (qpath)
 used by `getQ`, `setQ` and some other commands<br>
-syntax similar to wildcard path, but "?" used instead of "*" and only this forms supported:    
+syntax similar to wildcard path, but `"?"` used instead of `"*"` and only this forms supported:
 
     "aa.?.bb"
     "aa.?.bb.?"
@@ -286,7 +294,7 @@ similar to {DH::getArrayRef; do array_XXX on reference}
 * DH::push
  
 ## Merging datasets
-* `DH::merge($dh, $dh2, callback($path, $current_value=null, $new_value=null) : ?result`<br>universal merge method, developers can implement any logic there<br>null result considered as remove item
+* `DH::merge($dh, $dh2, callback($path, $current_value=null, $new_value=null) : ?result` <br>universal merge method, developers can implement any logic there<br>null result considered as remove item
 *  `DH::update($dh, $dh2)`            -- override ALL nodes (existing and new) - array_recursive_replace
 *  `DH::updateExisting($dh, $dh2)`    -- override existing nodes ONLY
 *  `DH::importNew(dh, $dh2)`         -- import new Nodes Only
@@ -296,7 +304,7 @@ caching layer around your closure/instance_methods<br>
 `DH::cacher(\Closure(array $path)|instance, $cacheAdapter=null, $cacheAdapterArgs = []) : \Closure`<br>
 Default behaviour: cache in php memory, available cache adapters: apc, memcached, redis, mysql, json-file
 
-Usage: `$dh["path"] = `DH::cacher( $my_closure );`
+Usage: `$dh["path"] = DH::cacher( $my_closure );`
 
 # Core DH0 methods
 ```
@@ -310,4 +318,3 @@ Usage: `$dh["path"] = `DH::cacher( $my_closure );`
 ```
 
 
-> Written with [StackEdit](https://stackedit.io/).
