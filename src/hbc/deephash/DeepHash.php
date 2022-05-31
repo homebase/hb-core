@@ -76,16 +76,34 @@ abstract class DeepHash extends DeepHash0 {
     }
 
     /**
-     * get1 - first EXISING item or NULL
+     * first - first EXISTING item or NULL
      *
      * @param mixed[]|object $dh
      * @param string         $pathList - space delimited list of pathes
      */
-    static function get1(array|object $dh, string $pathList): mixed {
+    static function first(array|object $dh, string $pathList): mixed {
         foreach (explode(' ', $pathList) as $p) {
             $v = self::q($dh, $p);
             \hb\error_if($v === null, 'DH structure error');
             if ($v) {
+                return $v[0] ?? null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * any - first NON-empty item or NULL
+     *
+     * @param mixed[]|object $dh
+     * @param string         $pathList - space delimited list of pathes
+     */
+    static function any(array|object $dh, string $pathList): mixed {
+        foreach (explode(' ', $pathList) as $p) {
+            $v = self::q($dh, $p);
+            \hb\error_if($v === null, 'DH structure error');
+            if ($v && ($v[0] ?? 0)) {
                 return $v[0] ?? null;
             }
         }
@@ -180,5 +198,17 @@ abstract class DeepHash extends DeepHash0 {
      */
     static function setW(array|object &$dh, string $wpath, mixed $value): void {
         \hb\todo();
+    }
+
+    /**
+     * removes NULLS and "" and [] from array RECURSIVELY
+     * we'll keep false and (int)0 and "0" !!!
+     *
+     * @param array<mixed> $dh
+     *
+     * @return array<mixed>
+     */
+    static function cleanUp(array $dh): array {
+        return \hb\Arr::cleanUp($dh);
     }
 }

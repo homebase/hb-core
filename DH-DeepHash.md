@@ -10,6 +10,11 @@ Provides set of static methods and dynamic class.
  NO MORE FLAGS !!!!
 
 
+    TODO:
+        TRAIT
+
+        iDeepHash
+
 
     TODO:
      rekey("*.from.*.key:*.to.*.new_name ...")
@@ -97,7 +102,7 @@ Provides set of static methods and dynamic class.
  ```
 $dh = DH::i();                       iDeepHash([])
 $dh = DH::i(['a' => 1, ...]);        iDeepHash(iterable)
-$dh = DH::i([], flags);              iDeepHash([])
+$dh = DH::i([]);                     iDeepHash([])
 $dh = DH::ref(&$existing_array);     iDeepHash by reference
 $dh = DH::create(['a.b.c' => 1,..]); $dh=DH::i(); $dh->set(...)
 $dh()                                @return &internal_data
@@ -144,11 +149,15 @@ all methods receive array|\hb\DH|object as first argument
       $nameFL = DH::get($dh, ["f" => "name.first", "l" => "name.last"]);
 
 
-### DH::get1($dh, string|array $pathlist) : value
-    get first NON empty path OR NULL
+### DH::first($dh, string|array $pathlist) : ?value
+    get first EXISTING value OR NULL
 
-    DH::get1($dh, "path1 path2 ...") : value
-    DH::get1($dh, [path1, path2, ...]) : value
+    DH::first($dh, "path1 path2 ...") : value
+
+### DH::any($dh, string|array $pathlist) : ?value
+    get first NON-EMPTY value OR NULL
+
+    DH::any($dh, "path1 path2 ...") : value
 
 
 ### DH::getRef($dh, string|array $path, $flags = DH::AUTOCREATE) => \&$value | Exception

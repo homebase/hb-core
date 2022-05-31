@@ -58,7 +58,7 @@ class Arr extends Arr0 {
      */
 
     /**
-     * removes NULLS and "" from array RECURSIVELY
+     * removes NULLS and "" and [] from array RECURSIVELY
      * we'll keep false and (int)0 and "0" !!!
      *
      * @param array<mixed> $arr
@@ -70,7 +70,7 @@ class Arr extends Arr0 {
             if (\is_array($d)) {
                 $d = self::cleanUp($d);
             }
-            if ('' === $d || null === $d) {
+            if ('' === $d || null === $d || [] === $d) {
                 unset($arr[$k]);
             }
         }
