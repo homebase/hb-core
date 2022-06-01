@@ -141,7 +141,7 @@ all methods receive array|\hb\DH|object as first argument
     DH::any($dh, "path1 path2 ...") : value
 
 
-### DH::&getRef($dh, string|array $path, $autocreate = true) => \&$value | Exception
+### DH::\&getRef($dh, string|array $path, $autocreate = true) => \&$value | Exception
     get element's reference
 <details>
 <summary>Examples:</summary>
@@ -287,7 +287,7 @@ similar to {DH::getArrayRef; do array_XXX on reference}
 * `DH::merge($dh, $dh2, callback($path, $current_value=null, $new_value=null) : ?result` <br>universal merge method, developers can implement any logic there<br>null result considered as remove item
 *  `DH::update($dh, $dh2)`            -- override ALL nodes (existing and new) - array_recursive_replace
 *  `DH::updateExisting($dh, $dh2)`    -- override existing nodes ONLY
-*  `DH::importNew(dh, $dh2)`         -- import new Nodes Only
+*  `DH::mergeNew(dh, $dh2)`         -- import new Nodes Only
 
 # Data Caching
 caching layer around your closure/instance_methods<br>
