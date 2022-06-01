@@ -87,6 +87,26 @@ abstract class DeepHash extends DeepHash0 {
     }
 
     /**
+     * getArrayRef - get Reference to an Array Item (create item if needed)
+     *
+     * @param mixed[]|object        $dh
+     * @param int[]|string|string[] $path
+     * @param bool                  $autocreate - create path if not found (default)
+     *
+     * @return mixed[]
+     */
+    static function &getArrayRef(array|object $dh, string|array $path, bool $autocreate = true): array {
+        $r = &self::getRef($dh, $path, $autocreate);
+        if ($r === null) {
+            $r = [];
+        }
+        if (\is_array($r)) {
+            return $r;
+        }
+        \hb\error('DH structure error - array node expected. non array found');
+    }
+
+    /**
      * getP - extract ["path" => value, ...] items froom DH
      *
      * @param mixed[]|object $dh
@@ -310,5 +330,53 @@ abstract class DeepHash extends DeepHash0 {
      */
     static function cleanUp(array $dh): array {
         return \hb\Arr::cleanUp($dh);
+    }
+
+    /**
+     * shift value from array node ; NULL if no item
+     *
+     * @param mixed[]|object $dh
+     */
+    static function shift(array|object &$dh, string $path): mixed {
+        $d = &self::getArrayRef($dh, $path, false);
+        if ($d) {
+            return array_shift($d);
+        }
+
+        return null;
+    }
+
+    /**
+     * pop value from array node ; NULL if no item
+     *
+     * @param mixed[]|object $dh
+     */
+    static function pop(array|object &$dh, string $path): mixed {
+        $d = &self::getArrayRef($dh, $path, false);
+        if ($d) {
+            return array_pop($d);
+        }
+
+        return null;
+    }
+
+    /**
+     * unshift value into array node
+     *
+     * @param mixed[]|object $dh
+     */
+    static function unshift(array|object &$dh, string $path, mixed $value): void {
+        $d = &self::getArrayRef($dh, $path);
+        array_unshift($d, $value);
+    }
+
+    /**
+     * push value into array node
+     *
+     * @param mixed[]|object $dh
+     */
+    static function push(array|object &$dh, string $path, mixed $value): void {
+        $d = &self::getArrayRef($dh, $path);
+        $d[] = $value;
     }
 }
