@@ -59,6 +59,9 @@ Provides set of static methods and dynamic class.
     DH::get($dh, "a.b.c", $default)     ~=   $dh['a']['b']['c'] ?? $default
     DH::get($dh, "?a.b.c")              ~=   DH::get($dh, "a.b.c", null)
     DH::set($dh, "a.b.c", $value)       ~=   $dh['a']['b']['c'] = $value
+    DH::getW($dh, "*.names.*.(age|sex)")  ~= extract DH subset
+    DH::getQ($dh, "*.name.first")       ~=   extract data from DH. ["*" => value]
+    DH::any($dh, "a.b.c b.c.d")         ~=   first non-empty value
     DH::remove($dh, "a.b.c")            ~=   unset($dh['a']['b']['c'])
 
 <details>
@@ -113,32 +116,10 @@ $dh["dot.path"] = "value"	     write access deep element
 $dh->{$method} 			     all methods from DH class
 ```
 
-<details>
-<summary>:large_blue_circle: Default and Non-Default Flags for DH::i(); get; getRef, ...</summary>
-	
-### DEFAULT Flags (bit values)
-* `STRICT` 	  - throw exception when no item and no default given
-* `ERROR`	  - throw \Error when structural error (ex. traverse deep into int value)
-* `AUTORESOLVE`   - when node is \Closure() or Method() - resolve it and return result
-
-* NO ---   `AUTOCREATE`    - used by `getRef` method only, create structure on access   --- make an bool OPTION to getREF
-
-    
-### Non-DEFAULT Flags
-* `SAVE_RESOLVED` - when node is \Closure or Method() - resolve it and store it BACK to DH MODIFYING original data<br><small>SAVE_RESOLVED=SAVE_RESOLVED_CLOSURES|SAVE_RESOLVED_METHODS</small>
-	* `SAVE_RESOLVED_CLOSURES`
-	* `SAVE_RESOLVED_METHODS`
-
-^^^ JUNK/USELESS/DANGEROUS - DH::cacher is much better alternative
-
-You can achieve similar results with `DH::cacher( closure() )` method
-	
-</details>
-
 ## Methods
 all methods receive array|\hb\DH|object as first argument
 
-### DH::get($dh, string|array $path, $default, $flags = default_flags) : mixed | Exception  
+### DH::get($dh, string|array $path, $default) : mixed | Exception
     DH::get($dh, "path", $default) : value
     DH::get($dh, ["path", ...], $default) : [$value, ...]
     DH::get($dh, ["key" => "path", ...], $default) : [key => $value, ...]
@@ -160,14 +141,14 @@ all methods receive array|\hb\DH|object as first argument
     DH::any($dh, "path1 path2 ...") : value
 
 
-### DH::getRef($dh, string|array $path, $flags = DH::AUTOCREATE) => \&$value | Exception
+### DH::&getRef($dh, string|array $path, $autocreate = true) => \&$value | Exception
     get element's reference
 <details>
 <summary>Examples:</summary>
 
-    $valueRef = DH::getRef($dh, "a.b.c");
+    $valueRef = &DH::getRef($dh, "a.b.c");
     $valueRef = (int) $valueRef * 2 -1;
-    $valueRef = DH::getRef($dh, ["a.b", "cc", "dd"]);
+    $valueRef = &DH::getRef($dh, ["a.b", "cc", "dd"]);
 </details>
 
 ### DH::set($dh, string|array $path, value)
@@ -177,7 +158,7 @@ same as getRef($path, autocreate) + assign
     DH::set("path", null)  // delete key
     DH::set(["path" => value, ...])
 
-### DH::remove($dh, "a.b.c")            ===   unset($dh['a']['b']['c'])
+### DH::remove($dh, "a.b.c")            ~=   unset($dh['a']['b']['c'])
     same as DH::set($dh, "a.b.c", null)
 
 ---
@@ -317,7 +298,7 @@ Usage: `$dh["path"] = DH::cacher( $my_closure );`
 
 # Core DH0 methods
 ```
-  DH0::q(dh, array $path, $default, $flags) => $value | RuntimeException | InvalidArgumentException
+  DH0::q(dh, array $path, $default) => $value | RuntimeException | InvalidArgumentException
   DH0::_q(array $path) => [], [value], null     // MOST CORE METHOD
   DH0::_getRef(array $path)  => &$value | Exception
   DH0::_remove(array $path)

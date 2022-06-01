@@ -76,6 +76,17 @@ abstract class DeepHash extends DeepHash0 {
     }
 
     /**
+     * getRef - get Reference to an Item
+     *
+     * @param mixed[]|object        $dh
+     * @param int[]|string|string[] $path
+     * @param bool                  $autocreate - create path if not found (default)
+     */
+    static function &getRef(array|object $dh, string|array $path, bool $autocreate = true): mixed {
+        return ['todo'];
+    }
+
+    /**
      * first - first EXISTING item or NULL
      *
      * @param mixed[]|object $dh
@@ -104,7 +115,7 @@ abstract class DeepHash extends DeepHash0 {
             $v = self::q($dh, $p);
             \hb\error_if($v === null, 'DH structure error');
             if ($v && ($v[0] ?? 0)) {
-                return $v[0] ?? null;
+                $r = $v[0] ?? 0;
             }
         }
 
