@@ -191,8 +191,8 @@ class Arr extends Arr0 {
             $key !== null => fn ($k, $v) => $k === $key,
         };
         */
-        $value !== null && $cb = fn ($v): bool => $v === $value; // @phpstan-ignore-line
-        $key !== null && $cb = fn ($k, $v): bool => $k === $key; // @phpstan-ignore-line
+        $value !== null && $cb = fn ($v): bool => $v === $value;
+        $key !== null && $cb = fn ($k, $v): bool => $k === $key;
 
         if ($first) { // php-cs fixer cant format function in match well
             $cb = function ($v) use ($first): bool {
@@ -1089,8 +1089,8 @@ class Arr extends Arr0 {
     // }
 
     // unique(null | $field | $cb) - remove duplicates
-// uniqueStrict(... )  - same
-// take($a, $nn | cb)
-// takeUntil($a, $cb)
-// takeWhile($a, $cb)
+    // uniqueStrict(... )  - same
+    // take($a, $nn | cb)
+    // takeUntil($a, $cb)
+    // takeWhile($a, $cb)
 }

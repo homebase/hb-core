@@ -390,6 +390,4 @@ abstract class DeepHash extends DeepHash0 {
 
             Usage: `$dh["path"] = DH::cacher( $my_closure );`
     */
-
-
 }

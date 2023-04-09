@@ -389,30 +389,30 @@ function url(string $url, array $args = []): string {
     return $args ? $url.'?'.http_build_query($args) : $url;
 }
 
- /**
-  *  DEPERACATED:
-  *   use $a ?: "default" instead
-  *  oracle NVL - first non empty value | null
-  *  returns first-empty value or last-argument
-  *  nvl($a, $b, "default");
-  *  nvl($a, $b, "0")        // return $a ? $a : ($b ? $b : "0");
-  *
-  * @param mixed $args
-  */
- function nvl(...$args): mixed {
-     // non-empty-value | last-argument
-     if (\count($args) < 2) {
-         throw new Exception('NVL(...) - 2+ args expected');
-     }
-     foreach ($args as $a) {
-         if ($a) {
-             return $a;
-         }
-         $l = $a;
-     }
+/**
+ *  DEPERACATED:
+ *   use $a ?: "default" instead
+ *  oracle NVL - first non empty value | null
+ *  returns first-empty value or last-argument
+ *  nvl($a, $b, "default");
+ *  nvl($a, $b, "0")        // return $a ? $a : ($b ? $b : "0");
+ *
+ * @param mixed $args
+ */
+function nvl(...$args): mixed {
+    // non-empty-value | last-argument
+    if (\count($args) < 2) {
+        throw new Exception('NVL(...) - 2+ args expected');
+    }
+    foreach ($args as $a) {
+        if ($a) {
+            return $a;
+        }
+        $l = $a;
+    }
 
-     return $l;
- }
+    return $l;
+}
 
 /**
  * is value between $from .. $to (inclusive)
@@ -495,7 +495,7 @@ function error(string $message): void {
  */
 function throw_if($boolean, $exception, string $message = ''): void {
     if ($boolean) {
-        throw (\is_string($exception) ? new $exception($message) : $exception);
+        throw \is_string($exception) ? new $exception($message) : $exception;
     }
 }
 
@@ -510,6 +510,6 @@ function throw_if($boolean, $exception, string $message = ''): void {
  */
 function throw_unless($boolean, $exception, string $message = ''): void {
     if (!$boolean) {
-        throw (\is_string($exception) ? new $exception($message) : $exception);
+        throw \is_string($exception) ? new $exception($message) : $exception;
     }
 }

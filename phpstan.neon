@@ -5,5 +5,6 @@ parameters:
 	paths:
 		- src
 	checkGenericClassInNonGenericObjectType: false
-#	ignoreErrors:
+	ignoreErrors:
 #		- '#^No error to ignore is reported #'
+		- '#^Trait hb\\traits\\ArrayAccess is used zero times and is not analysed#'

@@ -6,7 +6,6 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
-
 /**
  * @todo All methods here MUST NOT modify $arr
  *       move modifying methods to `Arf` class  - so far one method only - ::forget
@@ -44,8 +43,8 @@ abstract class Arr0 {
     /**
      * create hash [value => $set, ..] from list of values
      *
-     * @param mixed[] $arr
-     * @param mixed|int $set
+     * @param mixed[]   $arr
+     * @param int|mixed $set
      *
      * @return mixed[]
      */
@@ -80,6 +79,7 @@ abstract class Arr0 {
      *    (int) nn - all nn tests were successful
      *     0 - at least one test failed
      *    -1 - no tests were performed, $arr empty
+     *
      * @throws \ReflectionException
      */
     static function all(array $arr, \Closure $cb): int {
@@ -118,8 +118,9 @@ abstract class Arr0 {
      *
      * @param mixed[] $arr
      *
-     * @return mixed[] [$successful_key => $successful_return] | []
      * @throws \ReflectionException
+     *
+     * @return mixed[] [$successful_key => $successful_return] | []
      */
     static function any(array $arr, \Closure $cb): array {
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
@@ -239,7 +240,7 @@ abstract class Arr0 {
 
             default:
                 error('Arr::map callback must accept one or two arguments: fn($value) or fn($key, $value)');
-                // break;
+            // break;
         }
 
         return $fromEnd ? array_reverse($r, true) : $r;
@@ -263,13 +264,14 @@ abstract class Arr0 {
      *  Example: duplicate even numbers in list:
      *    A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
      *
-     * @param iterable<mixed> $arr
+     * @param iterable<mixed>              $arr
      * @param \Closure|int|string|string[] $where
      * @param \Closure|int|string|string[] $skip
      * @param \Closure|int|string|string[] $while
      *
-     * @return mixed[]
      * @throws \ReflectionException
+     *
+     * @return mixed[]
      */
     static function mapList(
         iterable $arr,
@@ -606,7 +608,7 @@ abstract class Arr0 {
         $while = null
     ): mixed {
         error_unless($arr, 'non empty array expected');
-        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
+        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);
         if (\is_string($cb)) {
             /** @psalm-suppress ArgumentTypeCoercion */
             return min(self::map($arr, $cb));
@@ -639,7 +641,7 @@ abstract class Arr0 {
         $while = null
     ): mixed {
         error_unless($arr, 'non empty array expected');
-        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);  // @phpstan-ignore-line
+        ($where || $skip || $while) && $arr = self::iter($arr, $where, $skip, $while);
         if ($cb instanceof \Closure) {
             /** @psalm-suppress ArgumentTypeCoercion */
             return max(Arr::mapList($arr, $cb));
@@ -791,7 +793,11 @@ abstract class Arr0 {
     ): int|array {
         if (\is_array($cb)) { // count multiple keys
             $count = self::flipTo($cb, 0); // [field => 0]
-            $C = function ($k, $v) use (&$count): void { if ($v) { $count[$k]++; } };
+            $C = function ($k, $v) use (&$count): void {
+                if ($v) {
+                    $count[$k]++;
+                }
+            };
             $cb = fn (array $r): int => self::each($count, fn ($k, $v) => $C($k, (int) isset($r[$k])));
             Arr::each($arr, $cb, $where, $skip, $while, $reverse);
 
@@ -1083,7 +1089,6 @@ abstract class Arr0 {
         }
         // }
         \hb\error("Can't cast ".get_debug_type($iterable).' to array');
-        return [];
     }
 
     /**

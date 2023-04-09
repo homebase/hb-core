@@ -220,8 +220,6 @@ class Str {
 
     /**
      * Return the length of the given string.
-     *
-     * @param string|null $encoding
      */
     static function length(string $s, string $encoding = null): int {
         if ($encoding) {
@@ -293,10 +291,6 @@ class Str {
     /**
      * Limit the number of words in a string.
      *
-     * @param string $s
-     * @param int $words
-     * @param string $end
-     *
      * @return string
      */
     static function words(string $s, int $words = 100, string $end = '...') {
@@ -310,6 +304,7 @@ class Str {
 
     /**
      * Generate "random" alpha-numeric string.
+     *
      * @throws \Exception
      */
     static function random(int $length = 16): string {
@@ -347,11 +342,6 @@ class Str {
     /**
      * Replace the last occurrence of a given value in the string.
      * !!! ORDER IS DIFFERENT from Laravel's*
-     *
-     * @param string $s
-     * @param string $search
-     * @param string $replace
-     * @return string
      */
     static function replaceLast(string $s, string $search, string $replace): string {
         $position = mb_strrpos($s, $search);
