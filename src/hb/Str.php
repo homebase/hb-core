@@ -221,9 +221,9 @@ class Str {
     /**
      * Return the length of the given string.
      *
-     * @param string $encoding
+     * @param string|null $encoding
      */
-    static function length(string $s, $encoding = null): int {
+    static function length(string $s, string $encoding = null): int {
         if ($encoding) {
             return mb_strlen($s, $encoding);
         }
@@ -293,12 +293,13 @@ class Str {
     /**
      * Limit the number of words in a string.
      *
-     * @param int    $words
+     * @param string $s
+     * @param int $words
      * @param string $end
      *
      * @return string
      */
-    static function words(string $s, $words = 100, $end = '...') {
+    static function words(string $s, int $words = 100, string $end = '...') {
         preg_match('/^\s*+(?:\S++\s*+){1,'.$words.'}/u', $s, $matches);
         if (!isset($matches[0]) || static::length($s) === static::length($matches[0])) {
             return $s;
@@ -309,6 +310,7 @@ class Str {
 
     /**
      * Generate "random" alpha-numeric string.
+     * @throws \Exception
      */
     static function random(int $length = 16): string {
         $string = '';
@@ -328,7 +330,7 @@ class Str {
 
     /**
      * Replace the first occurrence of a given value in the string.
-     * !!! ORDER IS DIFFERENT than Laravel's
+     * !!! ORDER IS DIFFERENT from Laravel's
      */
     static function replaceFirst(string $s, string $search, string $replace): string {
         if ('' === $search) {
@@ -344,11 +346,14 @@ class Str {
 
     /**
      * Replace the last occurrence of a given value in the string.
-     * !!! ORDER IS DIFFERENT than Laravel's*
+     * !!! ORDER IS DIFFERENT from Laravel's*
      *
+     * @param string $s
+     * @param string $search
+     * @param string $replace
      * @return string
      */
-    static function replaceLast(string $s, string $search, string $replace) {
+    static function replaceLast(string $s, string $search, string $replace): string {
         $position = mb_strrpos($s, $search);
         if (false !== $position) {
             return mb_substr($s, 0, $position).$replace.mb_substr($s, $position + mb_strlen($search));
@@ -386,7 +391,7 @@ class Str {
 
     // First Match
     static function fm(string $s, string $regexp): string {
-        // First Match !!! ORDER IS DIFFERENT than HB1
+        // First Match !!! ORDER IS DIFFERENT from HB1
         preg_match($regexp, $s, $m);
 
         return $m[1] ?? '';
@@ -394,10 +399,10 @@ class Str {
 
     /**
      * conditional sprintf
-     * cs($a,"A=%s")   is kinda the same as $a ? sprintf("A=%s", $a) : "";   (plus x2s is applied for non scalars)
+     * cs($a,"A=%s")   is kinda the same as $a ? sprintf("A=%s", $a) : "";   (plus x2s is applied for non-scalars)
      */
     static function cs(mixed $s, string $fmt_true, string $fmt_false = ''): string {
-        // !!! ORDER IS DIFFERENT than HB1
+        // !!! ORDER IS DIFFERENT from HB1
         if ($s) {
             return sprintf($fmt_true, \is_scalar($s) ? (string) $s : \hb\x2s($s));
         }
@@ -443,7 +448,7 @@ class Str {
     static function cutAt(string $s, int $len = 60, int $at = 20, int $cut_len = 0): array|string {
         // "Original String" | [pre, cutted, post]
         error_if($at > $len, "CutAt prefix position can't exceed expected length");
-        $s = preg_replace('/[^[:print:]]/', '.', $s); // replace non printable with "."
+        $s = preg_replace('/[^[:print:]]/', '.', $s); // replace non-printable with "."
         $s = preg_replace('/\.\.+/', '..', $s); // multiple dots with 2 dots
         $l = \strlen($s);
         if ($l <= $len) {
@@ -498,7 +503,6 @@ class Str {
     /**
      * Split line into Lexemes - O(n) one pass line parser
      *
-     * split line into array of items
      * - trailing spaces ignored
      * - quotes "x" & 'x' & `x` supported
      * - brackets: () {} [] supported
@@ -509,13 +513,13 @@ class Str {
      *     parseLine("  a  b ' c ' ") >> ["a","b", "' c '"]
      * when delimiter is not a space:
      *   all lexeme trailing spaces are trimmed
-     *   multiple delimiters treated as set of empty lexems:
+     *   multiple delimiters treated as set of empty lexemes:
      *     parseLine("a,,b", ",") >> ["a", "", "b"]
      *     parseLine(",a,,b,", ",") >> ["","a", "", "b",""]
      *
-     * @test: core/ParseLine.stest   # see examples there
+     * @test: core/ParseLine.stest # see examples there
      *
-     * @return array<string> *
+     * @return array<string>
      */
     static function parseLine(string $s, string $delimiter = ' ', int $keep_escape_character = 1): array {
         return \hbc\core\StrX::parseLine($s, $delimiter, $keep_escape_character);

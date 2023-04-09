@@ -18,7 +18,7 @@ namespace hb;
  * we are trying to use Laravel function naming where possible
  *
  * Ideology:
- *     Preserve array keys, unless expicitely asked to remove them
+ *     Preserve array keys, unless explicitly asked to remove them,
  *     All array functions receive working iterable|array as first parameter
  *     No side effects
  */
@@ -34,11 +34,11 @@ abstract class Arr0 {
      * create hash [value => $set, ..] from list of values
      *
      * @param mixed[] $arr
-     * @param mixed   $set
+     * @param mixed|int $set
      *
      * @return mixed[]
      */
-    static function flipTo(array $arr, $set = 1): array {
+    static function flipTo(array $arr, mixed $set = 1): array {
         return Arr::map($arr, fn ($k, $v) => [$v => $set]);
     }
 
@@ -66,9 +66,10 @@ abstract class Arr0 {
      * @param mixed[] $arr
      *
      * return
-     *    (int) nn - all nn tests were sucessful
+     *    (int) nn - all nn tests were successful
      *     0 - at least one test failed
      *    -1 - no tests were performed, $arr empty
+     * @throws \ReflectionException
      */
     static function all(array $arr, \Closure $cb): int {
         if (!$arr) {
@@ -107,6 +108,7 @@ abstract class Arr0 {
      * @param mixed[] $arr
      *
      * @return mixed[] [$successful_key => $successful_return] | []
+     * @throws \ReflectionException
      */
     static function any(array $arr, \Closure $cb): array {
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
@@ -250,12 +252,13 @@ abstract class Arr0 {
      *  Example: duplicate even numbers in list:
      *    A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
      *
-     * @param iterable<mixed>              $arr
+     * @param iterable<mixed> $arr
      * @param \Closure|int|string|string[] $where
      * @param \Closure|int|string|string[] $skip
      * @param \Closure|int|string|string[] $while
      *
      * @return mixed[]
+     * @throws \ReflectionException
      */
     static function mapList(
         iterable $arr,
@@ -1069,6 +1072,7 @@ abstract class Arr0 {
         }
         // }
         \hb\error("Can't cast ".get_debug_type($iterable).' to array');
+        return [];
     }
 
     /**
@@ -1119,7 +1123,7 @@ abstract class Arr0 {
     }
 
     /**
-     * if all callbacks not empty? => int  where $keys value is not null
+     * if all callbacks are not empty? => int  where $keys value is not null
      *
      * @param mixed[]    $arr
      * @param callable[] $key2cb : $key => $callback($value) => eval_value

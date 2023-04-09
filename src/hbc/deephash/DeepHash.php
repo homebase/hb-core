@@ -83,6 +83,7 @@ abstract class DeepHash extends DeepHash0 {
      * @param bool                  $autocreate - create path if not found (default)
      */
     static function &getRef(array|object $dh, string|array $path, bool $autocreate = true): mixed {
+        // TODO use _getRef => [&ref|null]
         return ['todo'];
     }
 
@@ -96,6 +97,7 @@ abstract class DeepHash extends DeepHash0 {
      * @return mixed[]
      */
     static function &getArrayRef(array|object $dh, string|array $path, bool $autocreate = true): array {
+        // TODO use _getRef => [&ref|null]
         $r = &self::getRef($dh, $path, $autocreate);
         if ($r === null) {
             $r = [];
@@ -379,4 +381,15 @@ abstract class DeepHash extends DeepHash0 {
         $d = &self::getArrayRef($dh, $path);
         $d[] = $value;
     }
+
+    /*
+            # Data Caching
+            caching layer around your closure/instance_methods<br>
+            `DH::cacher(\Closure(array $path)|instance, $cacheAdapter=null, $cacheAdapterArgs = []) : \Closure`<br>
+            Default behaviour: cache in php memory, available cache adapters: apc, memcached, redis, mysql, json-file
+
+            Usage: `$dh["path"] = DH::cacher( $my_closure );`
+    */
+
+
 }
