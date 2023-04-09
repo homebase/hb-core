@@ -6,6 +6,17 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
+
+/**
+ * @todo All methods here MUST NOT modify $arr
+ *       move modifying methods to `Arf` class  - so far one method only - ::forget
+ *
+ *       create iArr class. copy all methods there, all methods there modify an original array, return $this
+ *       two constructors:
+ *              \hb\arr($arr = []);
+ *              \hb\arf(&$arr) << via reference
+ */
+
 namespace hb;
 
 /**
