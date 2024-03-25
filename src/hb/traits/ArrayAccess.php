@@ -18,17 +18,20 @@ namespace hb\traits;
  *   \IteratorAggregate     : foreach($this as $k => $v)
  *   \Countable             : count($this)
  */
-trait ArrayAccess {
+trait ArrayAccess
+{
     protected $D = [];
 
     // \ArrayAccess
 
-    public function offsetGet($k) {
+    public function offsetGet($k)
+    {
         return $this->D[$k] ?? null;
     }
 
     // set / insert
-    public function offsetSet($k, $v): void {
+    public function offsetSet($k, $v): void
+    {
         if (null === $v) {
             if (null === $k && !\hb\isSuppressed()) {
                 error_if(1, 'array[] = null disallowed'); // to suppress use "@$node[] = null"
@@ -45,22 +48,26 @@ trait ArrayAccess {
         $this->D[$k] = $v;
     }
 
-    final public function offsetExists($k) {
+    final public function offsetExists($k)
+    {
         return null === $this->offsetGet($k) ? false : true;
     }
 
-    final public function offsetUnset($k): void {
+    final public function offsetUnset($k): void
+    {
         $this->offsetSet($k, null);
     }
 
     // \Countable
 
-    public function count() {
+    public function count()
+    {
         return \count($this->D);
     }
 
     // \IteratorAggregate
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this->D);
     }
 }

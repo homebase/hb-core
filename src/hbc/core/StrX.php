@@ -11,21 +11,24 @@ namespace hbc\core;
 /**
  * Big Methods Body from \hb\Str
  */
-class StrX {
+class StrX
+{
     /**
      * @see \hb\Str::parseLine
+     *
      * @test: core/ParseLine
      *
      * @param mixed $keep_escape_character
      *
      * @return mixed[]
      */
-    static function parseLine(string $str, string $delimiter = ' ', $keep_escape_character = 1): array {
+    static function parseLine(string $str, string $delimiter = ' ', $keep_escape_character = 1): array
+    {
         $qm = ''; // quote mode: "" | $quote_char
         $bm = ''; // bracket mode: "" | $closing_bracket
         $bmc = ''; // bracket mode - expected closing bracket (valid only when $bm defined)
         $bd = 0;  // bracket depth:
-         // current position
+        // current position
         $str = trim($str, ' ');
         $len = \strlen($str);
         $R = [];  // result
@@ -57,7 +60,7 @@ class StrX {
         // Add Item to result set
         // if delimiter is not a space, trim extra spaces
         // usage: $item = $add($item);
-        $add = function ($item) use (&$R, $delimiter): string { // empty string
+        $add = static function ($item) use (&$R, $delimiter): string { // empty string
             $R[] = ' ' === $delimiter ? $item : trim($item);
 
             return '';
@@ -91,8 +94,8 @@ class StrX {
             // inside-quotes
             if ($qm) { // quote mode
                 if ($c === $qm) { // final quote
-                //    if (! $bm) // are we inside brackets?
-                //        $item = $add($item);
+                    //    if (! $bm) // are we inside brackets?
+                    //        $item = $add($item);
                     $qm = '';
                 }
 
@@ -162,18 +165,20 @@ class StrX {
     // anything to ~ PHP string with unprintable characters replaced
     // ATTENTION: may/will intentionally lose data !!
     // will try to fit result in ~200 characters
-    static function x2s(mixed $x, int $deep = 0, int $cut = 200): string {
+    static function x2s(mixed $x, int $deep = 0, int $cut = 200): string
+    {
         if ($deep > 10) {
             return "'nesting too deep!!'";
         }
         if (\is_string($x)) {
             $x = self::_x2s_cut($x, $cut, 50);
+
             // all unprintable characters presented as \$ASCII_CODE_2DIGIT-HEX
             // \r and \n presented as \r and \n
             /**
              * @param string[] $a
              */
-            $f = function (array $a): string {
+            $f = static function (array $a): string {
                 $o = \ord($a[0]);
                 if (0xD === $o) {
                     return '\r';
@@ -222,7 +227,8 @@ class StrX {
     }
 
     // x2s helper
-    static function _x2s_cut(string $s, int $len, int $at): string {
+    static function _x2s_cut(string $s, int $len, int $at): string
+    {
         if (\strlen($s) <= $len) {
             return $s;
         }
@@ -240,7 +246,8 @@ class StrX {
      *
      * @see https://github.com/danielstjules/Stringy/blob/3.1.0/LICENSE.txt
      */
-    static function charsArray(): array {
+    static function charsArray(): array
+    {
         /** @var null|array<array<string>> $charsArray */
         static $charsArray;
         if (isset($charsArray)) {

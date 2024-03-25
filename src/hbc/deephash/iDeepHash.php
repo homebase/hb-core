@@ -26,14 +26,18 @@ use hb\DH;
  *  @see  DH trait for some methods
  *
  * NEVER instantiate directly
+ *
+ * @psalm-suppress MissingTemplateParam   # implemented in Trait !!!
  */
-class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable {
+class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable
+{
     use \hb\traits\DH;
 
     /**
      * @param mixed[]|object $dh
      */
-    function __construct(&$dh) {
+    function __construct(&$dh)
+    {
         $this->D = &$dh;
     }
 
@@ -45,14 +49,16 @@ class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable {
      *
      * @return mixed
      */
-    public function __call($method, $args) {
+    public function __call($method, $args)
+    {
         return DH::$method($this->D, ...$args);
     }
 
     /**
      * @param mixed[]|object $dh
      */
-    static function i($dh): self {
+    static function i($dh): self
+    {
         if ($dh instanceof self) {
             return $dh;
         }
@@ -62,7 +68,8 @@ class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable {
     }
 
     // simplify Trait Method
-    function iDH(): self {
+    function iDH(): self
+    {
         return $this;
     }
 }

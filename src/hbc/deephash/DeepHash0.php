@@ -23,14 +23,16 @@ namespace hbc\deephash;
 
 use function hb\error_if;
 
-abstract class DeepHash0 {
+abstract class DeepHash0
+{
     /**
      * take care of get errors and exceptions
      *
      * @param mixed[]|object        $dh
      * @param int[]|string|string[] $path
      */
-    static function _get(array|object $dh, string|array $path, mixed ...$default): mixed {
+    static function _get(array|object $dh, array|string $path, mixed ...$default): mixed
+    {
         if (\is_string($path) && $path && $path[0] === '?') { # "?path" == _get("path", null)
             $path = substr($path, 1);
             if (!$default) {
@@ -58,7 +60,8 @@ abstract class DeepHash0 {
      *
      * @return null|array{0?: mixed} [value] | [] (no-value) | null (structural error)
      */
-    static function q(array|object $dh, string|array $path): array|null {
+    static function q(array|object $dh, array|string $path): ?array
+    {
         if (\is_string($path)) {
             $path = explode('.', $path);
         }
@@ -80,12 +83,13 @@ abstract class DeepHash0 {
      *
      * @return mixed[] flattened array
      */
-    static function flatten(array|object $dh, /* internal */ string $prefix = ''): array {
+    static function flatten(array|object $dh, /* internal */ string $prefix = ''): array
+    {
         $r = [];
         foreach ($dh as $k => $v) {
             if (\is_array($v) || (\is_object($v) && is_iterable($v))) {
                 /** @psalm-suppress InvalidArgument */
-                $r = $r + self::flatten($v, $prefix.$k.'.');
+                $r += self::flatten($v, $prefix.$k.'.');
             } else {
                 $r[$prefix.$k] = $v;
             }

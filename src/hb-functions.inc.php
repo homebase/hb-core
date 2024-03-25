@@ -8,14 +8,18 @@ declare(strict_types=1);
 
 namespace hb;
 
-class Exception extends \Exception {
+use hbc\core\StrX;
+
+class Exception extends \Exception
+{
     /** @var mixed[] */
     public array $payload;      // optional hash payload
 
     /**
      * @param mixed[] $payload
      */
-    function __construct(string $msg, int $code = 0, array $payload = []) {
+    function __construct(string $msg, int $code = 0, array $payload = [])
+    {
         $this->payload = $payload;
         parent::__construct($msg, $code);
     }
@@ -23,14 +27,16 @@ class Exception extends \Exception {
 
 // Non recoverable Error
 // thrown by error_if, error_unless
-class Error extends \Error {
+class Error extends \Error
+{
     /** @var mixed[] */
     public array $payload;      // optional hash payload
 
     /**
      * @param mixed[] $payload
      */
-    function __construct(string $msg, int $code = 0, array $payload = []) {
+    function __construct(string $msg, int $code = 0, array $payload = [])
+    {
         $this->payload = $payload;
         parent::__construct($msg, $code);
     }
@@ -39,8 +45,9 @@ class Error extends \Error {
 // anything to ~ PHP string with unprintable characters replaced
 // ATTENTION: may/will intentionally lose data !!
 // will try to fit result in ~200 characters
-function x2s(mixed $x, int $deep = 0, int $cut = 200): string {
-    return \hbc\core\StrX::x2s($x, $deep, $cut);
+function x2s(mixed $x, int $deep = 0, int $cut = 200): string
+{
+    return StrX::x2s($x, $deep, $cut);
 }
 
 // conditional sprintf   >>> USE Str::cs instead
@@ -51,11 +58,12 @@ function x2s(mixed $x, int $deep = 0, int $cut = 200): string {
 // }
 
 // caller file & line as string
-function caller(int $level = 1): string {
+function caller(int $level = 1): string
+{
     // "file:line"
     $t = debug_backtrace()[$level];
 
-    return "{$t['file']}:{$t['line']}";
+    return implode(':', [$t['file'] ?? '?', $t['line'] ?? '?']);
 }
 
 /**
@@ -78,7 +86,8 @@ function caller(int $level = 1): string {
  * if ($cnt = once())
  *   i('log')->error("$cnt errors in last 10 seconds");
  */
-function once(string $key = '', int $timeout = 10, int $skip_events = 0): int|bool {
+function once(string $key = '', int $timeout = 10, int $skip_events = 0): bool|int
+{
     if (!$key) {
         $key = caller();
     }
@@ -114,7 +123,8 @@ function once(string $key = '', int $timeout = 10, int $skip_events = 0): int|bo
  *
  * @return mixed[]
  */
-function qw(string|array $data, string $entry_delimiter = ' ', string $key_value_delimiter = ':'): array {
+function qw(array|string $data, string $entry_delimiter = ' ', string $key_value_delimiter = ':'): array
+{
     if (!\is_string($data)) {
         return $data;
     }
@@ -147,7 +157,8 @@ function qw(string|array $data, string $entry_delimiter = ' ', string $key_value
  *
  * @return mixed[]
  */
-function qk(string|array $data, string $entry_delimiter = ' ', string $key_value_delimiter = ':'): array {
+function qk(array|string $data, string $entry_delimiter = ' ', string $key_value_delimiter = ':'): array
+{
     if (!\is_string($data)) {
         return $data;
     }
@@ -186,7 +197,8 @@ function qk(string|array $data, string $entry_delimiter = ' ', string $key_value
  *   c) HTTP-HEADER
  *   d) client HTTPS certificate (recommended) - http://nategood.com/client-side-certificate-authentication-in-ngi
  */
-function is_admin(string $name = ''): string {
+function is_admin(string $name = ''): string
+{
     // "current-admin-name" | ""
     if ($name) {
         return $name === is_admin() ? $name : '';
@@ -212,9 +224,9 @@ function is_admin(string $name = ''): string {
     return ''; // php-stan
 }
 
-class TODO_Exception extends \hb\Error {
-}
-function todo(string $str = ''): void {
+class TODO_Exception extends Error {}
+function todo(string $str = ''): void
+{
     throw new TODO_Exception($str);
 }
 
@@ -228,10 +240,12 @@ function todo(string $str = ''): void {
  *
  * @param mixed $args
  */
-function e(string $format, ...$args): void {
+function e(string $format, ...$args): void
+{
     // @todo("implement stylish array presenation");
     if (\PHP_SAPI === 'cli') {
         \hb\todo();
+
         // i('cli')->e($format."\n", ...$args);
         return;
     }
@@ -254,11 +268,13 @@ function e(string $format, ...$args): void {
  *
  * @param mixed $args
  */
-function err(string $format, ...$args): void {
+function err(string $format, ...$args): void
+{
     // STDERR
     // @todo("implement stylish array presenation");
     if (\PHP_SAPI === 'cli') {
         \hb\todo();
+
         // i('cli')->err($format."\n", ...$args);
         return;
     }
@@ -275,9 +291,10 @@ function err(string $format, ...$args): void {
  *  HTML Escape
  *  if $text is array - join it
  *
- *  @param string|string[] $text
+ * @param string|string[] $text
  */
-function h(string|array $text): string {
+function h(array|string $text): string
+{
     // escaped text
     return htmlspecialchars(\is_array($text) ? implode('', $text) : $text, ENT_QUOTES, 'utf-8', false);
 }
@@ -286,7 +303,8 @@ function h(string|array $text): string {
  * json_encode + default params
  * "@json(...)"" - return "" on error (no exception)
  */
-function json(mixed $data): string {
+function json(mixed $data): string
+{
     $r = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     if ($r === false) {
         if (isSuppressed()) {
@@ -305,7 +323,8 @@ function json(mixed $data): string {
  *
  * @return mixed
  */
-function value($value) {
+function value($value)
+{
     // resolved Closure
     return $value instanceof \Closure ? $value() : $value;
 }
@@ -319,7 +338,8 @@ function value($value) {
  *
  * @return mixed
  */
-function then($a, $b) {
+function then($a, $b)
+{
     return $b;
 }
 
@@ -332,7 +352,8 @@ function then($a, $b) {
  *
  * @return mixed removed-value
  */
-function hash_unset(array &$hash, string $key): mixed {
+function hash_unset(array &$hash, string $key): mixed
+{
     $vl = $hash[$key] ?? null;
     unset($hash[$key]);
 
@@ -343,9 +364,12 @@ function hash_unset(array &$hash, string $key): mixed {
  * Time-to-Live calculation by different cache implementations
  * supported ttl: (int) seconds, [(int) seconds, (int) randomize-prc].
  *
- * @param array<int>|int $ttl
+ * -param array<int>|int $ttl  << gives Error
+ *
+ * @param array<mixed>|int $ttl
  */
-function ttl(int|array $ttl = [3600, 33]): int {
+function ttl(array|int $ttl = [3600, 33]): int
+{
     // ttl .. ttl+rnd(%)
     if (\is_array($ttl)) {
         /** @psalm-suppress RedundantConditionGivenDocblockType */
@@ -365,7 +389,8 @@ function ttl(int|array $ttl = [3600, 33]): int {
  *
  * @return string Ex: a("url", ['param' => 'value'], "text") Ex: a("url", "text")
  */
-function a(string $url, string|array $args_or_text = '', string $text = '', string $html = ''): string {
+function a(string $url, array|string $args_or_text = '', string $text = '', string $html = ''): string
+{
     // "<a href=.."
     if (\is_array($args_or_text)) {
         $url = url($url, $args_or_text); // args
@@ -383,7 +408,8 @@ function a(string $url, string|array $args_or_text = '', string $text = '', stri
  *
  * @param string[] $args
  */
-function url(string $url, array $args = []): string {
+function url(string $url, array $args = []): string
+{
     // @todo $url is [0=>url, "a-attribute" => 'value'] | ['url'=>url, "a-attribute" => 'value']
     // @todo $url is '@XXX' << use URL-aliaser
     return $args ? $url.'?'.http_build_query($args) : $url;
@@ -399,7 +425,8 @@ function url(string $url, array $args = []): string {
  *
  * @param mixed $args
  */
-function nvl(...$args): mixed {
+function nvl(...$args): mixed
+{
     // non-empty-value | last-argument
     if (\count($args) < 2) {
         throw new Exception('NVL(...) - 2+ args expected');
@@ -421,7 +448,8 @@ function nvl(...$args): mixed {
  * @param mixed $from
  * @param mixed $to
  */
-function between($v, $from, $to): bool {
+function between($v, $from, $to): bool
+{
     return $v >= $from && $v <= $to;
 }
 
@@ -436,7 +464,8 @@ function between($v, $from, $to): bool {
  *
  * @psalm-return array{'μs': float, count: 0|positive-int}
  */
-function benchmark(\Closure $fn, $seconds = 3, $fn_params = []): array { // [$time_per_iteration, iterations]
+function benchmark(\Closure $fn, $seconds = 3, $fn_params = []): array // [$time_per_iteration, iterations]
+{
     $start = microtime(true);
     $end = $start + $seconds;
     $cnt = 0;
@@ -450,8 +479,10 @@ function benchmark(\Closure $fn, $seconds = 3, $fn_params = []): array { // [$ti
 }
 
 // is @method called
-function isSuppressed(): bool {
+function isSuppressed(): bool
+{
     $t = error_reporting();
+
     // as of php8 default suppressed reporting value is
     //   E_USER_NOTICE | E_ERROR | E_WARNING | E_PARSE |  E_CORE_ERROR | E_CORE_WARNING | E_USER_DEPRECATED
     return 0 === $t || 4437 === $t;
@@ -461,9 +492,10 @@ function isSuppressed(): bool {
  * non recoverable Error -  developer uses Code Incorrect Way
  * throw \hb\Error exception if ...
  */
-function error_if(mixed $boolean, string $message): void {
+function error_if(mixed $boolean, string $message): void
+{
     if ($boolean) {
-        throw new \hb\Error($message);  // \Error descendant
+        throw new Error($message);  // \Error descendant
     }
 }
 
@@ -471,17 +503,19 @@ function error_if(mixed $boolean, string $message): void {
  * non recoverable Error -  developer uses Code Incorrect Way
  * throw \hb\Error exception if ...
  */
-function error_unless(mixed $boolean, string $message): void {
+function error_unless(mixed $boolean, string $message): void
+{
     if (!$boolean) {
-        throw new \hb\Error($message);  // \Error descendant
+        throw new Error($message);  // \Error descendant
     }
 }
 
 /**
  * @return never
  */
-function error(string $message): void {
-    throw new \hb\Error($message);  // \Error descendant
+function error(string $message): void
+{
+    throw new Error($message);  // \Error descendant
 }
 
 /**
@@ -493,7 +527,8 @@ function error(string $message): void {
  * @param Exception|string $exception [description]
  * @param mixed            $boolean
  */
-function throw_if($boolean, $exception, string $message = ''): void {
+function throw_if($boolean, $exception, string $message = ''): void
+{
     if ($boolean) {
         throw \is_string($exception) ? new $exception($message) : $exception;
     }
@@ -508,7 +543,8 @@ function throw_if($boolean, $exception, string $message = ''): void {
  * @param Exception|string $exception [description]
  * @param mixed            $boolean
  */
-function throw_unless($boolean, $exception, string $message = ''): void {
+function throw_unless($boolean, $exception, string $message = ''): void
+{
     if (!$boolean) {
         throw \is_string($exception) ? new $exception($message) : $exception;
     }

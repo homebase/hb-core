@@ -8,10 +8,11 @@ declare(strict_types=1);
 
 namespace hb;
 
+use hbc\deephash\DeepHash;
+
 /**
  * DH - Deep Hash : key => key => ... => value
  *
  * @see https://github.com/homebase/hb-core/blob/main/DH-DeepHash.md
  */
-class DH extends \hbc\deephash\DeepHash {
-}
+class DH extends DeepHash {}

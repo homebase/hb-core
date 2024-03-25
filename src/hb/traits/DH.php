@@ -39,32 +39,37 @@ namespace hb\traits;
 use hb\DH as H;
 use hbc\deephash\iDeepHash;
 
-trait DH {
+trait DH
+{
     /** @var mixed[]|object data */
     protected array|object $D = [];
 
     /**
      * @return mixed[]|object
      */
-    function __invoke(): array|object {
+    function __invoke(): array|object
+    {
         return $this->D;
     }
 
     // "$object"
-    function __toString(): string {
+    function __toString(): string
+    {
         return \hb\json($this->D);
     }
 
     /**
      * @return mixed[]
      */
-    function __toArray(): array {
+    function __toArray(): array
+    {
         return (array) $this->D;
     }
 
     // DH: iDeepHash - access to iDeepHash methods
     // Usage: $x->iDH()->push("path", $value);;
-    function iDH(): iDeepHash {
+    function iDH(): iDeepHash
+    {
         return H::ref($this->D); // initialize by REFerence
     }
 
@@ -74,40 +79,47 @@ trait DH {
      *
      * @param mixed $D
      */
-    function reset($D = []): void {
+    function reset($D = []): void
+    {
         $this->D = $D;
     }
 
     // \ArrayAccess
 
-    public function offsetGet($k) {
-        if ($k && \is_string($k) && $k[0] === '?') { // support for "?path"
-            return H::_get($this->D, $k, null); // return null for not-found nodes
+    public function offsetGet($offset)
+    {
+        if ($offset && \is_string($offset) && $offset[0] === '?') { // support for "?path"
+            return H::_get($this->D, $offset, null); // return null for not-found nodes
         }
 
-        return H::_get($this->D, $k);
+        return H::_get($this->D, $offset);
     }
 
     // set / unset
-    public function offsetSet($k, $v): void {
-        H::set($this->D, $k, $v);
+    public function offsetSet($offset, $value): void
+    {
+        H::set($this->D, $offset, $value);
     }
 
-    final public function offsetExists($k) {
-        return null === $this->offsetGet($k) ? false : true;
+    final public function offsetExists($offset)
+    {
+        return null === $this->offsetGet($offset) ? false : true;
     }
 
-    public function offsetUnset($k): void {
+    public function offsetUnset($k): void
+    {
         H::remove($this->D, $k);
     }
 
     // \Countable
-    public function count() {
+    public function count()
+    {
         return \count((array) $this->D);
     }
 
     // \IteratorAggregate
-    public function getIterator() {
+    public function getIterator(): \Traversable
+    {
         return new \ArrayIterator((array) $this->D);
     }
 }

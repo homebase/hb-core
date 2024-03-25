@@ -42,7 +42,8 @@ namespace hb;
  * contains all base methods.
  * no aliases, no compatibility methods
  */
-abstract class Arr0 {
+abstract class Arr0
+{
     /**
      * create hash [value => $set, ..] from list of values
      *
@@ -51,8 +52,9 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function flipTo(array $arr, mixed $set = 1): array {
-        return Arr::map($arr, fn ($k, $v) => [$v => $set]);
+    static function flipTo(array $arr, mixed $set = 1): array
+    {
+        return Arr::map($arr, static fn ($k, $v) => [$v => $set]);
     }
 
     /**
@@ -62,7 +64,8 @@ abstract class Arr0 {
      *
      * @return int[]
      */
-    static function flip1(array $arr): array {
+    static function flip1(array $arr): array
+    {
         return self::flipTo($arr, 1);
     }
 
@@ -85,7 +88,8 @@ abstract class Arr0 {
      *
      * @throws \ReflectionException
      */
-    static function all(array $arr, \Closure $cb): int {
+    static function all(array $arr, \Closure $cb): int
+    {
         if (!$arr) {
             return -1;
         }
@@ -121,11 +125,12 @@ abstract class Arr0 {
      *
      * @param mixed[] $arr
      *
-     * @throws \ReflectionException
-     *
      * @return mixed[] [$successful_key => $successful_return] | []
+     *
+     * @throws \ReflectionException
      */
-    static function any(array $arr, \Closure $cb): array {
+    static function any(array $arr, \Closure $cb): array
+    {
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
         if (1 === $np) {
             foreach ($arr as $k => $v) {
@@ -183,10 +188,10 @@ abstract class Arr0 {
      */
     static function map(
         iterable $arr,
-        int|string|array|\Closure $map = null,
-        int|string|array|\Closure $where = null,
-        int|string|array|\Closure $skip = null,
-        int|string|array|\Closure $while = null,
+        null|array|\Closure|int|string $map = null,
+        null|array|\Closure|int|string $where = null,
+        null|array|\Closure|int|string $skip = null,
+        null|array|\Closure|int|string $while = null,
         bool $reverse = false,
         bool $fromEnd = false
     ): array {
@@ -205,11 +210,11 @@ abstract class Arr0 {
             return $fromEnd ? array_reverse($r, true) : $r;
         }
         if (\is_string($map) || \is_int($map)) {
-            $map = fn ($k, array $v): array => isset($v[$map]) ? [$k => $v[$map]] : [];
+            $map = static fn ($k, array $v): array => isset($v[$map]) ? [$k => $v[$map]] : [];
         }
         if (\is_array($map)) {
             $map = /** @return mixed[] */
-            fn ($k, array $v): array => ($r = self::only($v, $map)) ? [$k => $r] : [];
+            static fn ($k, array $v): array => ($r = self::only($v, $map)) ? [$k => $r] : [];
         }
 
         $r = [];
@@ -243,7 +248,7 @@ abstract class Arr0 {
 
             default:
                 error('Arr::map callback must accept one or two arguments: fn($value) or fn($key, $value)');
-            // break;
+                // break;
         }
 
         return $fromEnd ? array_reverse($r, true) : $r;
@@ -272,16 +277,16 @@ abstract class Arr0 {
      * @param \Closure|int|string|string[] $skip
      * @param \Closure|int|string|string[] $while
      *
-     * @throws \ReflectionException
-     *
      * @return mixed[]
+     *
+     * @throws \ReflectionException
      */
     static function mapList(
         iterable $arr,
         \Closure $map,
-        int|string|array|\Closure $where = null,
-        int|string|array|\Closure $skip = null,
-        int|string|array|\Closure $while = null,
+        null|array|\Closure|int|string $where = null,
+        null|array|\Closure|int|string $skip = null,
+        null|array|\Closure|int|string $while = null,
         bool $reverse = false,
         bool $fromEnd = false
     ): array {
@@ -432,9 +437,9 @@ abstract class Arr0 {
      */
     static function iter(
         iterable $arr,
-        int|string|array|\Closure $where = null,
-        int|string|array|\Closure $skip = null,
-        int|string|array|\Closure $while = null,
+        null|array|\Closure|int|string $where = null,
+        null|array|\Closure|int|string $skip = null,
+        null|array|\Closure|int|string $while = null,
         bool $reverse = false
     ): \Generator {
         if ($reverse) {
@@ -502,7 +507,8 @@ abstract class Arr0 {
      * @param string[]        $path
      * @param iterable<mixed> $arr
      */
-    static function iterRecursive(iterable $arr, array $path = []): \Generator {
+    static function iterRecursive(iterable $arr, array $path = []): \Generator
+    {
         foreach ($arr as $k => $v) {
             // $p = array_merge($path, [$k]);
             $p = $path;
@@ -519,7 +525,8 @@ abstract class Arr0 {
     /**
      * @param iterable<mixed> $arr
      */
-    static function iterRecursiveDot(iterable $arr, string|int $path = ''): \Generator {
+    static function iterRecursiveDot(iterable $arr, int|string $path = ''): \Generator
+    {
         foreach ($arr as $k => $v) {
             $p = $path ? "$path.$k" : $k;
             if (\is_array($v)) {
@@ -538,7 +545,8 @@ abstract class Arr0 {
      *
      * @return array[]
      */
-    static function dumpIter($iter): array {
+    static function dumpIter($iter): array
+    {
         $r = [];
         foreach ($iter as $key => $value) {
             $r[] = [$key, $value];
@@ -567,24 +575,24 @@ abstract class Arr0 {
         mixed $skip = null,
         mixed $while = null,
         bool $reverse = false
-    ): int|float|array {
+    ): array|float|int {
         $sum = 0;
         if (\is_array($cb)) { // array of fields
             $sum = self::flipTo($cb, 0); // [field => 0]
-            $cb = function (array $r) use (&$sum): void {
+            $cb = static function (array $r) use (&$sum): void {
                 Arr::each(
                     $sum,
-                    function ($k, $v) use (&$sum, $r): void {
+                    static function ($k, $v) use (&$sum, $r): void {
                         $sum[$k] += $r[$k] ?? 0;
                     }
                 );
             };
         } elseif (\is_string($cb)) { // one field
-            $cb = function (array $r) use (&$sum, $cb): void { $sum += $r[$cb] ?? 0; };
+            $cb = static function (array $r) use (&$sum, $cb): void { $sum += $r[$cb] ?? 0; };
         } elseif ($cb instanceof \Closure) { // callback
-            $cb = function ($r) use (&$sum, $cb): void { $sum += $cb($r); };
+            $cb = static function ($r) use (&$sum, $cb): void { $sum += $cb($r); };
         } else {
-            $cb = function ($r) use (&$sum): void { $sum += $r; };
+            $cb = static function ($r) use (&$sum): void { $sum += $r; };
         }
         Arr::each($arr, $cb, $where, $skip, $while, $reverse);
 
@@ -605,7 +613,7 @@ abstract class Arr0 {
      */
     static function min(
         iterable $arr,
-        \Closure|string|array $cb,
+        array|\Closure|string $cb,
         $where = null,
         $skip = null,
         $while = null
@@ -621,7 +629,7 @@ abstract class Arr0 {
             return min(Arr::mapList($arr, $cb));
         }
 
-        return Arr::map($cb, fn ($k, $field) => [$field, Arr::min($arr, $field)]); // fieldname => min_Value
+        return Arr::map($cb, static fn ($k, $field) => [$field, Arr::min($arr, $field)]); // fieldname => min_Value
     }
 
     /**
@@ -638,7 +646,7 @@ abstract class Arr0 {
      */
     static function max(
         iterable $arr,
-        \Closure|string|array $cb,
+        array|\Closure|string $cb,
         $where = null,
         $skip = null,
         $while = null
@@ -654,7 +662,7 @@ abstract class Arr0 {
             return max(self::map($arr, $cb));
         }
 
-        return Arr::map($cb, fn ($k, $field) => [$field, Arr::max($arr, $field)]); // fieldname => max_Value
+        return Arr::map($cb, static fn ($k, $field) => [$field, Arr::max($arr, $field)]); // fieldname => max_Value
     }
 
     /**
@@ -671,7 +679,8 @@ abstract class Arr0 {
      *                 - Arr::only($_POST,"age name address:location");
      *                 - Arr::only($_POST, ["age", "name", "address" => location"]);  // same as above
      */
-    static function only(array $a, string|array|\Closure $keys): array {
+    static function only(array $a, array|\Closure|string $keys): array
+    {
         if ($keys instanceof \Closure) {
             return self::where($a, $keys);
         }
@@ -701,7 +710,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function forget(array &$arr, string|int|array|\Closure $keys): array { // removed items
+    static function forget(array &$arr, array|\Closure|int|string $keys): array // removed items
+    {
         $r = [];
         if ($keys instanceof \Closure) {
             $cb = $keys;
@@ -734,7 +744,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function filter(iterable $arr, \Closure $callback): array {
+    static function filter(iterable $arr, \Closure $callback): array
+    {
         return self::where($arr, $callback);
     }
 
@@ -750,7 +761,8 @@ abstract class Arr0 {
      *
      * @return array{0: mixed, 1: mixed} [false_condition, true_condition]
      */
-    static function filter2(iterable $arr, \Closure $cb): array {
+    static function filter2(iterable $arr, \Closure $cb): array
+    {
         $f = $t = []; // false, true
         // iterate over $k => [value, arity($cb) == 1 ? callback($v) : callback($k, $v)]
         foreach (self::iterCB($arr, $cb) as $k => [$v, $c]) {
@@ -793,24 +805,24 @@ abstract class Arr0 {
         $skip = null,
         $while = null,
         bool $reverse = false
-    ): int|array {
+    ): array|int {
         if (\is_array($cb)) { // count multiple keys
             $count = self::flipTo($cb, 0); // [field => 0]
-            $C = function ($k, $v) use (&$count): void {
+            $C = static function ($k, $v) use (&$count): void {
                 if ($v) {
                     $count[$k]++;
                 }
             };
-            $cb = fn (array $r): int => self::each($count, fn ($k, $v) => $C($k, (int) isset($r[$k])));
+            $cb = static fn (array $r): int => self::each($count, static fn ($k, $v) => $C($k, (int) isset($r[$k])));
             Arr::each($arr, $cb, $where, $skip, $while, $reverse);
 
             return $count;
         }
         if (\is_string($cb)) {
-            $cb = fn ($r): int => (int) isset($r[$cb]);
+            $cb = static fn ($r): int => (int) isset($r[$cb]);
         }
         if (!$cb) {
-            $cb = fn ($v): int => 1;
+            $cb = static fn ($v): int => 1;
         }
 
         return Arr::each($arr, $cb, $where, $skip, $while, $reverse);
@@ -828,11 +840,12 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function countBy(iterable $arr, $cb = null, $where = null, $skip = null, $while = null): array {
+    static function countBy(iterable $arr, $cb = null, $where = null, $skip = null, $while = null): array
+    {
         if (!$cb) {
-            $cb = fn ($r, $v) => \hb\then($r[$v] = ($r[$v] ?? 0) + 1, $r);
+            $cb = static fn ($r, $v) => \hb\then($r[$v] = ($r[$v] ?? 0) + 1, $r);
         } else {
-            $cb = function ($r, $v) use ($cb) {
+            $cb = static function ($r, $v) use ($cb) {
                 $v = $cb($v);
                 $r[$v] = ($r[$v] ?? 0) + 1;
 
@@ -858,13 +871,14 @@ abstract class Arr0 {
      *
      * @return array<mixed>
      */
-    static function groupBy(iterable $arr, string|int|\Closure $cb): array {
+    static function groupBy(iterable $arr, \Closure|int|string $cb): array
+    {
         if (!$cb instanceof \Closure) {
-            $cb = fn ($a) => $a[$cb] ?? null;
+            $cb = static fn ($a) => $a[$cb] ?? null;
         }
         $r = [];
         $np = (new \ReflectionFunction($cb))->getNumberOfParameters();
-        self::each($arr, function ($ok, $v) use (&$r, $cb, $np): void {  // $ok - original key
+        self::each($arr, static function ($ok, $v) use (&$r, $cb, $np): void {  // $ok - original key
             /** @psalm-suppress TooManyArguments */
             $t = $np == 1 ? $cb($v) : $cb($ok, $v);
             if ($t !== null) {
@@ -888,7 +902,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function chunk(array $arr, int $size): array {
+    static function chunk(array $arr, int $size): array
+    {
         return array_chunk($arr, $size, true);
     }
 
@@ -897,7 +912,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function where(iterable $arr, \Closure $callback): array {
+    static function where(iterable $arr, \Closure $callback): array
+    {
         // @todo - array_filter
         return iterator_to_array(self::_where($arr, $callback));
     }
@@ -907,7 +923,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function whereNot(iterable $arr, \Closure $callback): array {
+    static function whereNot(iterable $arr, \Closure $callback): array
+    {
         return iterator_to_array(self::_whereNot($arr, $callback));
     }
 
@@ -916,7 +933,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function while(iterable $arr, \Closure $callback): array {
+    static function while(iterable $arr, \Closure $callback): array
+    {
         return iterator_to_array(self::_while($arr, $callback));
     }
 
@@ -925,7 +943,8 @@ abstract class Arr0 {
      *
      * @param iterable<mixed> $arr
      */
-    static function _where(iterable $arr, mixed $where): \Generator {
+    static function _where(iterable $arr, mixed $where): \Generator
+    {
         error_if(\is_int($where), 'inefficient. use while=>(int) instead');
         $where = self::callback($where);
 
@@ -956,7 +975,8 @@ abstract class Arr0 {
     /**
      * @param iterable<mixed> $arr
      */
-    static function _whereNot(iterable $arr, mixed $where): \Generator {
+    static function _whereNot(iterable $arr, mixed $where): \Generator
+    {
         error_if(\is_int($where), 'inefficient. use while=>(int) instead');
         $where = self::callback($where);
 
@@ -989,7 +1009,8 @@ abstract class Arr0 {
      *
      * @param iterable<mixed> $arr
      */
-    static function _while(iterable $arr, mixed $while): \Generator {
+    static function _while(iterable $arr, mixed $while): \Generator
+    {
         $while = self::callback($while);
         $np = (new \ReflectionFunction($while))->getNumberOfParameters();
 
@@ -1030,7 +1051,8 @@ abstract class Arr0 {
      *
      * @param iterable<mixed> $arr
      */
-    static function _skip(iterable $arr, mixed $skip): \Generator {
+    static function _skip(iterable $arr, mixed $skip): \Generator
+    {
         $skip = self::callback($skip);
         $skipping = 1;
         $np = (new \ReflectionFunction($skip))->getNumberOfParameters();
@@ -1076,7 +1098,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function value(iterable|object $iterable): array {
+    static function value(iterable|object $iterable): array
+    {
         if (\is_array($iterable)) {
             return $iterable;
         }
@@ -1106,7 +1129,8 @@ abstract class Arr0 {
      *
      * @param \Closure|int|mixed[]|string $cb
      */
-    static function callback(\Closure|int|string|array $cb): \Closure {
+    static function callback(array|\Closure|int|string $cb): \Closure
+    {
         // todo - switch to match(true)
         // if (null === $cb) {
         //    return null;
@@ -1115,13 +1139,13 @@ abstract class Arr0 {
             return $cb;
         }
         if (\is_int($cb) && $cb) { // just a countdown 3,2,1,0,0,0...
-            return function (mixed $a) use (&$cb) { return $cb > 0 ? $cb-- : 0; };
+            return static function (mixed $a) use (&$cb) { return $cb > 0 ? $cb-- : 0; };
         }
         if (\is_string($cb) && $cb) {
             $cb = qw($cb);
         }
         if (\is_array($cb)) { // [int_key => fieldName, string_fieldName => fieldValue, fieldName => null]
-            return function (array $r) use ($cb) { // we expect array of array
+            return static function (array $r) use ($cb) { // we expect array of array
                 foreach ($cb as $k => $v) {
                     if (\is_int($k)) {
                         if (!isset($r[$v])) {
@@ -1149,8 +1173,9 @@ abstract class Arr0 {
      *
      * @return int -  ">0": NN tests ok, 0 - at least one test failed; -1 - no tests performed
      */
-    static function allKCB(array $arr, array $key2cb): int {
-        return Arr::all($key2cb, fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
+    static function allKCB(array $arr, array $key2cb): int
+    {
+        return Arr::all($key2cb, static fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
     }
 
     /**
@@ -1161,8 +1186,9 @@ abstract class Arr0 {
      *
      * @return mixed[] - [$successful_key => $successful_return] | []
      */
-    static function anyKCB(array $arr, array $key2cb): array {
-        return Arr::any($key2cb, fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
+    static function anyKCB(array $arr, array $key2cb): array
+    {
+        return Arr::any($key2cb, static fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
     }
 
     /**
@@ -1173,7 +1199,8 @@ abstract class Arr0 {
      *
      * @return mixed[]
      */
-    static function mapKCB(array $arr, array $key2cb): array {
+    static function mapKCB(array $arr, array $key2cb): array
+    {
         foreach ($key2cb as $key => $cb) {
             $t = $arr[$key] ?? null;
             if ($t === null) {

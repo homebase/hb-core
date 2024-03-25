@@ -45,10 +45,6 @@ $config
         'phpdoc_summary' => false, // no useless dots
         'explicit_string_variable' => false,  // "$a xxx $b" is OK !!
         'echo_tag_syntax' => ['format' => 'short'],         // "<?= ... " - good and short
-        'braces' => [
-            'position_after_functions_and_oop_constructs' => 'same',   // "function () { " same line
-            'allow_single_line_closure' => true,
-	],
 	'strict_comparison' => false, // can break old code
 	'yoda_style' => false, // ugly sometimes
 	#'increment_style' => false, // c++ not ++c
@@ -58,5 +54,13 @@ $config
     ]))->setFinder($finder)
 
 ;
+
+/*
+ * Deprecated !!
+        'braces' => [
+            'position_after_functions_and_oop_constructs' => 'same',   // "function () { " same line
+            'allow_single_line_closure' => true,
+	],
+*/
 
 return $config;

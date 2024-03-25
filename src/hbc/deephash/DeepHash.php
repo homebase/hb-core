@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace hbc\deephash;
 
+use hb\Arr;
+
 /**
  * (DH) Deep Hash
  *
@@ -20,13 +22,15 @@ namespace hbc\deephash;
 /**
  * IMPORTANT !! always use \DH::$method to access this class
  */
-abstract class DeepHash extends DeepHash0 {
+abstract class DeepHash extends DeepHash0
+{
     /**
      * iDeepHash instatiation BY value of $DH array. non-array-dh are not modified
      *
      * @param mixed[]|object $dh
      */
-    static function i(array|object $dh = []): iDeepHash {
+    static function i(array|object $dh = []): iDeepHash
+    {
         return new iDeepHash($dh);
     }
 
@@ -35,7 +39,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @param mixed[]|object $dh
      */
-    static function ref(array|object &$dh): iDeepHash {
+    static function ref(array|object &$dh): iDeepHash
+    {
         return new iDeepHash($dh);
     }
 
@@ -45,7 +50,8 @@ abstract class DeepHash extends DeepHash0 {
      * @param mixed[] $nv
      * @param bool    $recursion - parse deep constucts ['a' => ['b.c' => 1]] as ['a.b.c' => 1]
      */
-    static function create(array $nv, bool $recursion = false): iDeepHash {
+    static function create(array $nv, bool $recursion = false): iDeepHash
+    {
         // $dh
         if ($recursion) {
             $nv = self::flatten($nv);
@@ -62,7 +68,8 @@ abstract class DeepHash extends DeepHash0 {
      * @param mixed[]|object        $dh
      * @param int[]|string|string[] $path
      */
-    static function get(array|object $dh, string|array $path, mixed ...$default): mixed {
+    static function get(array|object $dh, array|string $path, mixed ...$default): mixed
+    {
         if (\is_string($path)) {
             # if (once()) {
             return self::_get($dh, $path, ...$default);
@@ -82,7 +89,8 @@ abstract class DeepHash extends DeepHash0 {
      * @param int[]|string|string[] $path
      * @param bool                  $autocreate - create path if not found (default)
      */
-    static function &getRef(array|object $dh, string|array $path, bool $autocreate = true): mixed {
+    static function &getRef(array|object $dh, array|string $path, bool $autocreate = true): mixed
+    {
         // TODO use _getRef => [&ref|null]
         return ['todo'];
     }
@@ -96,7 +104,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function &getArrayRef(array|object $dh, string|array $path, bool $autocreate = true): array {
+    static function &getArrayRef(array|object $dh, array|string $path, bool $autocreate = true): array
+    {
         // TODO use _getRef => [&ref|null]
         $r = &self::getRef($dh, $path, $autocreate);
         if ($r === null) {
@@ -116,7 +125,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function getP(array|object $dh, string $wpath): array {
+    static function getP(array|object $dh, string $wpath): array
+    {
         return [];
     }
 
@@ -128,7 +138,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function getW(array|object $dh, string $wpath): ?array {
+    static function getW(array|object $dh, string $wpath): ?array
+    {
         return [];
     }
 
@@ -140,7 +151,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function getQ(array|object $dh, string $qpath): ?array {
+    static function getQ(array|object $dh, string $qpath): ?array
+    {
         return [];
     }
 
@@ -152,7 +164,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function getV(array|object $dh, string $vpath): ?array {
+    static function getV(array|object $dh, string $vpath): ?array
+    {
         return [];
     }
 
@@ -162,7 +175,8 @@ abstract class DeepHash extends DeepHash0 {
      * @param mixed[]|object $dh
      * @param string         $pathList - space delimited list of pathes
      */
-    static function first(array|object $dh, string $pathList): mixed {
+    static function first(array|object $dh, string $pathList): mixed
+    {
         foreach (explode(' ', $pathList) as $p) {
             $v = self::q($dh, $p);
             \hb\error_if($v === null, 'DH structure error');
@@ -180,12 +194,13 @@ abstract class DeepHash extends DeepHash0 {
      * @param mixed[]|object $dh
      * @param string         $pathList - space delimited list of pathes
      */
-    static function any(array|object $dh, string $pathList): mixed {
+    static function any(array|object $dh, string $pathList): mixed
+    {
         foreach (explode(' ', $pathList) as $p) {
             $v = self::q($dh, $p);
             \hb\error_if($v === null, 'DH structure error');
             if ($v && ($v[0] ?? 0)) {
-                $r = $v[0] ?? 0;
+                $r = $v[0] ?? null; // @phpstan-ignore-line  # FALSE positive
             }
         }
 
@@ -204,7 +219,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return array<string,mixed>
      */
-    static function getDot(array|object $dh, string|array $path = ''): array {
+    static function getDot(array|object $dh, array|string $path = ''): array
+    {
         return self::flatten(self::get($dh, $path));
     }
 
@@ -215,7 +231,8 @@ abstract class DeepHash extends DeepHash0 {
      * @param mixed[]|object        $dh
      * @param int[]|string|string[] $path
      */
-    static function set(array|object &$dh, string|array $path, mixed $value = null): void {
+    static function set(array|object &$dh, array|string $path, mixed $value = null): void
+    {
         if (\is_array($path)) {
             foreach ($path as $k => $v) {
                 self::set($dh, $k, $v);
@@ -226,21 +243,24 @@ abstract class DeepHash extends DeepHash0 {
     /**
      * @param mixed[]|object $dh
      */
-    static function setW(array|object &$dh, string $wpath, mixed $value): void {
+    static function setW(array|object &$dh, string $wpath, mixed $value): void
+    {
         \hb\todo();
     }
 
     /**
      * @param mixed[]|object $dh
      */
-    static function setQ(array|object &$dh, string $qpath, mixed $value): void {
+    static function setQ(array|object &$dh, string $qpath, mixed $value): void
+    {
         \hb\todo();
     }
 
     /**
      * @param mixed[]|object $dh
      */
-    static function setCB(array|object &$dh, string $wpath, \Closure $cb): void {
+    static function setCB(array|object &$dh, string $wpath, \Closure $cb): void
+    {
         \hb\todo();
     }
 
@@ -250,7 +270,8 @@ abstract class DeepHash extends DeepHash0 {
      * @param mixed[]|object        $dh
      * @param int[]|string|string[] $path
      */
-    static function remove(array|object &$dh, string|array $path): void {
+    static function remove(array|object &$dh, array|string $path): void
+    {
         if (\is_array($path)) {
             self::set($dh, $path, null);
 
@@ -280,7 +301,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function merge(array|object $dh, array|object $dh2, \Closure $cb): array {
+    static function merge(array|object $dh, array|object $dh2, \Closure $cb): array
+    {
         \hb\todo();
 
         return [];
@@ -294,8 +316,9 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function update(array|object $dh, array|object $dh2): array {
-        return self::merge($dh, $dh2, fn ($a, $b) => $b ?? $a);
+    static function update(array|object $dh, array|object $dh2): array
+    {
+        return self::merge($dh, $dh2, static fn ($a, $b) => $b ?? $a);
     }
 
     /**
@@ -306,8 +329,9 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function updateExisting(array|object $dh, array|object $dh2): array {
-        return self::merge($dh, $dh2, fn ($a, $b) => $a !== null ? $b : $a);
+    static function updateExisting(array|object $dh, array|object $dh2): array
+    {
+        return self::merge($dh, $dh2, static fn ($a, $b) => $a !== null ? $b : $a);
     }
 
     /**
@@ -318,8 +342,9 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return mixed[]
      */
-    static function mergeNew(array|object $dh, array|object $dh2): array {
-        return self::merge($dh, $dh2, fn ($a, $b) => $a === null ? $b : $a);
+    static function mergeNew(array|object $dh, array|object $dh2): array
+    {
+        return self::merge($dh, $dh2, static fn ($a, $b) => $a === null ? $b : $a);
     }
 
     /**
@@ -330,8 +355,9 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @return array<mixed>
      */
-    static function cleanUp(array $dh): array {
-        return \hb\Arr::cleanUp($dh);
+    static function cleanUp(array $dh): array
+    {
+        return Arr::cleanUp($dh);
     }
 
     /**
@@ -339,7 +365,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @param mixed[]|object $dh
      */
-    static function shift(array|object &$dh, string $path): mixed {
+    static function shift(array|object &$dh, string $path): mixed
+    {
         $d = &self::getArrayRef($dh, $path, false);
         if ($d) {
             return array_shift($d);
@@ -353,7 +380,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @param mixed[]|object $dh
      */
-    static function pop(array|object &$dh, string $path): mixed {
+    static function pop(array|object &$dh, string $path): mixed
+    {
         $d = &self::getArrayRef($dh, $path, false);
         if ($d) {
             return array_pop($d);
@@ -367,7 +395,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @param mixed[]|object $dh
      */
-    static function unshift(array|object &$dh, string $path, mixed $value): void {
+    static function unshift(array|object &$dh, string $path, mixed $value): void
+    {
         $d = &self::getArrayRef($dh, $path);
         array_unshift($d, $value);
     }
@@ -377,7 +406,8 @@ abstract class DeepHash extends DeepHash0 {
      *
      * @param mixed[]|object $dh
      */
-    static function push(array|object &$dh, string $path, mixed $value): void {
+    static function push(array|object &$dh, string $path, mixed $value): void
+    {
         $d = &self::getArrayRef($dh, $path);
         $d[] = $value;
     }
