@@ -1,4 +1,4 @@
-# Static Standalone Classes for Homebase 2 php 8/8.1 Framework
+# Static Standalone Classes for Homebase 2 php 8/8.4 Framework
 
 tested with [spartan-test](https://github.com/parf/spartan-test), checked with [psalm](https://psalm.dev/docs/annotating_code/supported_annotations/) (level 2) && [php-stan](https://phpstan.org/writing-php-code/phpdocs-basics) (level 6)
 

@@ -50,13 +50,6 @@ function x2s(mixed $x, int $deep = 0, int $cut = 200): string
     return StrX::x2s($x, $deep, $cut);
 }
 
-// conditional sprintf   >>> USE Str::cs instead
-// Ex: cs(", %s", $word) << WRONG ORDER
-// function cs(string $fmt_true, /* mixed */ $val, string $fmt_false = '') {
-//    // @TODO - DEPRECATE !!! >> or move to CS($str, $format_true, $format_false)
-//    return $val ? sprintf($fmt_true, $val) : ($fmt_false ? sprintf($fmt_false, $val) : '');
-// }
-
 // caller file & line as string
 function caller(int $level = 1): string
 {
@@ -361,7 +354,7 @@ function hash_unset(array &$hash, string $key): mixed
 }
 
 /**
- * Time-to-Live calculation by different cache implementations
+ * Time-to-Live calculation. used by different cache implementations
  * supported ttl: (int) seconds, [(int) seconds, (int) randomize-prc].
  *
  * -param array<int>|int $ttl  << gives Error
@@ -384,12 +377,13 @@ function ttl(array|int $ttl = [3600, 33]): int
 /**
  * Build "<a href>" tag + escaping.
  *
+ * @param string|string[] $url
  * @param string|string[] $args_or_text
  * @param string          $html         extra html
  *
- * @return string Ex: a("url", ['param' => 'value'], "text") Ex: a("url", "text")
+ * @example a("url", ['param' => 'value'], "text") ; a("url", "text")
  */
-function a(string $url, array|string $args_or_text = '', string $text = '', string $html = ''): string
+function a(array|string $url, array|string $args_or_text = '', string $text = '', string $html = ''): string
 {
     // "<a href=.."
     if (\is_array($args_or_text)) {
@@ -406,17 +400,25 @@ function a(string $url, array|string $args_or_text = '', string $text = '', stri
 /**
  * Build URL (Safe)
  *
- * @param string[] $args
+ * @param string|string[]           $url  ; "url" or ["url", ...$args]
+ * @param array<string, int|string> $args
  */
-function url(string $url, array $args = []): string
+function url(array|string $url, array $args = []): string
 {
-    // @todo $url is [0=>url, "a-attribute" => 'value'] | ['url'=>url, "a-attribute" => 'value']
+    if (\is_array($url)) {
+        error_unless($url[0] ?? 0, 'expecting url as [0=>url, ...args]');
+        $u = $url[0];
+        unset($url[0]);
+        $args = $url + $args;
+        $url = $u;
+    }
+
     // @todo $url is '@XXX' << use URL-aliaser
     return $args ? $url.'?'.http_build_query($args) : $url;
 }
 
 /**
- *  DEPERACATED:
+ *  somewhat DEPRECATED:
  *   use $a ?: "default" instead
  *  oracle NVL - first non empty value | null
  *  returns first-empty value or last-argument
