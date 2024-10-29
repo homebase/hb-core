@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
-namespace hb\traits;
+namespace hb2\traits;
 
 /**
  * Homebase-Specific Array Access interface
@@ -33,7 +33,7 @@ trait ArrayAccess
     public function offsetSet($k, $v): void
     {
         if (null === $v) {
-            if (null === $k && !\hb\isSuppressed()) {
+            if (null === $k && !\hb2\isSuppressed()) {
                 error_if(1, 'array[] = null disallowed'); // to suppress use "@$node[] = null"
             }
             unset($this->D[$k]);

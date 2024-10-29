@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
-namespace hb;
+namespace hb2;
 
 use hbc\core\StrX;
 
@@ -431,10 +431,10 @@ class Str
     {
         // !!! ORDER IS DIFFERENT from HB1
         if ($s) {
-            return sprintf($fmt_true, \is_scalar($s) ? (string) $s : \hb\x2s($s));
+            return sprintf($fmt_true, \is_scalar($s) ? (string) $s : \hb2\x2s($s));
         }
 
-        return $fmt_false ? sprintf($fmt_false, \is_scalar($s) ? (string) $s : \hb\x2s($s)) : '';
+        return $fmt_false ? sprintf($fmt_false, \is_scalar($s) ? (string) $s : \hb2\x2s($s)) : '';
     }
 
     /**

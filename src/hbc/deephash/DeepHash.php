@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace hbc\deephash;
 
-use hb\Arr;
+use hb2\Arr;
 
 /**
  * (DH) Deep Hash
@@ -114,7 +114,7 @@ abstract class DeepHash extends DeepHash0
         if (\is_array($r)) {
             return $r;
         }
-        \hb\error('DH structure error - array node expected. non array found');
+        \hb2\error('DH structure error - array node expected. non array found');
     }
 
     /**
@@ -179,7 +179,7 @@ abstract class DeepHash extends DeepHash0
     {
         foreach (explode(' ', $pathList) as $p) {
             $v = self::q($dh, $p);
-            \hb\error_if($v === null, 'DH structure error');
+            \hb2\error_if($v === null, 'DH structure error');
             if ($v) {
                 return $v[0] ?? null;
             }
@@ -198,7 +198,7 @@ abstract class DeepHash extends DeepHash0
     {
         foreach (explode(' ', $pathList) as $p) {
             $v = self::q($dh, $p);
-            \hb\error_if($v === null, 'DH structure error');
+            \hb2\error_if($v === null, 'DH structure error');
             if ($v && ($v[0] ?? 0)) {
                 $r = $v[0] ?? null; // @phpstan-ignore-line  # FALSE positive
             }
@@ -245,7 +245,7 @@ abstract class DeepHash extends DeepHash0
      */
     static function setW(array|object &$dh, string $wpath, mixed $value): void
     {
-        \hb\todo();
+        \hb2\todo();
     }
 
     /**
@@ -253,7 +253,7 @@ abstract class DeepHash extends DeepHash0
      */
     static function setQ(array|object &$dh, string $qpath, mixed $value): void
     {
-        \hb\todo();
+        \hb2\todo();
     }
 
     /**
@@ -261,7 +261,7 @@ abstract class DeepHash extends DeepHash0
      */
     static function setCB(array|object &$dh, string $wpath, \Closure $cb): void
     {
-        \hb\todo();
+        \hb2\todo();
     }
 
     /**
@@ -303,7 +303,7 @@ abstract class DeepHash extends DeepHash0
      */
     static function merge(array|object $dh, array|object $dh2, \Closure $cb): array
     {
-        \hb\todo();
+        \hb2\todo();
 
         return [];
     }

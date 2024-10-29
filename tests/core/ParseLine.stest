@@ -9,7 +9,7 @@
 
 // heavily used in View system
 
-; $p = function (...$a) { return \hb\Str::parseLine(...$a);};
+; $p = function (...$a) { return \hb2\Str::parseLine(...$a);};
 
 $p("aa bb cc dd");
     ['aa', 'bb', 'cc', 'dd'];

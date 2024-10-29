@@ -19,7 +19,7 @@ sin(random_int(1, 1000)) < 2;
 #
 
 # lines starting with ";" executed, but not tested
-; $t = new \hb\test\Test;
+; $t = new \hb2\test\Test;
 $t->hello("world");
     'Hello world';
 

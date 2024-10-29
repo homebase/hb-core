@@ -1,0 +1,2 @@
+1.0.0: code extracted from Homebase2
+1.0.2: changed namespace to \hb2 to avoid legacy code conflicts

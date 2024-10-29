@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
-namespace hb\traits;
+namespace hb2\traits;
 
 /*
  * Homebase-Specific Array Access interface
@@ -36,7 +36,7 @@ namespace hb\traits;
  *
  */
 
-use hb\DH as H;
+use hb2\DH as H;
 use hbc\deephash\iDeepHash;
 
 trait DH
@@ -55,7 +55,7 @@ trait DH
     // "$object"
     function __toString(): string
     {
-        return \hb\json($this->D);
+        return \hb2\json($this->D);
     }
 
     /**

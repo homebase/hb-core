@@ -2,7 +2,7 @@
 <?php
 ; $ARG['allowError'] = 1; # allow \Error exceptions;
 ; $ARG['sort'] = 0; # disable result sorting;
-; class A extends \hb\Arr {};
+; class A extends \hb2\Arr {};
 
 // array range
 ; $AR = range(0, 10);
@@ -18,7 +18,7 @@ A::map($GA, fn($v) => $v);
 
 // @see more A::map in dedicated Arr-map.stest
 
-A::flipTo(\hb\qw("a b c"), 2);
+A::flipTo(\hb2\qw("a b c"), 2);
     ["a"=>2, "b"=>2, "c"=>2];
 
 A::all(range(100, 200), fn($a) => $a > 10);
@@ -62,10 +62,10 @@ A::fold(range(2,10), fn($c, $v) => $c*$v, 1);
 A::fold($AR, fn($c, $v) => $c*$v, 1, skip: 1, where: fn($v) => $v&1, while: fn($v) => $v < 9);
     105;
 
-A::fold(range(2,10), fn($c, $k, $v) => \hb\then($c[$k] = $v, $c), []);
+A::fold(range(2,10), fn($c, $k, $v) => \hb2\then($c[$k] = $v, $c), []);
     [2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-A::fold(range(2,10), fn($c, $k, $v) => \hb\then($c[$k*2] = $v+$k, $c), []);
+A::fold(range(2,10), fn($c, $k, $v) => \hb2\then($c[$k*2] = $v+$k, $c), []);
     [2, "2"=>4, "4"=>6, "6"=>8, "8"=>10, "10"=>12, "12"=>14, "14"=>16, "16"=>18];
 
 

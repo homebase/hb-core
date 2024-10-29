@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace hbc\deephash;
 
-use hb\DH;
+use hb2\DH;
 
 /**
  * ArrayLike DH Object
@@ -31,7 +31,7 @@ use hb\DH;
  */
 class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable
 {
-    use \hb\traits\DH;
+    use \hb2\traits\DH;
 
     /**
      * @param mixed[]|object $dh

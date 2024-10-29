@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
-namespace hb;
+namespace hb2;
 
 /**
  * Helper Functions for Arr/AH/DH/ Classes
@@ -64,7 +64,7 @@ class ArrX
      */
     static function callbackIsBetween(array $field2ft): \Closure
     {
-        return static fn (array $r) => Arr::all($field2ft, static fn ($f, $ft) => \hb\between($r[$f], reset($ft), end($ft)));
+        return static fn (array $r) => Arr::all($field2ft, static fn ($f, $ft) => \hb2\between($r[$f], reset($ft), end($ft)));
     }
 
     /**
@@ -74,6 +74,6 @@ class ArrX
      */
     static function callbackIsNotBetween(array $field2ft): \Closure
     {
-        return static fn (array $r) => Arr::all($field2ft, static fn ($f, $ft) => !\hb\between($r[$f], reset($ft), end($ft)));
+        return static fn (array $r) => Arr::all($field2ft, static fn ($f, $ft) => !\hb2\between($r[$f], reset($ft), end($ft)));
     }
 }

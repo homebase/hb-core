@@ -9,7 +9,7 @@
 
 $a = join('', range("a", "z"));
     'abcdefghijklmnopqrstuvwxyz';
-; $S = '\hb\Str';
+; $S = '\hb2\Str';
 
 $S::startsWith($a, "ab");
     true;
@@ -54,11 +54,11 @@ $S::upper($a);
 $S::limit($a, 5);
     'ab...';
 $S::limit("1234567", 3, "abcdef");
-    ['Error:hb\\Error', 'useless Str::limit(\'\', limit, end) combination'];
+    ['Error:hb2\\Error', 'useless Str::limit(\'\', limit, end) combination'];
 $S::limit("12345", 3, "abcdef");
-    ['Error:hb\\Error', 'useless Str::limit(\'\', limit, end) combination'];
+    ['Error:hb2\\Error', 'useless Str::limit(\'\', limit, end) combination'];
 $S::limit("12345", 3, "abc");
-    ['Error:hb\\Error', 'useless Str::limit(\'\', limit, end) combination'];
+    ['Error:hb2\\Error', 'useless Str::limit(\'\', limit, end) combination'];
 $S::cut($a, 5, ".");
     'abcd.';
 $S::title($a);

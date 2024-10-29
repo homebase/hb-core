@@ -19,7 +19,7 @@ declare(strict_types=1);
  *              \hb\arf(&$arr) << via reference
  */
 
-namespace hb;
+namespace hb2;
 
 /**
  * Generic Array Helper - BASE CLASS
@@ -685,7 +685,7 @@ abstract class Arr0
             return self::where($a, $keys);
         }
         $r = [];
-        foreach (\is_array($keys) ? $keys : \hb\qw($keys) as $k => $v) {
+        foreach (\is_array($keys) ? $keys : \hb2\qw($keys) as $k => $v) {
             if (\is_int($k)) {
                 $k = $v;
             }
@@ -725,7 +725,7 @@ abstract class Arr0
 
             return $r;
         }
-        $keys = \hb\qw($keys);
+        $keys = \hb2\qw($keys);
         foreach ($keys as $k => $nk) {
             if (\is_int($k)) {
                 $k = $nk;
@@ -843,7 +843,7 @@ abstract class Arr0
     static function countBy(iterable $arr, $cb = null, $where = null, $skip = null, $while = null): array
     {
         if (!$cb) {
-            $cb = static fn ($r, $v) => \hb\then($r[$v] = ($r[$v] ?? 0) + 1, $r);
+            $cb = static fn ($r, $v) => \hb2\then($r[$v] = ($r[$v] ?? 0) + 1, $r);
         } else {
             $cb = static function ($r, $v) use ($cb) {
                 $v = $cb($v);
@@ -1114,7 +1114,7 @@ abstract class Arr0
             return $iterable->__toArray();
         }
         // }
-        \hb\error("Can't cast ".get_debug_type($iterable).' to array');
+        \hb2\error("Can't cast ".get_debug_type($iterable).' to array');
     }
 
     /**
@@ -1175,7 +1175,7 @@ abstract class Arr0
      */
     static function allKCB(array $arr, array $key2cb): int
     {
-        return Arr::all($key2cb, static fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
+        return Arr::all($key2cb, static fn ($k, $cb) => \hb2\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
     }
 
     /**
@@ -1188,7 +1188,7 @@ abstract class Arr0
      */
     static function anyKCB(array $arr, array $key2cb): array
     {
-        return Arr::any($key2cb, static fn ($k, $cb) => \hb\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
+        return Arr::any($key2cb, static fn ($k, $cb) => \hb2\then($t = $arr[$k] ?? null, $t !== null ? $cb($t) : 0));
     }
 
     /**

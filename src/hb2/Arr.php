@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
-namespace hb;
+namespace hb2;
 
 /**
  * Array Helper Methods
@@ -34,8 +34,8 @@ namespace hb;
 class Arr extends Arr0
 {
     /**
-     * @see \hb\qw("val1 val2 key3:val3")   >> [0=>val1, 1=>val2, key3=>val3]
-     * @see \hb\qk("key1 key2 key3:val3")   >> [key1=>true, key2=>true, key3=>val3]
+     * @see \hb2\qw("val1 val2 key3:val3")   >> [0=>val1, 1=>val2, key3=>val3]
+     * @see \hb2\qk("key1 key2 key3:val3")   >> [key1=>true, key2=>true, key3=>val3]
      */
 
     /**
@@ -696,7 +696,7 @@ class Arr extends Arr0
             return \array_slice($arr, 0, $count, true);
         }
 
-        return self::fold($arr, static fn ($a, $k, $v) => \hb\then($a[$k] = $v, $a), [], where: $where, while: $count);
+        return self::fold($arr, static fn ($a, $k, $v) => \hb2\then($a[$k] = $v, $a), [], where: $where, while: $count);
     }
 
     /**
@@ -712,7 +712,7 @@ class Arr extends Arr0
         if (\is_array($arr) && !$where) {
             return \array_slice($arr, -$count, null, true);
         }
-        $r = self::fold($arr, static fn ($a, $k, $v) => \hb\then($a[$k] = $v, $a), [], where: $where, while: $count, reverse: true);
+        $r = self::fold($arr, static fn ($a, $k, $v) => \hb2\then($a[$k] = $v, $a), [], where: $where, while: $count, reverse: true);
 
         return array_reverse($r, true);
     }
@@ -727,7 +727,7 @@ class Arr extends Arr0
      */
     static function renameKeys(array $arr, array|string $map): array
     {
-        foreach (\hb\qw($map) as $from => $to) {
+        foreach (\hb2\qw($map) as $from => $to) {
             if (!isset($arr[$from])) {
                 continue;
             }
@@ -755,7 +755,7 @@ class Arr extends Arr0
      */
     static function add(array $arr, string $key, mixed $value): array
     {
-        \hb\todo();
+        \hb2\todo();
         /*
         if (null === \hb\dhget($arr, $key, null)) {
             \hb\dhset($arr, $key, $value);
@@ -1017,7 +1017,7 @@ class Arr extends Arr0
             return $arr;
         }
         if (\is_string($callback) || \is_array($callback)) {
-            \hb\todo();
+            \hb2\todo();
             // $arr = DH::sort($arr, $callback);
 
             return $arr;

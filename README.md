@@ -9,8 +9,8 @@ tested with [spartan-test](https://github.com/parf/spartan-test), checked with [
 
 # Provided Classes & Functions
 
-- [Str](src/hb/Str.php) - string methods
-- [Arr](src/hb/Arr.php) & [Arr0](src/hb/Arr0.php) - Generic Array Methods
+- [Str](src/hb2/Str.php) - string methods
+- [Arr](src/hb2/Arr.php) & [Arr0](src/hb2/Arr0.php) - Generic Array Methods
 - [DH aka DeepHash](DH-DeepHash.md)  - Deep(aka nested) Array methods
 - TODO: AH - Array of Hashes/Records (~ sql tables)
 - TODO: ADH - Array of AH (~ mongo records)

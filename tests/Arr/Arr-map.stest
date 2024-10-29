@@ -2,7 +2,7 @@
 <?php
 ; $ARG['allowError'] = 1; # allow \Error exceptions;
 ; $ARG['sort'] = 0; # disable result sorting;
-; class A extends \hb\Arr0 {};
+; class A extends \hb2\Arr0 {};
 $range5 = range(0, 5);
     [0, 1, 2, 3, 4, 5];
 
@@ -14,7 +14,7 @@ iterator_to_array($g);
 
 // useless call
 A::map($range5);
-    ['Error:hb\\Error', 'you need at least one callback for map method'];
+    ['Error:hb2\\Error', 'you need at least one callback for map method'];
 
 // you can convert generator to array however
 A::map(A::iter($range5));
@@ -184,7 +184,7 @@ A::map($data, ["name", "kind" => 'type'], where: fn($r) => $r['age'] < 20);
     ["row2"=>["name"=>'dit'], "row3"=>["name"=>'kava'], "row4"=>["name"=>'fido', "type"=>'dog']];
 
 // use a qw() helper so you can type less
-A::map($data, \hb\qw("name age:years_old"), where: fn($r) => $r['age'] > 10);
+A::map($data, \hb2\qw("name age:years_old"), where: fn($r) => $r['age'] > 10);
     ["row1"=>["name"=>'parf', "years_old"=>40], "row2"=>["name"=>'dit', "years_old"=>15]];
 
 

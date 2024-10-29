@@ -7,4 +7,4 @@ parameters:
 	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
 #		- '#^No error to ignore is reported #'
-		- '#^Trait hb\\traits\\ArrayAccess is used zero times and is not analysed#'
+		- '#^Trait hb2\\traits\\ArrayAccess is used zero times and is not analysed#'

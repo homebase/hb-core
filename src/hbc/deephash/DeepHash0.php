@@ -21,7 +21,7 @@ namespace hbc\deephash;
  * IMPORTANT !! always use \DH::$method to access this class
  */
 
-use function hb\error_if;
+use function hb2\error_if;
 
 abstract class DeepHash0
 {
@@ -46,7 +46,7 @@ abstract class DeepHash0
                 return $default[0];
             }
 
-            throw new \OutOfBoundsException('DH key not found: '.\hb\x2s($path));
+            throw new \OutOfBoundsException('DH key not found: '.\hb2\x2s($path));
         }
 
         return $v;

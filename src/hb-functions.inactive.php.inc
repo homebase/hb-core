@@ -28,11 +28,11 @@ function I(string $name, /* array | string */ $spec = []) {
         }
         $key = json_encode($spec);
     }
-    if ($o = \hb\HB::$I[$name][$key] ?? null) {
+    if ($o = \hb2\HB::$I[$name][$key] ?? null) {
         return $o;
     }
 
-    return \hb\I::_get($name, $spec, $key);
+    return \hb2\I::_get($name, $spec, $key);
 }
 
 /**

@@ -2,7 +2,7 @@
 <?php
 ; $ARG['allowError'] = 1; # allow \Error exceptions;
 ; $ARG['sort'] = 0; # disable result sorting;
-; class A extends \hb\Arr {};
+; class A extends \hb2\Arr {};
 
 // get rid of NULL and ""
 A::cleanup([1, 0, null, "", "a", true, false]);
@@ -181,7 +181,7 @@ A::firstX(A::range(6,10), 3);
 A::lastX(A::range(6,10), 3);
     ["2"=>8, "3"=>9, "4"=>10];
 
-A::renameKeys(["age"=>50, "first"=>'Ser', "last"=>'Parf'], \hb\qw("age:years_old first:fname x:y"));
+A::renameKeys(["age"=>50, "first"=>'Ser', "last"=>'Parf'], \hb2\qw("age:years_old first:fname x:y"));
     ["last"=>'Parf', "years_old"=>50, "fname"=>'Ser'];
 
 A::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => 2, "a" => 1.0, 'f' => null], strict:0);

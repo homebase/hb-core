@@ -14,13 +14,15 @@ namespace hbc\core;
 class StrX
 {
     /**
-     * @see \hb\Str::parseLine
-     *
-     * @test: core/ParseLine
-     *
      * @param mixed $keep_escape_character
      *
      * @return mixed[]
+     *
+     * @throws \ErrorException
+     *
+     * @see \hb2\Str::parseLine
+     *
+     * @test: core/ParseLine
      */
     static function parseLine(string $str, string $delimiter = ' ', $keep_escape_character = 1): array
     {

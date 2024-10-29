@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Homebase 2 PHP Framework - https://github.com/homebase/hb-core
  */
 
-namespace hb;
+namespace hb2;
 
 use hbc\core\StrX;
 
@@ -197,7 +197,7 @@ function is_admin(string $name = ''): string
         return $name === is_admin() ? $name : '';
     }
 
-    \hb\todo();
+    \hb2\todo();
 
     /*
     $a = &HB::$CONFIG['.is_admin'];
@@ -237,7 +237,7 @@ function e(string $format, ...$args): void
 {
     // @todo("implement stylish array presenation");
     if (\PHP_SAPI === 'cli') {
-        \hb\todo();
+        \hb2\todo();
 
         // i('cli')->e($format."\n", ...$args);
         return;
@@ -254,19 +254,19 @@ function e(string $format, ...$args): void
  * COLORED STDERR sprintf for CLI mode
  * i(CLI) wrapper.
  *
- * @see \hb\e(..), i('cli')
+ * @param mixed $args
+ *
+ *@see \hb2\e(..), i('cli')
  * Ex:
  *  \hb\err("{red}{bold}Error Condition: $error{/}")    << as is, no sprintf
  *  \hb\err("{red}{bold}Error Condition: %s{/}", $a)    << use sprintf
- *
- * @param mixed $args
  */
 function err(string $format, ...$args): void
 {
     // STDERR
     // @todo("implement stylish array presenation");
     if (\PHP_SAPI === 'cli') {
-        \hb\todo();
+        \hb2\todo();
 
         // i('cli')->err($format."\n", ...$args);
         return;
