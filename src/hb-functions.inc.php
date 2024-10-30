@@ -60,11 +60,11 @@ function caller(int $level = 1): string
 }
 
 /**
- * return Number-of-Missed-Events once during $timeout (for all php processes)
+ * Return Number-of-Missed-Events once during $timeout (for all php processes)
  * statistics kept in APC.
  *
- * Useful for throtling error messages.
- * $key can be ommited, in this case "$filename:$line" will be used as a key
+ * Useful for throttling error messages.
+ * $key can be omitted, in this case "$filename:$line" will be used as a key
  *
  * Example 1:
  * while(1) {
@@ -74,7 +74,7 @@ function caller(int $level = 1): string
  * }
  * Example 2:
  *  if ($c = once($key, 10, 5))
- *      I::Log()->error("$c events occured for key=$key in last 10 seconds"); // only cases with 6+ events !!
+ *      I::Log()->error("$c events occurred for key=$key in last 10 seconds"); // only cases with 6+ events !!
  * Example 3: - log once every 10+ seconds
  * if ($cnt = once())
  *   i('log')->error("$cnt errors in last 10 seconds");
@@ -102,7 +102,7 @@ function once(string $key = '', int $timeout = 10, int $skip_events = 0): bool|i
 
 /**
  * Perls qw ( Quote Words ) alike
- * non string input returned w/o processing
+ * non-string input returned w/o processing
  * supports hash definition.
  *
  * entry_delimiter   - entry delimiter
@@ -235,7 +235,7 @@ function todo(string $str = ''): void
  */
 function e(string $format, ...$args): void
 {
-    // @todo("implement stylish array presenation");
+    // @todo("implement stylish array presentation");
     if (\PHP_SAPI === 'cli') {
         \hb2\todo();
 
@@ -324,7 +324,7 @@ function value($value)
 
 /**
  * short function helper
- *   usage: $m = fn($a,$b) \hb\then($acc+=$a, $b)
+ *   usage: $m = fn($a,$b) => \hb\then($acc+=$a, $b)
  *
  * @param mixed $a
  * @param mixed $b
@@ -357,16 +357,14 @@ function hash_unset(array &$hash, string $key): mixed
  * Time-to-Live calculation. used by different cache implementations
  * supported ttl: (int) seconds, [(int) seconds, (int) randomize-prc].
  *
- * -param array<int>|int $ttl  << gives Error
- *
- * @param array<mixed>|int $ttl
+ * @param int|int[] $ttl
  */
 function ttl(array|int $ttl = [3600, 33]): int
 {
     // ttl .. ttl+rnd(%)
     if (\is_array($ttl)) {
-        /** @psalm-suppress RedundantConditionGivenDocblockType */
-        error_unless(\is_int($ttl[0]), 'ttl-part must be int');
+        # /** @psalm-suppress RedundantConditionGivenDocblockType */
+        # error_unless(\is_int($ttl[0]), 'ttl-part must be int'); - gives psalm error
 
         return $ttl[0] + random_int(0, (int) ($ttl[0] * $ttl[1] / 100));
     }
@@ -431,7 +429,7 @@ function nvl(...$args): mixed
 {
     // non-empty-value | last-argument
     if (\count($args) < 2) {
-        throw new Exception('NVL(...) - 2+ args expected');
+        throw new Error('NVL(...) - 2+ args expected');
     }
     foreach ($args as $a) {
         if ($a) {
@@ -445,12 +443,8 @@ function nvl(...$args): mixed
 
 /**
  * is value between $from .. $to (inclusive)
- *
- * @param mixed $v
- * @param mixed $from
- * @param mixed $to
  */
-function between($v, $from, $to): bool
+function between(mixed $v, mixed $from, mixed $to): bool
 {
     return $v >= $from && $v <= $to;
 }
@@ -458,15 +452,15 @@ function between($v, $from, $to): bool
 /**
  * benchmark function
  *
- * @param \Closure $fn        [description]
- * @param int      $seconds   [description]
- * @param mixed    $fn_params
+ * @param \Closure    $fn        [description]
+ * @param int         $seconds   [description]
+ * @param array|mixed $fn_params
  *
  * @return (float|int)[]
  *
  * @psalm-return array{'μs': float, count: 0|positive-int}
  */
-function benchmark(\Closure $fn, $seconds = 3, $fn_params = []): array // [$time_per_iteration, iterations]
+function benchmark(\Closure $fn, int $seconds = 3, mixed $fn_params = []): array // [$time_per_iteration, iterations]
 {
     $start = microtime(true);
     $end = $start + $seconds;
@@ -491,7 +485,7 @@ function isSuppressed(): bool
 }
 
 /**
- * non recoverable Error -  developer uses Code Incorrect Way
+ * non-recoverable Error -  developer uses Code Incorrect Way
  * throw \hb\Error exception if ...
  */
 function error_if(mixed $boolean, string $message): void
@@ -527,9 +521,10 @@ function error(string $message): void
  * @psalm-suppress InvalidThrow
  *
  * @param Exception|string $exception [description]
- * @param mixed            $boolean
+ *
+ * @throws Exception
  */
-function throw_if($boolean, $exception, string $message = ''): void
+function throw_if(mixed $boolean, Exception|string $exception, string $message = ''): void
 {
     if ($boolean) {
         throw \is_string($exception) ? new $exception($message) : $exception;
@@ -544,6 +539,8 @@ function throw_if($boolean, $exception, string $message = ''): void
  *
  * @param Exception|string $exception [description]
  * @param mixed            $boolean
+ *
+ * @throws Exception
  */
 function throw_unless($boolean, $exception, string $message = ''): void
 {

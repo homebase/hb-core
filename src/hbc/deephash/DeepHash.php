@@ -118,7 +118,7 @@ abstract class DeepHash extends DeepHash0
     }
 
     /**
-     * getP - extract ["path" => value, ...] items froom DH
+     * getP - extract ["path" => value, ...] items from DH
      *
      * @param mixed[]|object $dh
      * @param string         $wpath - wildcard path

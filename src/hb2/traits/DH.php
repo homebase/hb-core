@@ -20,7 +20,7 @@ namespace hb2\traits;
  *   $this()                : underlying array
  *   "$this"                : json(data)
  *   $this->iDH()           : iDeepHash instance (initialized by reference)
- *   $this->iDH()->Method() : call any DH method on exsiting data
+ *   $this->iDH()->Method() : call any DH method on existing data
  *
  * //  $this->getW("deep.field1 field2 ..") : extract specific fields (wildcard and options are supported) -- @see DH::getMany
  * //  $this->set(["key" => value"])       : replace existing data @see DH::setMany
