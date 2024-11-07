@@ -644,3 +644,5 @@ class Str
         return $map;
     }
 }
+
+include_once __DIR__.'/../hb-functions.inc.php';

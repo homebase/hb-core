@@ -1218,3 +1218,5 @@ abstract class Arr0
         return $arr;
     }
 }
+
+include_once __DIR__.'/../hb-functions.inc.php';
