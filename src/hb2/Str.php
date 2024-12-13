@@ -269,6 +269,23 @@ class Str
     }
 
     /**
+     * Determine if a given string contains a given substring. (at least one of them)
+     *
+     * @param string[] $needles - substrings
+     */
+    static function containsCount(string $s, array $needles): int
+    {
+        $cnt = 0;
+        foreach ($needles as $needle) {
+            if ('' !== $needle && false !== mb_strpos($s, $needle)) {
+                $cnt++;
+            }
+        }
+
+        return $cnt;
+    }
+
+    /**
      * Determine if a given string contains ALL given substrings
      *
      * @param array<string> $needles - substrings
