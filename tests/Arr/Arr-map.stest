@@ -211,3 +211,376 @@ A::map($rows, map:"a", while: 1, reverse: 1);
     [];
 A::map($rows, map:"a", while: 1, where: "a", reverse: 1);
     ["15"=>3];
+
+; class AD extends \hb2\Arr {};
+
+// get rid of NULL and ""
+AD::cleanup([1, 0, null, "", "a", true, false]);
+    [1, 0, "4"=>'a', "5"=>true, "6"=>false];
+
+AD::range(1,10);
+    'Instance(Generator)';
+iterator_to_array(AD::range(5,9));
+    [5, 6, 7, 8, 9];
+
+AD::isAssoc([1,2,3]);
+    false;
+
+; $a = ['a' => 1, 'b' => 2, 'c' => 3];
+AD::isAssoc($a);
+    true;
+
+AD::keyOffset($a, "b");
+    1;
+
+AD::forget($a, "a b:bb");
+    ["a"=>1, "bb"=>2];
+
+$a;
+    ["c"=>3];
+
+$a = AD::insertAfter($a, "c", ['d' => 4, 'e' => 5]);
+    ["c"=>3, "d"=>4, "e"=>5];
+
+$a = AD::insertAfter($a, "d", ['d2' => 4.3, 'd3' => 4.7]);
+    ["c"=>3, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$a = AD::insertBefore($a, "d", ['d-1' => 3.8, 'd-2' => 3.9]);
+    ["c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$a = AD::insertBefore($a, "c", ['c-1' => 2]);
+    ["c-1"=>2, "c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+// no action if element is not found
+$a = AD::insertBefore($a, "X", ['c-2' => 1]);
+    ["c-1"=>2, "c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$a = AD::insertBefore($a, "X", ['c-2' => 1], false);
+    ["c-1"=>2, "c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$z = AD::zip([1,2,3], [4,5,6]);
+    [[1, 4], [2, 5], [3, 6]];
+
+AD::unzip($z);
+    [[1, 2, 3], [4, 5, 6]];
+
+$z = AD::zip([1,2,3], [4,5,6], ['a', 'b', 'c']);
+    [[1, 4, 'a'], [2, 5, 'b'], [3, 6, 'c']];
+
+AD::unzip($z);
+    [[1, 2, 3], [4, 5, 6], ['a', 'b', 'c']];
+
+AD::flatten([0.5, [1,2,3], [[4,5,6]]], preserveKeys:false);
+    [0.5, 1, 2, 3, [4, 5, 6]];
+
+
+AD::flattenRecursive([0.5, [1,2,3], [[4,5,6]]]);
+    [0.5, "1.0"=>1, "1.1"=>2, "1.2"=>3, "2.0.0"=>4, "2.0.1"=>5, "2.0.2"=>6];
+
+
+AD::flattenList(['age' => 50, 'name' => ['first' => 'Ser', 'last' => 'Parf']]);
+    [50, 'Ser', 'Parf'];
+
+AD::flattenListRecursive([0.5, [1,2,3], [[4,[5],6], "a"], "b"]);
+    [0.5, 1, 2, 3, 4, 5, 6, 'a', 'b'];
+
+// preserve keys
+AD::flatten(['age' => 50, 'name' => ['first' => 'Ser', 'last' => 'Parf']]);
+    ["age"=>50, "first"=>'Ser', "last"=>'Parf'];
+
+; $a = ['a' => 1, 'b' => 2, 'c' => 3];
+AD::dropValues($a, 2, 4);
+    ["a"=>1, "c"=>3];
+
+AD::dropValues($a, 1, 3);
+    ["b"=>2];
+
+AD::minX([3,4,4,2,3,4,1,10], 3);
+    ["6"=>1, "3"=>2, "4"=>3];
+
+; $a = range(2,40);
+; shuffle($a);
+
+array_values(AD::minX($a, 3));
+    [2, 3, 4];
+
+array_values(AD::minX($a, 5, where: fn($v) => $v & 1 && $v & 8));
+    [9, 11, 13, 15, 25];
+
+
+array_values(AD::maxX($a, 3));
+    [38, 39, 40];
+array_values(AD::maxX($a, 5, where: fn($v) => $v & 1 && $v & 8));
+    [15, 25, 27, 29, 31];
+
+array_values(AD::maxX($a, 5, fn($v) => $v*3 +1,  where: fn($v) => $v & 1 && $v & 8));
+    [46, 76, 82, 88, 94];
+
+AD::minValueKey([3,4,4,2,3,4,1,10]);
+    6;
+
+AD::maxValueKey([3,4,4,2,3,4,1,10]);
+    7;
+
+
+AD::first([3,4,4,2,3,4,1,10], fn($v) => $v>5);
+    10;
+
+// same but with key
+AD::firstX([3,4,4,2,3,4,1,10], 1, fn($v) => $v>5);
+    ["7"=>10];
+
+AD::last([3,4,4,2,3,4,1,10], fn($v) => $v>=3 && $v < 10);
+    4;
+
+AD::firstX([3,4,4,2,3,4,1,10], 4, fn($v) => $v>3);
+    ["1"=>4, "2"=>4, "5"=>4, "7"=>10];
+
+
+; $rows = [
+  10 => ['a' => 1, 'b' => 10],
+  12 => ['b' => 10, 'c' => 100],
+  14 => ['a' => 2, 'b' => 20],
+  15 => ['a' => 3, 'c' => 200],
+  5 => ['c' => 300]
+  ];
+
+AD::maxX($rows, 2, "a");
+    ["14"=>2, "15"=>3];
+AD::minX($rows, 2, "c");
+    ["12"=>100, "15"=>200];
+
+// column "a"
+AD::first($rows, map:"a");
+    1;
+
+// column "c"
+AD::first($rows, map:"c");
+    NULL;
+
+// column "c" where "c" is not null
+AD::first($rows, map:"c", where:"c");
+    100;
+
+AD::last($rows, "a");
+    ["a"=>3, "c"=>200];
+
+// most likely you need `where a` condition here, be careful
+// map is applied AFTER !! last operation
+AD::last($rows, map:"a");
+    NULL;
+
+AD::last($rows, map:"a", where:"a");
+    3;
+
+AD::first($rows, map:"a", where:["c", "a"]);
+    3;
+
+AD::first($rows, where:["c", "a"]);
+    ["a"=>3, "c"=>200];
+
+AD::firstX([3,4,4,2,3,4,1,10], 3);
+    [3, 4, 4];
+
+AD::lastX([3,4,4,2,3,4,1,10], 3);
+    ["5"=>4, "6"=>1, "7"=>10];
+
+AD::firstX(AD::range(6,10), 3);
+    [6, 7, 8];
+
+AD::lastX(AD::range(6,10), 3);
+    ["2"=>8, "3"=>9, "4"=>10];
+
+AD::renameKeys(["age"=>50, "first"=>'Ser', "last"=>'Parf'], \hb2\qw("age:years_old first:fname x:y"));
+    ["last"=>'Parf', "years_old"=>50, "fname"=>'Ser'];
+
+AD::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => 2, "a" => 1.0, 'f' => null], strict:0);
+    true;
+
+AD::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => 2, "a" => 1.0, 'f' => null], strict:1);
+    false;
+
+AD::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => "2", "a" => 1, 'f' => null], strict:1);
+    true;
+
+AD::crossJoin([1,2,3], ['a', 'b', 'c']);
+    [[1, 'a'], [1, 'b'], [1, 'c'], [2, 'a'], [2, 'b'], [2, 'c'], [3, 'a'], [3, 'b'], [3, 'c']];
+
+AD::lastX(AD::crossJoin([1,2], ['a', 'b'], ['+', '-']), 5);
+    ["3"=>[1, 'b', '-'], "4"=>[2, 'a', '+'], "5"=>[2, 'a', '-'], "6"=>[2, 'b', '+'], "7"=>[2, 'b', '-']];
+
+// partition using true/false
+AD::partition(range(1,10), fn ($v) => $v > 5);
+    [[1, 2, 3, 4, 5], ["5"=>6, "6"=>7, "7"=>8, "8"=>9, "9"=>10]];
+
+// partition into several parts
+AD::partition(range(1,10), fn ($v) => $v % 3);
+    [["2"=>3, "5"=>6, "8"=>9], [1, "3"=>4, "6"=>7, "9"=>10], ["1"=>2, "4"=>5, "7"=>8]];
+
+; class AB extends \hb2\Arr {};
+
+// array range
+; $AR = range(0, 10);
+
+AB::map($AR, fn($v) => $v*2);
+    [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+
+// generator range
+; $GA = AB::iter($AR, where: fn($v) => $v%3, skip:1, while: fn($v) => $v < 9);
+
+AB::map($GA, fn($v) => $v);
+    ["2"=>2, "4"=>4, "5"=>5, "7"=>7, "8"=>8];
+
+// @see more AB::map in dedicated Arr-map.stest
+
+AB::flipTo(\hb2\qw("a b c"), 2);
+    ["a"=>2, "b"=>2, "c"=>2];
+
+AB::all(range(100, 200), fn($a) => $a > 10);
+    101;
+
+AB::all(range(100, 200), fn($a) => $a > 150);
+    0;
+
+AB::any(range(100, 200), fn($a) => $a > 150);
+    ["51"=>true];
+
+AB::any(range(100, 200), fn($a) => $a < 10);
+    [];
+
+
+// duplicate even numbers in list, thow away odd ones
+AB::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
+    [2, 2, 4, 4];
+
+// cb($k, $v)
+AB::mapList([1, 2, 3, 4], fn($k, $v) => $k & 1 ? [] : [$k, "$k-$v"]);
+    [0, '0-1', 2, '2-3'];
+
+// execute all, return number of non-empty responses
+AB::each($AR, fn($v) => $v & 1);
+    5;
+
+// execute all, return number of non-empty responses ($key, $value)
+AB::each($AR, fn($k, $v) => $k & 1);
+    5;
+
+AB::fold($AR, fn($c, $v) => $c+$v);
+    55;
+
+AB::fold($AR, fn($c, $v) => $c+$v, skip: 1, where: fn($v) => $v&1, while: fn($v) => $v < 9);
+    15;
+
+AB::fold(range(2,10), fn($c, $v) => $c*$v, 1);
+    3628800;
+
+AB::fold($AR, fn($c, $v) => $c*$v, 1, skip: 1, where: fn($v) => $v&1, while: fn($v) => $v < 9);
+    105;
+
+AB::fold(range(2,10), fn($c, $k, $v) => \hb2\then($c[$k] = $v, $c), []);
+    [2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+AB::fold(range(2,10), fn($c, $k, $v) => \hb2\then($c[$k*2] = $v+$k, $c), []);
+    [2, "2"=>4, "4"=>6, "6"=>8, "8"=>10, "10"=>12, "12"=>14, "14"=>16, "16"=>18];
+
+
+; $a = ['a' => 1, 'b' => ['c' => 3, 'd' => 4]];
+iterator_to_array(AB::iterRecursiveDot($a));
+    ["a"=>1, "b.c"=>3, "b.d"=>4];
+AB::dumpIter(AB::iterRecursiveDot($a));
+    [['a', 1], ['b.c', 3], ['b.d', 4]];
+AB::dot($a);
+    ["a"=>1, "b.c"=>3, "b.d"=>4];
+
+AB::dumpIter(AB::iterRecursive($a));
+    [[['a'], 1], [['b', 'c'], 3], [['b', 'd'], 4]];
+
+
+; $a = [0,[1,2],3,[4,[5,6]]];
+AB::dumpIter(AB::iterRecursive($a));
+    [[[0], 0], [[1, 0], 1], [[1, 1], 2], [[2], 3], [[3, 0], 4], [[3, 1, 0], 5], [[3, 1, 1], 6]];
+
+iterator_to_array(AB::iterRecursiveDot($a));
+    [0, "1.0"=>1, "1.1"=>2, "2"=>3, "3.0"=>4, "3.1.0"=>5, "3.1.1"=>6];
+
+AB::dot($a);
+    [0, "1.0"=>1, "1.1"=>2, "2"=>3, "3.0"=>4, "3.1.0"=>5, "3.1.1"=>6];
+
+AB::sum(range(1,10));
+    55;
+
+AB::count(range(1,10));
+    10;
+
+$rows = [
+  10 => ['a' => 1, 'b' => 10],
+  12 => ['b' => 10, 'c' => 100],
+  14 => ['a' => 2, 'b' => 20],
+  15 => ['a' => 3, 'c' => 200],
+  5 => ['c' => 300]
+  ];
+    ["10"=>["a"=>1, "b"=>10], "12"=>["b"=>10, "c"=>100], "14"=>["a"=>2, "b"=>20], "15"=>["a"=>3, "c"=>200], "5"=>["c"=>300]];
+
+AB::map($rows, "a");
+    ["10"=>1, "14"=>2, "15"=>3];
+
+AB::map($rows, ["a", "c"]);
+    ["10"=>["a"=>1], "12"=>["c"=>100], "14"=>["a"=>2], "15"=>["a"=>3, "c"=>200], "5"=>["c"=>300]];
+
+AB::map($rows, where:["a", "c"]);
+    ["15"=>["a"=>3, "c"=>200]];
+
+AB::map($rows, where: "b");
+    ["10"=>["a"=>1, "b"=>10], "12"=>["b"=>10, "c"=>100], "14"=>["a"=>2, "b"=>20]];
+
+AB::map($rows, where: ["b", "c"]);
+    ["12"=>["b"=>10, "c"=>100]];
+
+AB::sum($rows, "a", where: fn($a) => ($a['a']??0)&1); // sum odd;
+    4;
+AB::sum($rows, "a");
+    6;
+
+AB::sum($rows, "c");
+    600;
+
+AB::sum($rows, ["a", "c"]);
+    ["a"=>6, "c"=>600];
+
+AB::count($rows);
+    5;
+
+AB::count($rows, "a");
+    3;
+
+AB::count($rows, fn ($a) => ($a['a']??0) > 1);
+    2;
+
+AB::count($rows, ["a", "b", "c", "d"]);
+    ["a"=>3, "b"=>3, "c"=>3, "d"=>0];
+
+AB::count($rows, fn($r) => ($r['a'] ?? 0) > 1);
+    2;
+
+AB::groupBy($rows, "a");
+    ["1"=>["10"=>["a"=>1, "b"=>10]], "2"=>["14"=>["a"=>2, "b"=>20]], "3"=>["15"=>["a"=>3, "c"=>200]]];
+
+AB::groupBy($rows, "b");
+    ["10"=>["10"=>["a"=>1, "b"=>10], "12"=>["b"=>10, "c"=>100]], "20"=>["14"=>["a"=>2, "b"=>20]]];
+
+; $a = ['a' => 1, 'b' => ['c' => 3, 'd' => 4], 'e' => 5];
+
+AB::only($a, "a e");
+    ["a"=>1, "e"=>5];
+
+AB::only($a, "a:assign e:effort");
+    ["assign"=>1, "effort"=>5];
+
+AB::only($a, "b:data");
+    ["data"=>["c"=>3, "d"=>4]];
+
+AB::only($a, "x y");
+    [];
+
+AB::only($a, "x:y");
+    [];

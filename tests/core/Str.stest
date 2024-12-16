@@ -15,11 +15,18 @@ $S::startsWith($a, "ab");
     true;
 $S::startsWith($a, "b");
     false;
+$S::start($a, "a");
+    'abcdefghijklmnopqrstuvwxyz';
+$S::start($a, "test_");
+    'test_abcdefghijklmnopqrstuvwxyz';
 $S::endsWith($a, "xyz");
     true;
 $S::endsWith($a, "aaa");
     false;
-
+$S::finish($a, "z");
+    'abcdefghijklmnopqrstuvwxyz';
+$S::finish($a, "_test");
+    'abcdefghijklmnopqrstuvwxyz_test';
 $S::before($a, "def");
     'abc';
 $S::before($a, "df");
@@ -42,9 +49,12 @@ $S::beforeLast($x, ".");
 
 $S::between($a, "k", "p");
     'lmno';
-
 $S::between("xxx (a,b) xxx (c,d) xxx", "(", ")");
     'a,b';
+$S::between($a, " ", " ");
+    false;
+$S::between("Hello world!", "Hello", "xyz");
+    NULL;
 
 $S::lower($a);
     'abcdefghijklmnopqrstuvwxyz';
@@ -53,6 +63,8 @@ $S::upper($a);
 
 $S::limit($a, 5);
     'ab...';
+$S::limit('123', 3);
+    '123';
 $S::limit("1234567", 3, "abcdef");
     ['Error:hb2\\Error', 'useless Str::limit(\'\', limit, end) combination'];
 $S::limit("12345", 3, "abcdef");
@@ -65,6 +77,502 @@ $S::title($a);
     'Abcdefghijklmnopqrstuvwxyz';
 $S::len($a);
     26;
+$S::ucfirst($a);
+    'Abcdefghijklmnopqrstuvwxyz';
+$S::kebab("Hello World");
+    'hello-world';
+$S::snake("hello_world");
+    'hello_world';
+$S::snake("hello");
+    'hello';
+$S::snake("Hello World");
+    'hello_world';
+
+$S::studly("aaa-bbb_ccc ddd");
+    'AaaBbbCccDdd';
+
+$S::length("123");
+    3;
+
+$S::length("こんにちは世界", "UTF-8");
+    7;
+
+$S::contains('Hello world', ['Hello', 'world']);
+    true;
+$S::contains('Hello world', ['hi', 'there']);
+    false;
+$S::contains('Hello world', 'world');
+    true;
+$S::contains('Hello world', 'bye');
+    false;
+$S::contains('Hello world', []);
+    false;
+$S::contains('Hello world', '');
+    false;
+$S::contains('This is a test', 'is a');
+    true;
+$S::contains('Testing', 'test');
+    false;
+$S::contains('Hello, world!', ['Hello', '!']);
+    true;
+$S::contains('banana', 'na');
+    true;
+$S::contains('Hello$%^&', ['$%^']);
+    true;
+$S::contains('exact', 'exact');
+    true;
+$S::contains('', 'something');
+    false;
+$S::contains('', '');
+    false;
+$S::contains('Hello world', ' ');
+    true;
+
+$S::containsAll('Hello world', ['Hello', 'world']);
+    true;
+$S::containsAll('Hello world', ['Hello', 'bye']);
+    false;
+$S::containsAll('Hello world', []);
+    true;
+$S::containsAll('Hello world', ['Hello', '']);
+    true;
+$S::containsAll('This is a test', ['This', 'is', 'a', 'test']);
+    true;
+$S::containsAll('Testing automation', ['Testing', 'not']);
+    false;
+$S::containsAll('Testing', ['Test', 'ing']);
+    true;
+$S::containsAll('exact', ['exact']);
+    true;
+$S::containsAll('', ['something']);
+    false;
+$S::containsAll('', []);
+    true;
+$S::containsAll('Hello, world!', ['Hello', ', ', 'world', '!']);
+    true;
+$S::containsAll('banana', ['b', 'na']);
+    true;
+$S::containsAll('Hello world', ['world', ' ']);
+    true;
+$S::containsAll('Hello world', ['Hello', '$']);
+    false;
+$S::containsAll('abc123xyz', ['xyz', 'abc']);
+    true;
+
+$S::is('Hello world', 'Hello world');
+    true;
+$S::is('Hello world', ['Hello', 'world']);
+    false;
+$S::is('Hello world', ['Hello world', 'world']);
+    true;
+$S::is('Hello world', []);
+    false;
+$S::is('Hello world', 'Hello*');
+    true;
+$S::is('Hello world', '*world');
+    true;
+$S::is('Hello world', '*lo wor*');
+    true;
+$S::is('Testing123', 'Testing*');
+    true;
+$S::is('Hello123', 'Hello');
+    false;
+$S::is('abc123', 'abc*');
+    true;
+$S::is('abc123', '*123');
+    true;
+$S::is('abc123xyz', 'abc*xyz');
+    true;
+$S::is('123', '*');
+    true;
+$S::is('', '*');
+    true;
+$S::is('', '');
+    false;
+$S::is('Hello world', '');
+    false;
+
+$S::words('Hello world, this is a test string.', 3);
+    'Hello world, this...';
+$S::words('Hello world, this is a test string.', 5);
+    'Hello world, this is a...';
+$S::words('Hello world, this is a test string.', 10);
+    'Hello world, this is a test string.';
+$S::words('Hello', 1);
+    'Hello';
+$S::words('Hello', 2);
+    'Hello'; 
+$S::words('This is a test', 2);
+    'This is...';
+$S::words('This is a test', 4);
+    'This is a test';
+$S::words('This is a test', 3, ' [more]');
+    'This is a [more]';
+$S::words('One two three four', 2);
+    'One two...';
+$S::words('Only one word', 1, ' ---');
+    'Only ---';
+$S::words('', 3);
+    ''; 
+$S::words('Just two words', 2);
+    'Just two...';
+$S::words('Lorem ipsum dolor sit amet', 0);
+    ['ErrorException', 'preg_match(): Compilation failed: numbers out of order in {} quantifier at offset 21'];  
+$S::words('Lorem ipsum dolor sit amet', 1);
+    'Lorem...';
+$S::words('Lorem ipsum dolor sit amet', 3);
+    'Lorem ipsum dolor...';
+$S::words('Hello', 10);
+    'Hello'; 
+
+# Replaces the first occurrence of 'world' with 'universe'
+$S::replaceFirst('Hello world', 'world', 'universe');
+    'Hello universe';
+
+# Only the first occurrence of 'world' is replaced
+$S::replaceFirst('Hello world world', 'world', 'universe');
+    'Hello universe world';
+
+# 'world' is not found, so no replacement
+$S::replaceFirst('Hello', 'world', 'universe');
+    'Hello';
+
+# Empty search value, nothing is replaced
+$S::replaceFirst('Hello world', '', 'universe');
+    'Hello world';
+
+# Replaces the first occurrence of 'quick' with 'slow'
+$S::replaceFirst('The quick brown fox', 'quick', 'slow');
+    'The slow brown fox';
+
+# Only the first occurrence of 'na' is replaced
+$S::replaceFirst('banana', 'na', 'NA');
+    'baNAna';
+
+# Replaces 'foo' with 'bar'
+$S::replaceFirst('foobar', 'foo', 'bar');
+    'barbar';
+
+# Only the first occurrence of 'repeat' is replaced
+$S::replaceFirst('repeat repeat repeat', 'repeat', 'done');
+    'done repeat repeat';
+
+# Replaces '456' with '789'
+$S::replaceFirst('123456', '456', '789');
+    '123789';
+
+# Only the first occurrence of 'abc' is replaced
+$S::replaceFirst('abcabcabc', 'abc', 'XYZ');
+    'XYZabcabc';
+
+# Replaces the first occurrence of 'is' with 'was'
+$S::replaceFirst('This is a test', 'is', 'was');
+    'Thwas is a test';
+
+# Empty search value, nothing is replaced
+$S::replaceFirst('empty', '', 'replace');
+    'empty';
+
+# Empty input string, nothing to replace
+$S::replaceFirst('', 'something', 'replace');
+    '';
+
+# Only the first occurrence of 'Hello' is replaced
+$S::replaceFirst('Hello Hello', 'Hello', 'Hi');
+    'Hi Hello';
+
+# Replaces 'A' with 'The'
+$S::replaceFirst('A quick brown fox', 'A', 'The');
+    'The quick brown fox';
+
+
+# Replaces the last occurrence of 'world' with 'universe'
+$S::replaceLast('Hello world', 'world', 'universe');
+    'Hello universe';
+
+# Replaces only the last occurrence of 'world'
+$S::replaceLast('Hello world world', 'world', 'universe');
+    'Hello world universe';
+
+# 'world' is not found, so no replacement
+$S::replaceLast('Hello', 'world', 'universe');
+    'Hello';
+
+# Empty search value, nothing is replaced
+#$S::replaceLast('Hello world', '', 'universe');
+#    'Hello world';
+
+# Replaces the last occurrence of 'quick' with 'slow'
+$S::replaceLast('The quick quick brown fox', 'quick', 'slow');
+    'The quick slow brown fox';
+
+# Replaces the last occurrence of 'na' with 'NA'
+$S::replaceLast('banana', 'na', 'NA');
+    'banaNA';
+
+# Replaces the last occurrence of 'foo' with 'bar'
+$S::replaceLast('foofoo', 'foo', 'bar');
+    'foobar';
+
+# Replaces only the last occurrence of 'repeat'
+$S::replaceLast('repeat repeat repeat', 'repeat', 'done');
+    'repeat repeat done';
+
+# Replaces '456' with '789' (last occurrence)
+$S::replaceLast('123456456', '456', '789');
+    '123456789';
+
+# Replaces the last occurrence of 'abc' with 'XYZ'
+$S::replaceLast('abcabcabc', 'abc', 'XYZ');
+    'abcabcXYZ';
+
+# Replaces the last occurrence of 'is' with 'was'
+$S::replaceLast('This is a test is here', 'is', 'was');
+    'This is a test was here';
+
+# Empty search value, nothing is replaced
+#$S::replaceLast('empty', '', 'replace');
+#    'empty';
+
+# Empty input string, nothing to replace
+$S::replaceLast('', 'something', 'replace');
+    '';
+
+# Replaces the last occurrence of 'Hello' with 'Hi'
+$S::replaceLast('Hello Hello', 'Hello', 'Hi');
+    'Hello Hi';
+
+# Replaces 'A' with 'The'
+$S::replaceLast('A quick brown fox', 'A', 'The');
+    'The quick brown fox';
+
+# Replaces each '[]' with the corresponding value in the replacements array
+$S::replaceArray('start item_1 [] item_2 [] item_3 [] item_4 [] end', '[]', [1, 2, 3, 4, 5]);
+    'start item_1 1 item_2 2 item_3 3 item_4 4 end';
+
+# Replaces only the available '[]' in the string with the values from the replacements array
+$S::replaceArray('Hello [] world []!', '[]', ['beautiful']);
+    'Hello beautiful world []!';
+
+# No replacements provided, the string remains unchanged
+$S::replaceArray('Hello [] world!', '[]', []);
+    'Hello [] world!';
+
+# More placeholders than replacements, remaining placeholders stay unchanged
+$S::replaceArray('item_1 [] item_2 [] item_3 []', '[]', ['A', 'B']);
+    'item_1 A item_2 B item_3 []';
+
+# Exactly enough replacements for placeholders
+$S::replaceArray('item_1 [] item_2 [] item_3 []', '[]', ['A', 'B', 'C']);
+    'item_1 A item_2 B item_3 C';
+
+# More replacements than placeholders, extra replacements are ignored
+$S::replaceArray('item_1 [] item_2 []', '[]', ['A', 'B', 'C', 'D']);
+    'item_1 A item_2 B';
+
+# Empty search value is not valid, no changes made
+$S::replaceArray('Hello world!', '', ['replacement']);
+    ['Error:ValueError', 'explode(): Argument #1 ($separator) cannot be empty'];
+
+# Replaces placeholders with empty strings
+$S::replaceArray('Hello [] world []!', '[]', ['', '']);
+    'Hello  world !';
+
+# Input string without search value, no replacements are made
+$S::replaceArray('Hello world!', '[]', ['replacement']);
+    'Hello world!';
+
+# Replaces placeholders with different strings of varying length
+$S::replaceArray('Hello [] world []!', '[]', ['small', 'a much longer replacement']);
+    'Hello small world a much longer replacement!';
+
+# Placeholder appears at the beginning and end of the string
+$S::replaceArray('[] Hello [] world []', '[]', ['Start', 'Middle', 'End']);
+    'Start Hello Middle world End';
+
+
+# Removes binary characters from the string
+$S::stripBinary("Hello\x00 world\x01!");
+    'Hello world!';
+
+# Removes newline and tab characters
+$S::stripBinary("Hello\nworld\t!");
+    'Helloworld!';
+
+# String without any binary characters remains unchanged
+$S::stripBinary('Just a regular string');
+    'Just a regular string';
+
+# Removes non-printable ASCII control characters
+$S::stripBinary("Test\x02\x03String");
+    'TestString';
+
+# Empty string remains unchanged
+$S::stripBinary('');
+    '';
+
+# String with only binary characters becomes empty
+$S::stripBinary("\x00\x01\x02\x03");
+    '';
+
+# Keeps spaces and punctuation marks, removes binary characters
+$S::stripBinary("Hello, \x07world! \x0B\x0C");
+    'Hello, world! ';
+
+# Removes a mix of printable and non-printable characters
+$S::stripBinary("Printable\x0ACharacters\x1FHere!");
+    'PrintableCharactersHere!';
+
+# String length is less than the specified $len, returns original string
+$S::cutAt('Short string', 20, 10, 5);
+    'Short string';
+
+# Original string is returned if length <= $len
+$S::cutAt('1234567890', 10, 5, 5);
+    '1234567890';
+
+
+$S::cutAt('1234567890', 9, 5, 5);
+    ['12345', '6', '7890'];
+
+$S::cutAt('1234567890', 9, 8, 5);
+    ['12345678', '9', '0'];
+
+
+$S::cut('Short string', 20);
+    'Short string';
+
+# Uses a custom $end string instead of default '...'
+$S::cut('This string is too long', -10, '[cut]');
+    'This str[cut]';
+
+# Single string contains the full-word substring, case-sensitive (default)
+$S::haveSubstring('Hello world', 'world');
+    true;
+
+# Single string does not contain the full-word substring, case-sensitive
+$S::haveSubstring('Hello world', 'World');
+    false;
+
+# Single string contains the full-word substring, case-insensitive
+$S::haveSubstring('Hello world', 'World', false);
+    true;
+
+# String array contains one of the full-word substrings, case-sensitive
+$S::haveSubstring(['Hello world', 'Goodbye world'], 'world');
+    true;
+
+# String array contains none of the full-word substrings, case-sensitive
+$S::haveSubstring(['Hello world', 'Goodbye universe'], 'planet');
+    false;
+
+# Single string with multiple substrings, one of which matches
+$S::haveSubstring('Hello world', ['world', 'universe']);
+    true;
+
+# Single string with multiple substrings, none of which match, case-sensitive
+$S::haveSubstring('Hello world', ['Universe', 'Planet']);
+    false;
+
+# Single string contains a substring that is part of another word, should not match as full-word
+$S::haveSubstring('Hello worldwide', 'world');
+    false;
+
+# String array with no matching full-word substrings
+$S::haveSubstring(['This is a test', 'Another example'], 'missing');
+    false;
+
+# Empty string, substring does not match
+$S::haveSubstring('', 'world');
+    false;
+
+# String contains multiple occurrences of the full-word substring
+$S::haveSubstring('world world world', 'world');
+    true;
+
+# String array contains one string with matching full-word substring, case-sensitive
+$S::haveSubstring(['No match here', 'But world is here'], 'world');
+    true;
+
+# Converts a string to a slug with default separator '-'
+$S::slug('Hello World');
+    'hello-world';
+
+# Converts a string with special characters, using default separator '-'
+$S::slug('Hello@World!');
+    'hello-at-world';
+
+# Uses a custom separator '_'
+$S::slug('Hello World', '_');
+    'hello_world';
+
+# Converts underscores to dashes when default separator is used
+$S::slug('Hello_World');
+    'hello-world';
+
+# Handles strings with multiple whitespace, reduces to a single separator
+$S::slug('Hello    World   Again');
+    'hello-world-again';
+
+# Does not convert to ASCII when $toAscii is false
+$S::slug('Héllo Wörld', '-', false);
+    'héllo-wörld';
+
+# Replaces '@' with 'at' in the slug
+$S::slug('Contact me @ email');
+    'contact-me-at-email';
+
+# Handles a mix of letters, numbers, and special characters
+$S::slug('Product #123: Special Edition');
+    'product-123-special-edition';
+
+# Converts a string containing multiple special characters, removes them
+$S::slug('Hello $%^& World');
+    'hello-world';
+
+# String with trailing separator, trims it
+$S::slug('  Hello World  ');
+    'hello-world';
+
+# Uses a custom separator when given a string with mixed underscores and dashes
+$S::slug('Hello-World_Here', '_');
+    'hello_world_here';
+
+# Converts a numeric string to itself (no change)
+$S::slug('123456');
+    '123456';
+
+# Empty string returns an empty slug
+$S::slug('');
+    '';
+
+# Converts a string with emoji to a slug, removing emoji
+$S::slug('Hello 🌍 World');
+    'hello-world';
+
+# String with multiple '@' replaces each occurrence with 'at'
+$S::slug('User @ example @ domain');
+    'user-at-example-at-domain';
+
+# Handles multilingual string, converts to ASCII if applicable
+$S::slug('こんにちは 世界', '-', true);
+    '';
+
+# Handles multilingual string without converting to ASCII
+$S::slug('こんにちは 世界', '-', false);
+    'こんにちは-世界';
+
+# Converts dashes to underscores when custom separator is used
+$S::slug('Hello-World-Again', '_');
+    'hello_world_again';
+
+# Preserves ASCII characters without any modifications
+$S::ascii('Hello World');
+    'Hello World';
+
+# Converts diacritics to plain characters, leaves rest intact
+$S::ascii('fòô bàř');
+    'foo bar';
 
 // first match
 $S::fm($a, "!de(f.{4})!");
