@@ -593,3 +593,20 @@ $S::cs(0.1472323, "v=%0.2f");
     'v=0.15';
 $S::cs([1,2,3], "v=%s");
     'v=[1, 2, 3]';
+
+
+$S::contains("mom dad aunt", "mom");
+    true;
+$S::contains("mom dad aunt", ["mam", "xxx"]);
+    false;
+$S::contains("mom dad aunt", ["mam", "dad"]);
+    true;
+$S::containsAll("mom dad aunt", ["mam", "dad"]);
+    false;
+$S::containsCount("mom dad aunt", ["mam", "dad"]);
+    1;
+$S::containsCount("mom dad aunt", ["mom", "dad"]);
+    2;
+$S::containsCount("mom dad aunt", ["mam", "dod"]);
+    0;
+
