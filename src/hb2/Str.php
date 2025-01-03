@@ -255,12 +255,23 @@ class Str
     /**
      * Determine if a given string contains a given substring. (at least one of them)
      *
+     * @param string|string[]      $s
      * @param array<string>|string $needles - substring or array of substrings
      */
-    static function contains(string $s, array|string $needles): bool
+    static function contains(array|string $s, array|string $needles, bool $ignoreCase = false): bool
     {
+        if (\is_array($s)) {
+            foreach ($s as $_s) {
+                if (static::contains($_s, $needles, $ignoreCase)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        $strPos = $ignoreCase ? static fn ($a, $b) => mb_stripos($a, $b) : static fn ($a, $b) => mb_strpos($a, $b);
         foreach ((array) $needles as $needle) {
-            if ('' !== $needle && false !== mb_strpos($s, $needle)) {
+            if ('' !== $needle && false !== $strPos($s, $needle)) {
                 return true;
             }
         }
@@ -269,15 +280,31 @@ class Str
     }
 
     /**
+     * case insensitive contains
+     *
+     * @param string|string[]      $s
+     * @param array<string>|string $needles - substring or array of substrings
+     */
+    static function containsCI(array|string $s, array|string $needles): bool
+    {
+        return static::contains($s, $needles, true);
+    }
+
+    /**
      * Determine if a given string contains a given substring. (at least one of them)
      *
-     * @param string[] $needles - substrings
+     * @param string|string[] $s
+     * @param string[]        $needles - substrings
      */
-    static function containsCount(string $s, array $needles): int
+    static function containsCount(array|string $s, array $needles, bool $ignoreCase = false): int
     {
+        if (\is_array($s)) {
+            return array_sum(array_map(static fn ($x) => self::containsCount($x, $needles), $s));
+        }
+        $strPos = $ignoreCase ? static fn ($a, $b) => mb_stripos($a, $b) : static fn ($a, $b) => mb_strpos($a, $b);
         $cnt = 0;
         foreach ($needles as $needle) {
-            if ('' !== $needle && false !== mb_strpos($s, $needle)) {
+            if ('' !== $needle && false !== $strPos($s, $needle)) {
                 $cnt++;
             }
         }
@@ -286,14 +313,36 @@ class Str
     }
 
     /**
+     * CaseInsensitive containsCount
+     *
+     * @param string|string[] $s
+     * @param string[]        $needles
+     */
+    static function containsCountCI(array|string $s, array $needles): int
+    {
+        return static::containsCount($s, $needles, true);
+    }
+
+    /**
      * Determine if a given string contains ALL given substrings
      *
-     * @param array<string> $needles - substrings
+     * @param string|string[] $s
+     * @param array<string>   $needles - substrings
      */
-    static function containsAll(string $s, array $needles): bool
+    static function containsAll(array|string $s, array $needles, bool $ignoreCase = false): bool
     {
+        if (\is_array($s)) {
+            foreach ($s as $_s) {
+                if (!self::containsAll($_s, $needles)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        $strPos = $ignoreCase ? static fn ($a, $b) => mb_stripos($a, $b) : static fn ($a, $b) => mb_strpos($a, $b);
         foreach ($needles as $needle) {
-            if ('' !== $needle && false === mb_strpos($s, $needle)) {
+            if ('' !== $needle && false === $strPos($s, $needle)) {
                 return false;
             }
         }
@@ -302,7 +351,24 @@ class Str
     }
 
     /**
-     * is string matches a given pattern(s).
+     * CaseInsensitive containsAll
+     *
+     * @param string|string[] $s
+     * @param array<string>   $needles - substrings
+     */
+    static function containsAllCI(array|string $s, array $needles): bool
+    {
+        return self::containsAll($s, $needles, true);
+    }
+
+    /** replaces consecutive instances of a character with a single instance of that character */
+    static function deduplicate(string $s): string
+    {
+        return preg_replace('/(.)\1+/', '$1', $s);
+    }
+
+    /**
+     * is string matches a given pattern(s)
      * NOTE: "*" converted to ".*"
      *
      * @param array<string>|string $patterns - substrings
@@ -550,11 +616,9 @@ class Str
 
     /**
      * Split line into Lexemes - O(n) one pass line parser
-     *
      * - trailing spaces ignored
      * - quotes "x" & 'x' & `x` supported
      * - brackets: () {} [] supported
-     *
      * Default delimiter is space(" ")
      * When delimiter is space:
      *   multiple spaces (delimiters) treated as one, trailing spaces ignored:
@@ -568,6 +632,8 @@ class Str
      * @test: core/ParseLine.stest # see examples there
      *
      * @return array<string>
+     *
+     * @throws \ErrorException
      */
     static function parseLine(string $s, string $delimiter = ' ', int $keep_escape_character = 1): array
     {

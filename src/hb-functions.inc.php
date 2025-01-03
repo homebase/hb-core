@@ -25,7 +25,7 @@ class Exception extends \Exception
     }
 }
 
-// Non recoverable Error
+// Non-recoverable Error
 // thrown by error_if, error_unless
 class Error extends \Error
 {
@@ -149,6 +149,8 @@ function qw(array|string $data, string $entry_delimiter = ' ', string $key_value
  * @param non-empty-string $key_value_delimiter
  *
  * @return mixed[]
+ *
+ * @noinspection PhpUnused
  */
 function qk(array|string $data, string $entry_delimiter = ' ', string $key_value_delimiter = ':'): array
 {
@@ -277,7 +279,7 @@ function err(string $format, ...$args): void
     // todo - add Profiler::error()
     $text = $args ? sprintf($format, ...$args) : $format;
     $text = preg_replace('!\{[\w\/]+\}!', ' ', $text);
-    echo "\n<div class=admin style='background: #f00; color: #fff'>{$text}</div>\n";
+    echo "\n<div class=admin style='background: #f00; color: #fff'>$text</div>\n";
 }
 
 /**
