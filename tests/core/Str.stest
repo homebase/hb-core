@@ -155,3 +155,11 @@ $S::containsCountCI("Mom dad aunt", ["mom", "Dad"]);
 
 $S::deduplicate("aaa  bbb --- UUU");
     'a b - U';
+
+# to ASCII
+$S::ascii('fòô bàř');
+    'foo bar';
+
+# slow method
+$S::_ascii_('fòô bàř');
+    'foo bar';

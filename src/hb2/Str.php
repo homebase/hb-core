@@ -686,7 +686,7 @@ class Str
         // HORRIBLE overhead - find a way to speed up
         // try strtr (prepared map)
         foreach (StrX::charsArray() as $k => $v) {
-            $s = str_replace($v, $k, $s);
+            $s = str_replace($v, (string) $k, $s);
         }
 
         return preg_replace('/[^\x20-\x7E]/u', '', $s);
