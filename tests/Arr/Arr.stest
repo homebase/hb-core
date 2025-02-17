@@ -8,6 +8,30 @@
 A::cleanup([1, 0, null, "", "a", true, false]);
     [1, 0, "4"=>'a', "5"=>true, "6"=>false];
 
+A::cleanup([1, 0, [1,"", "a", false], "", "a", true, false]);
+    [1, 0, [1, "2"=>'a', "3"=>false], "4"=>'a', "5"=>true, "6"=>false];
+
+A::combine(["a", "b"], [1, 2]);
+    ["a"=>1, "b"=>2];
+
+A::divide(["a" => 1, "b" => 2]);
+    [['a', 'b'], [1, 2]];
+
+A::isAssoc([]);
+    false;
+
+A::splitAt(["a" => 1, "b" => 2, "c" => 3]);
+    ['Error:hb2\\Error', 'empty callback']
+
+A::splitAt([1,2,3], first: true);
+    [[], [1, 2, 3]]
+
+A::splitAt([1,2,3], last: true);
+    [[3, 2, 1], []]
+
+A::splitAt([1,2,3,4, '3' => 3], fn($v) => $v  > 2 ? true : false);
+    [[1, 2], ["2"=>3, "3"=>3]]
+
 A::range(1,10);
     'Instance(Generator)';
 iterator_to_array(A::range(5,9));
@@ -23,17 +47,25 @@ A::isAssoc($a);
 A::keyOffset($a, "b");
     1;
 
+A::keyOffset($a, "d");
+    -1;
+
 A::forget($a, "a b:bb");
     ["a"=>1, "bb"=>2];
 
 $a;
     ["c"=>3];
 
+; $test = ["c" => 3];
+
 $a = A::insertAfter($a, "c", ['d' => 4, 'e' => 5]);
     ["c"=>3, "d"=>4, "e"=>5];
 
 $a = A::insertAfter($a, "d", ['d2' => 4.3, 'd3' => 4.7]);
     ["c"=>3, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
+
+$test = A::insertAfter($test, "d", ['d' => 4, 'e' => 5]);
+    ["c"=>3];
 
 $a = A::insertBefore($a, "d", ['d-1' => 3.8, 'd-2' => 3.9]);
     ["c"=>3, "d-1"=>3.8, "d-2"=>3.9, "d"=>4, "d2"=>4.3, "d3"=>4.7, "e"=>5];
@@ -50,6 +82,9 @@ $a = A::insertBefore($a, "X", ['c-2' => 1], false);
 
 $z = A::zip([1,2,3], [4,5,6]);
     [[1, 4], [2, 5], [3, 6]];
+
+A::prepend([1,2], ['a' => 1, 'b' => 2]);
+    ["a"=>1, "b"=>2, "0"=>1, "1"=>2];
 
 A::unzip($z);
     [[1, 2, 3], [4, 5, 6]];
@@ -109,8 +144,14 @@ array_values(A::maxX($a, 5, fn($v) => $v*3 +1,  where: fn($v) => $v & 1 && $v & 
 A::minValueKey([3,4,4,2,3,4,1,10]);
     6;
 
+A::minValueKey([]);
+    NULL;
+
 A::maxValueKey([3,4,4,2,3,4,1,10]);
     7;
+
+A::maxValueKey([]);
+    NULL;
 
 
 A::first([3,4,4,2,3,4,1,10], fn($v) => $v>5);
@@ -140,6 +181,9 @@ A::maxX($rows, 2, "a");
 A::minX($rows, 2, "c");
     ["12"=>100, "15"=>200];
 
+A::first($rows);
+    ["a"=>1, "b"=>10];
+
 // column "a"
 A::first($rows, map:"a");
     1;
@@ -153,6 +197,11 @@ A::first($rows, map:"c", where:"c");
     100;
 
 A::last($rows, "a");
+    ["a"=>3, "c"=>200];
+
+A::second($rows);
+    ["b"=>10, "c"=>100];
+A::second($rows, where:"c");
     ["a"=>3, "c"=>200];
 
 // most likely you need `where a` condition here, be careful
@@ -193,6 +242,9 @@ A::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => 2, "a" => 1.0, 'f' => nu
 A::compare(["a" => 1, "b" => "2", 'd' => null], ["b" => "2", "a" => 1, 'f' => null], strict:1);
     true;
 
+A::compare(["a" => 1, "c" => ["d" => 1]], ["a" => 1, "c" => ["d" => 1]], strict:1);
+    false;
+
 A::crossJoin([1,2,3], ['a', 'b', 'c']);
     [[1, 'a'], [1, 'b'], [1, 'c'], [2, 'a'], [2, 'b'], [2, 'c'], [3, 'a'], [3, 'b'], [3, 'c']];
 
@@ -207,3 +259,49 @@ A::partition(range(1,10), fn ($v) => $v > 5);
 A::partition(range(1,10), fn ($v) => $v % 3);
     [["2"=>3, "5"=>6, "8"=>9], [1, "3"=>4, "6"=>7, "9"=>10], ["1"=>2, "4"=>5, "7"=>8]];
 
+A::MD5([1,2, true, [], null], true);
+    '64c9a53fa431ba484b5599dd1d61A6e';
+
+A::lastKey([1,2]);
+    1;
+
+A::dot([1,2,3]);
+    [1, 2, 3];
+A::dot([1,2,3], '1');
+    ["1.0"=>1, "1.1"=>2, "1.2"=>3];
+
+A::except(["a" => 1, "b" => 1], 'b');
+    ["a"=>1];
+
+A::ksort([5,2,3]);
+    [5, 2, 3];
+
+A::ksort(['d' => 5, 'b' => 3, 'c' => 7]);
+    ["b"=>3, "c"=>7, "d"=>5];
+
+A::ksort(['d' => 5, 'b' => 3, 'c' => 7], null, true);
+    ["d"=>5, "c"=>7, "b"=>3];
+
+A::sort(['d' => 5, 'b' => 3, 'c' => 7]);
+    ["b"=>3, "d"=>5, "c"=>7];
+
+A::sort(['d' => 5, 'b' => 3, 'c' => 7], null, true);
+    ["c"=>7, "d"=>5, "b"=>3];
+
+A::sort(['d' => 5, 'b' => 3, 'c' => 7], fn($a) => $a > 0, true);
+    ["c"=>7, "b"=>3, "d"=>5];
+
+A::sort(['d' => 5, 'b' => 3, 'c' => 7], fn($a, $b) => $a > $b ? 1 : 0, true);
+    ["c"=>7, "d"=>5, "b"=>3];
+
+A::sortBy([1,2,3], fn($a) => $a > 1);
+    ["1"=>2, "2"=>3, "0"=>1];
+
+A::sortBy([1,2,3], fn($a) => $a > 1, true);
+    [1, 2, 3];
+
+A::sortRecursive([5,2,3]);
+    [2, 3, 5];
+
+A::sortRecursive(["a" => 1, "b" => 4, "c" => -4], true);
+    ["c"=>-4, "b"=>4, "a"=>1];
