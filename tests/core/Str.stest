@@ -595,6 +595,7 @@ $S::cs([1,2,3], "v=%s");
     'v=[1, 2, 3]';
 
 
+# Contains*
 $S::contains("mom dad aunt", "mom");
     true;
 $S::contains("mom dad aunt", ["mam", "xxx"]);
@@ -610,3 +611,63 @@ $S::containsCount("mom dad aunt", ["mom", "dad"]);
 $S::containsCount("mom dad aunt", ["mam", "dod"]);
     0;
 
+# Contains + array_as_a_first parameter
+$S::contains(\hb2\qw("mom dad aunt"), "aunt");
+    true;
+$S::contains(\hb2\qw("mom dad aunt"), "auntie");
+    false;
+
+$S::containsAll(["mom dad", "aunt"], ["mom", "dad"]);
+    false;
+$S::containsAll(["mom dad", "dad aunt mom"], ["mom", "dad"]);
+    true;
+
+$S::containsCount(\hb2\qw("mom dad aunt"), ["mam", "dad"]);
+    1;
+$S::containsCount(\hb2\qw("mom dad aunt"), ["mom", "dad"]);
+    2;
+$S::containsCount(\hb2\qw("mom dad aunt"), ["mam", "dod"]);
+    0;
+
+# Contains - Case Sensitive
+$S::contains("Mom dad aunt", "Dad");
+    false;
+$S::contains("Mom dad aunt", "mom");
+    false;
+$S::contains("Mom dad aunt", ["mam", "xxx"]);
+    false;
+$S::contains("mom Dad aunt", ["mam", "dad"]);
+    false;
+$S::containsAll("mom dad aunt", ["mam", "dad"]);
+    false;
+$S::containsCount("mom dad aunt", ["mam", "Dad"]);
+    0;
+$S::containsCount("Mom dad aunt", ["mom", "Dad"]);
+    0;
+
+# Contains - Case *IN*sensitive
+$S::containsCI("Mom dad aunt", "Dad");
+    true;
+$S::containsCI("Mom dad aunt", "mom");
+    true;
+$S::containsCI("Mom dad aunt", ["mam", "xxx"]);
+    false;
+$S::containsCI("mom Dad aunt", ["mam", "dad"]);
+    true;
+$S::containsAllCI("maM dad aunt", ["mAm", "dAd"]);
+    true;
+$S::containsCountCI("mom dad aunt", ["mam", "Dad"]);
+    1;
+$S::containsCountCI("Mom dad aunt", ["mom", "Dad"]);
+    2;
+
+$S::deduplicate("aaa  bbb --- UUU");
+    'a b - U';
+
+# to ASCII
+$S::ascii('fòô bàř');
+    'foo bar';
+
+# slow method
+$S::_ascii_('fòô bàř');
+    'foo bar';
