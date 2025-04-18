@@ -488,6 +488,9 @@ class Str
      */
     static function replaceArray(string $s, string $search, array $replacements): string
     {
+        if (!$search) {
+            return $s;
+        }
         $rcnt = \count($replacements);
         $chunks = explode($search, $s, $rcnt + 1);
         $rcnt = min($rcnt, \count($chunks) - 1);
