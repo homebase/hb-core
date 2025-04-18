@@ -21,18 +21,102 @@ A::map($GA, fn($v) => $v);
 A::flipTo(\hb2\qw("a b c"), 2);
     ["a"=>2, "b"=>2, "c"=>2];
 
+// same method as flipTo, must be checked (second argument - ignored, uses flipTo($data, 1))
+A::flip1(\hb2\qw("a b c"), 2);
+    ["a"=>1, "b"=>1, "c"=>1];
+
 A::all(range(100, 200), fn($a) => $a > 10);
     101;
 
 A::all(range(100, 200), fn($a) => $a > 150);
     0;
 
+A::all(range(100, 200), fn($a, $b) => $a > $b);
+    0;
+
+A::all(range(100, 200), fn($a, $b) => $a < $b);
+    101;
+
+A::all([], fn($a) => $a > 10);
+    -1
+
 A::any(range(100, 200), fn($a) => $a > 150);
     ["51"=>true];
+
+A::any(range(100, 200), fn($a, $b) => $a < $b);
+    [true];
 
 A::any(range(100, 200), fn($a) => $a < 10);
     [];
 
+A::iterCB(range(100, 200), fn($a) => $a);
+    'Instance(Generator)';
+
+A::min(["a" => [1,2,3], "b" => [1,2,3]], ["a" => "2"]);
+    ['2', 3];
+
+A::max(["a" => [1,2,3], "b" => [1,2,3]], ["a" => "1"]);
+    ['1', 2];
+
+; $a = ["a" => [1,2,3], "b" => [1,2,3]];
+; $ab = ["a" => [1,2,3], "b" => [3,2,1]];
+A::forget($a, fn($a) => $a);
+    ["a"=>[1, 2, 3], "b"=>[1, 2, 3]];
+
+; $a = ["a" => [1,2,3], "b" => [1,2,3]];
+
+A::forget($a, fn($a) => $a === [1,2,3]);
+    ["a"=>[1, 2, 3], "b"=>[1, 2, 3]];
+
+A::forget($a, fn($a) => $a === [1,2,3]);
+    [];
+
+A::forget($ab, fn($a) => $a === [3,2,1]);
+    ["b"=>[3, 2, 1]];
+
+; $a = ["a" => [1,2,3], "b" => [4,5,6]];
+A::forget($ab, ["a" => 1]);
+    ["1"=>[1, 2, 3]];
+
+A::countBy([1, 2, 2, 2, 3]);
+    ["1"=>1, "2"=>3, "3"=>1];
+
+A::countBy(['alice@gmail.com', 'bob@yahoo.com', 'carlos@gmail.com'], fn($email) => substr(strrchr($email, "@"), 1));
+    ["gmail.com"=>2, "yahoo.com"=>1];
+
+; $generator = A::iter(["a" => 3, "b" => 2, "c" => 3], fn($a) => $a > 1, 2, fn($a, $b) => $a > $b, true);
+; $arr = iterator_to_array($generator);
+$arr;
+    ["a"=>3] 
+
+; $generator = A::iter(["a" => 3, "b" => 2, "c" => 3], fn($a, $b) => $a > $b);
+; $arr = iterator_to_array($generator);
+$arr;
+    ["a"=>3, "b"=>2, "c"=>3]
+
+; $generator = A::_whereNot([1,2,3,4], fn($a) => $a > 3);
+; $arr = iterator_to_array($generator); 
+$arr;
+    [1, 2, 3]
+
+; $generator = A::_whereNot([1,2,3,4], fn($a, $b) => $a + $b !== 3);
+; $arr = iterator_to_array($generator); 
+$arr;
+    ["1"=>2]
+
+; $generator = A::_skip([1,2,3,4], fn($a, $b) => $a + $b == 1);
+; $arr = iterator_to_array($generator); 
+$arr;
+    ["1"=>2, "2"=>3, "3"=>4]
+
+A::mapKCB([1,2], [fn($v) => $v > 1]);
+    [false, 2];
+
+A::mapKCB([1,2], [fn($v) => $v > 1 ? $v : null]);
+    ["1"=>2];
+
+A::mapKCB([1,2, 'a' => null], [fn($v) => $v > 1 ? $v : null, 'a' => fn($a) => a]);
+    ["1"=>2, "a"=>NULL];
 
 // duplicate even numbers in list, thow away odd ones
 A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
@@ -42,6 +126,15 @@ A::mapList([1, 2, 3, 4], fn($v) => $v & 1 ? [] : [$v, $v]);
 A::mapList([1, 2, 3, 4], fn($k, $v) => $k & 1 ? [] : [$k, "$k-$v"]);
     [0, '0-1', 2, '2-3'];
 
+A::mapList([1, 2, 3, 4], fromEnd: true);
+    ['Error:ArgumentCountError', 'hb2\\Arr0::mapList(): Argument #2 ($map) not passed'];
+
+A::mapList([1, 2, 3, 4], fn($k, $v) => $k & 1 ? [] : [$k, "$k-$v"], fromEnd: true);
+    ['0-1', 0, '2-3', 2];
+
+A::filter2([1,2,3,4,5], fn($k, $v) => $k > 1);
+    [[1, 2], ["2"=>3, "3"=>4, "4"=>5]];
+
 // execute all, return number of non-empty responses
 A::each($AR, fn($v) => $v & 1);
     5;
@@ -49,6 +142,15 @@ A::each($AR, fn($v) => $v & 1);
 // execute all, return number of non-empty responses ($key, $value)
 A::each($AR, fn($k, $v) => $k & 1);
     5;
+
+A::each($AR, fn($k, $v) => $k & 1);
+    5;
+
+A::each([1,2,3,4,5], fn($k, $v) => $k * 2, skip: 2, reverse: true)
+    2;
+
+A::each([1,2,3,4,5], fn($k, $v, $c) => $k * 2 / c, skip: 2, reverse: true)
+    ['Error:hb2\\Error', 'Arr::each callback must accept one or two arguments: fn($value) or fn($key, $value)'];
 
 A::fold($AR, fn($c, $v) => $c+$v);
     55;
@@ -121,6 +223,9 @@ A::map($rows, where: "b");
 A::map($rows, where: ["b", "c"]);
     ["12"=>["b"=>10, "c"=>100]];
 
+A::map($rows, fromEnd: true);
+    ["10"=>["a"=>1, "b"=>10], "12"=>["b"=>10, "c"=>100], "14"=>["a"=>2, "b"=>20], "15"=>["a"=>3, "c"=>200], "5"=>["c"=>300]];
+
 A::sum($rows, "a", where: fn($a) => ($a['a']??0)&1); // sum odd;
     4;
 A::sum($rows, "a");
@@ -169,5 +274,3 @@ A::only($a, "x y");
 
 A::only($a, "x:y");
     [];
-
-
