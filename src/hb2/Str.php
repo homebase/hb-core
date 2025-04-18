@@ -398,18 +398,30 @@ class Str
     }
 
     /**
-     * Limit the number of words in a string.
+     * Limits a string to a specified number of words
      *
-     * @return string
+     * @param string $text       The input text to limit
+     * @param int    $word_limit The maximum number of words to keep
+     * @param string $ellipsis   Optional string to append if text is truncated (default: '...')
+     *
+     * @return string The limited text
      */
-    static function words(string $s, int $words = 100, string $end = '...')
+    static function words(string $text, int $word_limit, string $ellipsis = '...')
     {
-        preg_match('/^\s*+(?:\S++\s*+){1,'.$words.'}/u', $s, $matches);
-        if (!isset($matches[0]) || static::length($s) === static::length($matches[0])) {
-            return $s;
+        \hb2\error_if(!$word_limit, 'incorrect usage');
+        // Split the text into an array of words
+        $words = explode(' ', $text);
+
+        // Check if we need to limit
+        if (\count($words) <= $word_limit) {
+            return $text;
         }
 
-        return rtrim($matches[0]).$end;
+        // Take only the specified number of words
+        $limited_words = \array_slice($words, 0, $word_limit);
+
+        // Join the words back together and add ellipsis
+        return implode(' ', $limited_words).$ellipsis;
     }
 
     /**
