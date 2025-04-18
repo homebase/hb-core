@@ -549,6 +549,9 @@ class Str
         if (mb_strlen($s) <= $limit) {
             return $s;
         }
+        if ($limit < 0) {
+            $limit = mb_strlen($s) + $limit;
+        }
 
         return mb_strimwidth($s, 0, $limit, $end);
     }
