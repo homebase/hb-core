@@ -372,7 +372,7 @@ $S::replaceArray('item_1 [] item_2 []', '[]', ['A', 'B', 'C', 'D']);
 
 # Empty search value is not valid, no changes made
 $S::replaceArray('Hello world!', '', ['replacement']);
-    ['Error:ValueError', 'explode(): Argument #1 ($separator) cannot be empty'];
+    'Hello world!';
 
 # Replaces placeholders with empty strings
 $S::replaceArray('Hello [] world []!', '[]', ['', '']);
