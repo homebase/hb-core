@@ -27,11 +27,9 @@ $config = new PhpCsFixer\Config();
 $config
     ->setRiskyAllowed(true)
     ->setRules(array_merge($config->getRules(), [
-        '@PHPUnit75Migration:risky' => true,
         '@PhpCsFixer' => true,
         '@PhpCsFixer:risky' => true,
-        '@PHP81Migration' => true,
-        '@PHP80Migration:risky' => true,
+        '@PHP8x4Migration' => true,
         '@PSR12' => true,
         'array_push' => true,
         //      'array_syntax' => ['short'],
@@ -41,7 +39,7 @@ $config
         'use_arrow_functions' => true,
         'heredoc_indentation' => true,
         'list_syntax' => ['syntax' => 'short'],
-        'visibility_required' => ['elements' => ['property']],
+        'modifier_keywords' => true,
         'phpdoc_summary' => false, // no useless dots
         'explicit_string_variable' => false,  // "$a xxx $b" is OK !!
         'echo_tag_syntax' => ['format' => 'short'],         // "<?= ... " - good and short

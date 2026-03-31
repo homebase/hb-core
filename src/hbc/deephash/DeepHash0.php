@@ -31,7 +31,7 @@ abstract class DeepHash0
      * @param mixed[]|object        $dh
      * @param int[]|string|string[] $path
      */
-    static function _get(array|object $dh, array|string $path, mixed ...$default): mixed
+    public static function _get(array|object $dh, array|string $path, mixed ...$default): mixed
     {
         if (\is_string($path) && $path && $path[0] === '?') { # "?path" == _get("path", null)
             $path = substr($path, 1);
@@ -60,7 +60,7 @@ abstract class DeepHash0
      *
      * @return null|array{0?: mixed} [value] | [] (no-value) | null (structural error)
      */
-    static function q(array|object $dh, array|string $path): ?array
+    public static function q(array|object $dh, array|string $path): ?array
     {
         if (\is_string($path)) {
             $path = explode('.', $path);
@@ -83,7 +83,7 @@ abstract class DeepHash0
      *
      * @return mixed[] flattened array
      */
-    static function flatten(array|object $dh, /* internal */ string $prefix = ''): array
+    public static function flatten(array|object $dh, /* internal */ string $prefix = ''): array
     {
         $r = [];
         foreach ($dh as $k => $v) {

@@ -35,7 +35,7 @@ class Str
      *
      * @param string|string[] $prefixes
      */
-    static function startsWith(string $s, array|string $prefixes): bool
+    public static function startsWith(string $s, array|string $prefixes): bool
     {
         foreach ((array) $prefixes as $needle) {
             if ('' !== $needle && mb_substr($s, 0, mb_strlen($needle)) === $needle) {
@@ -49,7 +49,7 @@ class Str
     /**
      * Add a prefix if it is not already there
      */
-    static function start(string $s, string $prefix): string
+    public static function start(string $s, string $prefix): string
     {
         if (self::startsWith($s, $prefix)) {
             return $s;
@@ -61,7 +61,7 @@ class Str
     /**
      * Add a suffix if it is not already there
      */
-    static function finish(string $s, string $suffix): string
+    public static function finish(string $s, string $suffix): string
     {
         if (self::endsWith($s, $suffix)) {
             return $s;
@@ -75,7 +75,7 @@ class Str
      *
      * @param scalar[]|string $suffixes
      */
-    static function endsWith(string $s, array|string $suffixes): bool
+    public static function endsWith(string $s, array|string $suffixes): bool
     {
         foreach ((array) $suffixes as $needle) {
             if (mb_substr($s, -mb_strlen((string) $needle)) === (string) $needle) {
@@ -89,7 +89,7 @@ class Str
     /**
      * string before substring (first occurence)
      */
-    static function before(string $s, string $search): string
+    public static function before(string $s, string $search): string
     {
         $p = mb_strpos($s, $search);
 
@@ -99,7 +99,7 @@ class Str
     /**
      * string after substring (first occurence)
      */
-    static function after(string $s, string $search): string
+    public static function after(string $s, string $search): string
     {
         $p = mb_strpos($s, $search);
 
@@ -109,7 +109,7 @@ class Str
     /**
      * string After last occurence of $search
      */
-    static function afterLast(string $s, string $search): string
+    public static function afterLast(string $s, string $search): string
     {
         $p = mb_strrpos($s, $search);
 
@@ -119,7 +119,7 @@ class Str
     /**
      * string Before last occurence of $search
      */
-    static function beforeLast(string $s, string $search): string
+    public static function beforeLast(string $s, string $search): string
     {
         $p = mb_strrpos($s, $search);
 
@@ -130,7 +130,7 @@ class Str
      * "...($from)(..extracted..)($to)..."
      * trailing spaces removed
      */
-    static function between(string $s, string $from, string $to): null|bool|string
+    public static function between(string $s, string $from, string $to): bool|string|null
     {
         // "text", "", false (NO $from), null (NO $to)
         $f = mb_strpos($s, $from);
@@ -149,7 +149,7 @@ class Str
     /**
      * Convert the given string to lower-case.
      */
-    static function lower(string $s): string
+    public static function lower(string $s): string
     {
         return mb_strtolower($s, 'UTF-8');
     }
@@ -159,7 +159,7 @@ class Str
      *
      * alias of "cut"
      */
-    static function limit(string $s, int $limit = 100, string $end = '...'): string
+    public static function limit(string $s, int $limit = 100, string $end = '...'): string
     {
         if (mb_strlen($s) <= $limit) {
             return $s;
@@ -172,7 +172,7 @@ class Str
     /**
      * substring (unicode)
      */
-    static function substr(string $string, int $start, ?int $length = null): string
+    public static function substr(string $string, int $start, ?int $length = null): string
     {
         return mb_substr($string, $start, $length, 'UTF-8');
     }
@@ -180,7 +180,7 @@ class Str
     /**
      * Convert the given string to upper-case.
      */
-    static function upper(string $s): string
+    public static function upper(string $s): string
     {
         return mb_strtoupper($s, 'UTF-8');
     }
@@ -188,12 +188,12 @@ class Str
     /**
      * Convert the given string to title case.
      */
-    static function title(string $s): string
+    public static function title(string $s): string
     {
         return mb_convert_case($s, MB_CASE_TITLE, 'UTF-8');
     }
 
-    static function ucfirst(string $s): string
+    public static function ucfirst(string $s): string
     {
         return static::upper(static::substr($s, 0, 1)).static::substr($s, 1);
     }
@@ -202,7 +202,7 @@ class Str
      * kebab case. "Word Word  Word" =>  "word-word-word"
      * multiple spaces converted to one
      */
-    static function kebab(string $s): string
+    public static function kebab(string $s): string
     {
         return static::snake($s, '-');
     }
@@ -211,7 +211,7 @@ class Str
      * snake case.  "word word  word" =>  "word_word_word"
      * multiple spaces converted to one
      */
-    static function snake(string $s, string $delimiter = '_'): string
+    public static function snake(string $s, string $delimiter = '_'): string
     {
         if (ctype_lower($s)) {
             return $s;
@@ -225,7 +225,7 @@ class Str
      * studly case.  " aaa-bbb_ccc ddd" =>  "AaaBbbCccDdd"
      * multiple spaces converted to one
      */
-    static function studly(string $s): string
+    public static function studly(string $s): string
     {
         $s = ucwords(str_replace(['-', '_'], ' ', $s));
 
@@ -235,7 +235,7 @@ class Str
     /**
      * nn utf characters
      */
-    static function len(string $s): int
+    public static function len(string $s): int
     {
         return mb_strlen($s);
     }
@@ -243,7 +243,7 @@ class Str
     /**
      * Return the length of the given string.
      */
-    static function length(string $s, ?string $encoding = null): int
+    public static function length(string $s, ?string $encoding = null): int
     {
         if ($encoding) {
             return mb_strlen($s, $encoding);
@@ -258,7 +258,7 @@ class Str
      * @param string|string[]      $s
      * @param array<string>|string $needles - substring or array of substrings
      */
-    static function contains(array|string $s, array|string $needles, bool $ignoreCase = false): bool
+    public static function contains(array|string $s, array|string $needles, bool $ignoreCase = false): bool
     {
         if (\is_array($s)) {
             foreach ($s as $_s) {
@@ -285,7 +285,7 @@ class Str
      * @param string|string[]      $s
      * @param array<string>|string $needles - substring or array of substrings
      */
-    static function containsCI(array|string $s, array|string $needles): bool
+    public static function containsCI(array|string $s, array|string $needles): bool
     {
         return static::contains($s, $needles, true);
     }
@@ -296,7 +296,7 @@ class Str
      * @param string|string[] $s
      * @param string[]        $needles - substrings
      */
-    static function containsCount(array|string $s, array $needles, bool $ignoreCase = false): int
+    public static function containsCount(array|string $s, array $needles, bool $ignoreCase = false): int
     {
         if (\is_array($s)) {
             return array_sum(array_map(static fn ($x) => self::containsCount($x, $needles), $s));
@@ -318,7 +318,7 @@ class Str
      * @param string|string[] $s
      * @param string[]        $needles
      */
-    static function containsCountCI(array|string $s, array $needles): int
+    public static function containsCountCI(array|string $s, array $needles): int
     {
         return static::containsCount($s, $needles, true);
     }
@@ -329,7 +329,7 @@ class Str
      * @param string|string[] $s
      * @param array<string>   $needles - substrings
      */
-    static function containsAll(array|string $s, array $needles, bool $ignoreCase = false): bool
+    public static function containsAll(array|string $s, array $needles, bool $ignoreCase = false): bool
     {
         if (\is_array($s)) {
             foreach ($s as $_s) {
@@ -356,13 +356,13 @@ class Str
      * @param string|string[] $s
      * @param array<string>   $needles - substrings
      */
-    static function containsAllCI(array|string $s, array $needles): bool
+    public static function containsAllCI(array|string $s, array $needles): bool
     {
         return self::containsAll($s, $needles, true);
     }
 
     /** replaces consecutive instances of a character with a single instance of that character */
-    static function deduplicate(string $s): string
+    public static function deduplicate(string $s): string
     {
         return preg_replace('/(.)\1+/', '$1', $s);
     }
@@ -374,7 +374,7 @@ class Str
      * @param array<string>|string $patterns - substrings
      */
     // ~ laravel compatible, args order corrected
-    static function is(string $s, array|string $patterns): bool
+    public static function is(string $s, array|string $patterns): bool
     {
         if (!$patterns) {
             return false;
@@ -406,7 +406,7 @@ class Str
      *
      * @return string The limited text
      */
-    static function words(string $text, int $word_limit, string $ellipsis = '...')
+    public static function words(string $text, int $word_limit, string $ellipsis = '...')
     {
         \hb2\error_if(!$word_limit, 'incorrect usage');
         // Split the text into an array of words
@@ -429,7 +429,7 @@ class Str
      *
      * @throws \Exception
      */
-    static function random(int $length = 16): string
+    public static function random(int $length = 16): string
     {
         $string = '';
         while (($len = \strlen($string)) < $length) {
@@ -450,7 +450,7 @@ class Str
      * Replace the first occurrence of a given value in the string.
      * !!! ORDER IS DIFFERENT from Laravel's
      */
-    static function replaceFirst(string $s, string $search, string $replace): string
+    public static function replaceFirst(string $s, string $search, string $replace): string
     {
         if ('' === $search) {
             return $s;
@@ -467,7 +467,7 @@ class Str
      * Replace the last occurrence of a given value in the string.
      * !!! ORDER IS DIFFERENT from Laravel's*
      */
-    static function replaceLast(string $s, string $search, string $replace): string
+    public static function replaceLast(string $s, string $search, string $replace): string
     {
         $position = mb_strrpos($s, $search);
         if (false !== $position) {
@@ -486,7 +486,7 @@ class Str
      * @param non-empty-string $search
      * @param array<string>    $replacements
      */
-    static function replaceArray(string $s, string $search, array $replacements): string
+    public static function replaceArray(string $s, string $search, array $replacements): string
     {
         if (!$search) {
             return $s;
@@ -513,7 +513,7 @@ class Str
      *
      * @param non-empty-string $regexp
      */
-    static function fm(string $s, string $regexp): string
+    public static function fm(string $s, string $regexp): string
     {
         // First Match !!! ORDER IS DIFFERENT from HB1
         preg_match($regexp, $s, $m);
@@ -525,20 +525,20 @@ class Str
      * conditional sprintf
      * cs($a,"A=%s")   is kinda the same as $a ? sprintf("A=%s", $a) : "";   (plus x2s is applied for non-scalars)
      */
-    static function cs(mixed $s, string $fmt_true, string $fmt_false = ''): string
+    public static function cs(mixed $s, string $fmt_true, string $fmt_false = ''): string
     {
         // !!! ORDER IS DIFFERENT from HB1
         if ($s) {
-            return sprintf($fmt_true, \is_scalar($s) ? (string) $s : \hb2\x2s($s));
+            return \sprintf($fmt_true, \is_scalar($s) ? (string) $s : \hb2\x2s($s));
         }
 
-        return $fmt_false ? sprintf($fmt_false, \is_scalar($s) ? (string) $s : \hb2\x2s($s)) : '';
+        return $fmt_false ? \sprintf($fmt_false, \is_scalar($s) ? (string) $s : \hb2\x2s($s)) : '';
     }
 
     /**
      * remove binary symbols from string
      */
-    static function stripBinary(string $s): string
+    public static function stripBinary(string $s): string
     {
         // printable characters
         return preg_replace('/[^[:print:]]/', '', $s);
@@ -575,7 +575,7 @@ class Str
      *   $r = hb\Str::cutAt("123456790ABCD123456790BB12345670CCC123456790DDD1234567901234567890XXX1234", 30, 12, 25);
      *   echo is_array($r) ? "$r[0]<abbr title=\"$r[1]\">...</abbr>$r[2]" : $r;  // no escaping for clarity`s sake
      */
-    static function cutAt(string $s, int $len = 60, int $at = 20, int $cut_len = 0): array|string
+    public static function cutAt(string $s, int $len = 60, int $at = 20, int $cut_len = 0): array|string
     {
         // "Original String" | [pre, cutted, post]
         error_if($at > $len, "CutAt prefix position can't exceed expected length");
@@ -608,7 +608,7 @@ class Str
      * @param string|string[] $str
      * @param string|string[] $substring
      */
-    static function haveSubstring(array|string $str, array|string $substring, bool $caseSensitive = true): bool
+    public static function haveSubstring(array|string $str, array|string $substring, bool $caseSensitive = true): bool
     {
         if (\is_array($str)) {
             foreach ($str as $s) {
@@ -629,7 +629,7 @@ class Str
             return false;
         }
 
-        return (bool) preg_match('!\\b\\Q'.$substring.'\\E\\b!'.($caseSensitive ? '' : 'i'), $str);
+        return (bool) preg_match('!\b\Q'.$substring.'\E\b!'.($caseSensitive ? '' : 'i'), $str);
     }
 
     /**
@@ -653,7 +653,7 @@ class Str
      *
      * @throws \ErrorException
      */
-    static function parseLine(string $s, string $delimiter = ' ', int $keep_escape_character = 1): array
+    public static function parseLine(string $s, string $delimiter = ' ', int $keep_escape_character = 1): array
     {
         return StrX::parseLine($s, $delimiter, $keep_escape_character);
     }
@@ -661,7 +661,7 @@ class Str
     /**
      * Generate a URL friendly "slug" from a given string.  ~ copied from laravel
      */
-    static function slug(string $s, string $separator = '-', bool $toAscii = true): string
+    public static function slug(string $s, string $separator = '-', bool $toAscii = true): string
     {
         if ($toAscii) {
             $s = static::ascii($s);
@@ -676,13 +676,13 @@ class Str
         // Replace all separator characters and whitespace by a single separator
         $s = preg_replace('!['.preg_quote($separator).'\s]+!u', $separator, $s);
 
-        return trim($s, $separator);
+        return trim($s ?? '', $separator);
     }
 
     /**
      * Generate a URL from string == slug method
      */
-    static function url(string $s, string $separator = '-', bool $toAscii = true): string
+    public static function url(string $s, string $separator = '-', bool $toAscii = true): string
     {
         return self::slug($s, $separator, $toAscii);
     }
@@ -695,7 +695,7 @@ class Str
      * > pe 'echo x2s( HB::benchmark( function() {\hb\Str::_ASCII_LARAVEL_ALIKE(\'Using strings like fòô bàř\');}) )'
      *   μs=19.2     << almost 6 times slower
      */
-    static function _ascii_(string $s): string
+    public static function _ascii_(string $s): string
     {
         $s2 = preg_replace('/[^\x20-\x7E]/u', '', $s);
         if ($s2 === $s) {
@@ -707,13 +707,13 @@ class Str
             $s = str_replace($v, (string) $k, $s);
         }
 
-        return preg_replace('/[^\x20-\x7E]/u', '', $s);
+        return preg_replace('/[^\x20-\x7E]/u', '', $s) ?? '';
     }
 
     /**
      * convert UTF8 / anything to ASCII
      */
-    static function ascii(string $s): string
+    public static function ascii(string $s): string
     {
         $s2 = preg_replace('/[^\x20-\x7E]/u', '', $s);
         if ($s2 === $s) {
@@ -725,7 +725,7 @@ class Str
         }
         $s = strtr($s, $map);
 
-        return preg_replace('/[^\x20-\x7E]/u', '', $s);
+        return preg_replace('/[^\x20-\x7E]/u', '', $s) ?? '';
     }
 
     /**
@@ -733,7 +733,7 @@ class Str
      *
      * @return array<string> UTF8 => Ascii conversion map
      */
-    static function _utf2AsciiMap(): array
+    public static function _utf2AsciiMap(): array
     {
         $map = [];
         foreach (StrX::charsArray() as $to => $from) {

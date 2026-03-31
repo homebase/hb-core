@@ -36,7 +36,7 @@ class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable
     /**
      * @param mixed[]|object $dh
      */
-    function __construct(&$dh)
+    public function __construct(&$dh)
     {
         $this->D = &$dh;
     }
@@ -57,7 +57,7 @@ class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable
     /**
      * @param mixed[]|object $dh
      */
-    static function i($dh): self
+    public static function i($dh): self
     {
         if ($dh instanceof self) {
             return $dh;
@@ -68,7 +68,7 @@ class iDeepHash implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     // simplify Trait Method
-    function iDH(): self
+    public function iDH(): self
     {
         return $this;
     }

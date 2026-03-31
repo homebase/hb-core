@@ -18,7 +18,7 @@ class Exception extends \Exception
     /**
      * @param mixed[] $payload
      */
-    function __construct(string $msg, int $code = 0, array $payload = [])
+    public function __construct(string $msg, int $code = 0, array $payload = [])
     {
         $this->payload = $payload;
         parent::__construct($msg, $code);
@@ -35,7 +35,7 @@ class Error extends \Error
     /**
      * @param mixed[] $payload
      */
-    function __construct(string $msg, int $code = 0, array $payload = [])
+    public function __construct(string $msg, int $code = 0, array $payload = [])
     {
         $this->payload = $payload;
         parent::__construct($msg, $code);
@@ -125,8 +125,8 @@ function qw(array|string $data, string $entry_delimiter = ' ', string $key_value
         return [];
     }
     $res = ' ' === $entry_delimiter ? preg_split('/\s+/', trim($data)) : explode($entry_delimiter, $data);
-    if (!strpos($data, $key_value_delimiter)) {
-        return $res;
+    if (!strpos($data, $key_value_delimiter) || !$res) {
+        return $res ?: [];
     }
     $ret = [];
     foreach ($res as $r) {
@@ -247,7 +247,7 @@ function e(string $format, ...$args): void
     if (!is_admin()) {
         return;
     }
-    $text = $args ? sprintf($format, ...$args) : $format;
+    $text = $args ? \sprintf($format, ...$args) : $format;
     $text = preg_replace('!\{[\w\/]+\}!', ' ', $text);
     echo "\n<div class=admin>{$text}</div>\n";
 }
@@ -277,7 +277,7 @@ function err(string $format, ...$args): void
         return;
     }
     // todo - add Profiler::error()
-    $text = $args ? sprintf($format, ...$args) : $format;
+    $text = $args ? \sprintf($format, ...$args) : $format;
     $text = preg_replace('!\{[\w\/]+\}!', ' ', $text);
     echo "\n<div class=admin style='background: #f00; color: #fff'>$text</div>\n";
 }

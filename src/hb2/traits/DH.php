@@ -47,13 +47,13 @@ trait DH
     /**
      * @return mixed[]|object
      */
-    function __invoke(): array|object
+    public function __invoke(): array|object
     {
         return $this->D;
     }
 
     // "$object"
-    function __toString(): string
+    public function __toString(): string
     {
         return \hb2\json($this->D);
     }
@@ -61,14 +61,14 @@ trait DH
     /**
      * @return mixed[]
      */
-    function __toArray(): array
+    public function __toArray(): array
     {
         return (array) $this->D;
     }
 
     // DH: iDeepHash - access to iDeepHash methods
     // Usage: $x->iDH()->push("path", $value);;
-    function iDH(): iDeepHash
+    public function iDH(): iDeepHash
     {
         return H::ref($this->D); // initialize by REFerence
     }
@@ -79,7 +79,7 @@ trait DH
      *
      * @param mixed $D
      */
-    function reset($D = []): void
+    public function reset($D = []): void
     {
         $this->D = $D;
     }

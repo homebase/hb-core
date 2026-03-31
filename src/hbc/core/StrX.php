@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace hbc\core;
 
+use hb2\Str;
+
 /**
  * Big Methods Body from \hb\Str
  */
@@ -20,11 +22,11 @@ class StrX
      *
      * @throws \ErrorException
      *
-     * @see \hb2\Str::parseLine
+     * @see Str::parseLine
      *
      * @test: core/ParseLine
      */
-    static function parseLine(string $str, string $delimiter = ' ', $keep_escape_character = 1): array
+    public static function parseLine(string $str, string $delimiter = ' ', $keep_escape_character = 1): array
     {
         $qm = ''; // quote mode: "" | $quote_char
         $bm = ''; // bracket mode: "" | $closing_bracket
@@ -167,7 +169,7 @@ class StrX
     // anything to ~ PHP string with unprintable characters replaced
     // ATTENTION: may/will intentionally lose data !!
     // will try to fit result in ~200 characters
-    static function x2s(mixed $x, int $deep = 0, int $cut = 200): string
+    public static function x2s(mixed $x, int $deep = 0, int $cut = 200): string
     {
         if ($deep > 10) {
             return "'nesting too deep!!'";
@@ -189,7 +191,7 @@ class StrX
                     return '\n';
                 }
 
-                return sprintf('\\%02x', $o);
+                return \sprintf('\%02x', $o);
             };
 
             return var_export(preg_replace_callback('/[^[:print:]]/', $f, $x), true);
@@ -207,7 +209,7 @@ class StrX
             return "$x";
         }
         if (\is_float($x)) {
-            return sprintf('%G', $x); // short presentation of float
+            return \sprintf('%G', $x); // short presentation of float
         }
         if (!\is_array($x)) {
             return self::x2s($x, $deep + 1);
@@ -229,7 +231,7 @@ class StrX
     }
 
     // x2s helper
-    static function _x2s_cut(string $s, int $len, int $at): string
+    public static function _x2s_cut(string $s, int $len, int $at): string
     {
         if (\strlen($s) <= $len) {
             return $s;
@@ -248,7 +250,7 @@ class StrX
      *
      * @see https://github.com/danielstjules/Stringy/blob/3.1.0/LICENSE.txt
      */
-    static function charsArray(): array
+    public static function charsArray(): array
     {
         /** @var null|array<array<string>> $charsArray */
         static $charsArray;
